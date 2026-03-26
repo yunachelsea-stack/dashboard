@@ -1976,6 +1976,7 @@ server <- function(input, output, session) {
       branchvalues = "total",
       hovertemplate = '%{label}<br>%{value:.1f}M<br>%{percentParent:.1%} of region<extra></extra>',
       texttemplate = '%{label}<br>%{value:.1f}M',
+      textfont = list(color = "white"),
       marker = list(colors = node_colors, line = list(width = 1, color = "white"))
     ) %>%
       layout(
@@ -2025,6 +2026,7 @@ server <- function(input, output, session) {
       branchvalues = "total",
       hovertemplate = '%{label}<br>%{value:.1f}M<br>%{percentParent:.1%} of region<extra></extra>',
       texttemplate = '%{label}<br>%{value:.1f}M',
+      textfont = list(color = "white"),
       marker = list(colors = node_colors, line = list(width = 1, color = "white"))
     ) %>%
       layout(
