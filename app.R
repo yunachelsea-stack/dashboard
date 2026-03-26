@@ -2000,7 +2000,7 @@ server <- function(input, output, session) {
       values = values,
       type = 'treemap',
       branchvalues = "total",
-      hovertemplate = '%{label}<br>Women offline: %{value:.1f}M<extra></extra>',
+      hovertemplate = '%{label}<br>Women offline: %{value:.1f}M<br>%{percentRoot:.1%} of world<extra></extra>',
       texttemplate = '%{label}<br>%{value:.1f}M',
       textfont = list(color = text_colors),
       marker = list(colors = node_colors, line = list(width = 1, color = "white"))
@@ -2076,7 +2076,7 @@ server <- function(input, output, session) {
       values = values,
       type = 'treemap',
       branchvalues = "total",
-      hovertemplate = '%{label}<br>%{value:.1f}M<br>%{percentParent:.1%} of region<extra></extra>',
+      hovertemplate = '%{label}<br>%{value:.1f}M<br>%{percentRoot:.1%} of world<extra></extra>',
       texttemplate = '%{label}<br>%{value:.1f}M',
       textfont = list(color = text_colors),
       marker = list(colors = node_colors, line = list(width = 1, color = "white"))
@@ -2128,7 +2128,7 @@ server <- function(input, output, session) {
       values = values,
       type = 'treemap',
       branchvalues = "total",
-      hovertemplate = '%{label}<br>%{value:.1f}M<br>%{percentParent:.1%} of region<extra></extra>',
+      hovertemplate = '%{label}<br>%{value:.1f}M<br>%{percentRoot:.1%} of world<extra></extra>',
       texttemplate = '%{label}<br>%{value:.1f}M',
       textfont = list(color = text_colors),
       marker = list(colors = node_colors, line = list(width = 1, color = "white"))
