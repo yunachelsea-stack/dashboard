@@ -1968,6 +1968,8 @@ server <- function(input, output, session) {
       node_colors <- c(node_colors, region_colors[[data$region[i]]] %||% colors$grey)
     }
 
+    text_colors <- ifelse(node_colors == colors$yellow, colors$navy, "white")
+
     plot_ly(
       labels = labels,
       parents = parents,
@@ -1976,7 +1978,7 @@ server <- function(input, output, session) {
       branchvalues = "total",
       hovertemplate = '%{label}<br>%{value:.1f}M<br>%{percentParent:.1%} of region<extra></extra>',
       texttemplate = '%{label}<br>%{value:.1f}M',
-      textfont = list(color = "white"),
+      textfont = list(color = text_colors),
       marker = list(colors = node_colors, line = list(width = 1, color = "white"))
     ) %>%
       layout(
@@ -2018,6 +2020,8 @@ server <- function(input, output, session) {
       node_colors <- c(node_colors, region_colors[[data$region[i]]] %||% colors$grey)
     }
 
+    text_colors <- ifelse(node_colors == colors$yellow, colors$navy, "white")
+
     plot_ly(
       labels = labels,
       parents = parents,
@@ -2026,7 +2030,7 @@ server <- function(input, output, session) {
       branchvalues = "total",
       hovertemplate = '%{label}<br>%{value:.1f}M<br>%{percentParent:.1%} of region<extra></extra>',
       texttemplate = '%{label}<br>%{value:.1f}M',
-      textfont = list(color = "white"),
+      textfont = list(color = text_colors),
       marker = list(colors = node_colors, line = list(width = 1, color = "white"))
     ) %>%
       layout(
