@@ -1947,22 +1947,25 @@ server <- function(input, output, session) {
                ))
     }
 
-    # Build hierarchical structure
-    labels <- c("World")
-    parents <- c("")
-    values <- c(sum(data$value, na.rm = TRUE))
+    # Build hierarchical structure with region-based colors
+    labels      <- c("World")
+    parents     <- c("")
+    values      <- c(sum(data$value, na.rm = TRUE))
+    node_colors <- c(colors$navy)
 
     regions <- unique(data$region)
     for(r in regions) {
-      labels <- c(labels, r)
-      parents <- c(parents, "World")
-      values <- c(values, sum(data$value[data$region == r], na.rm = TRUE))
+      labels      <- c(labels, r)
+      parents     <- c(parents, "World")
+      values      <- c(values, sum(data$value[data$region == r], na.rm = TRUE))
+      node_colors <- c(node_colors, region_colors[[r]] %||% colors$grey)
     }
 
     for(i in 1:nrow(data)) {
-      labels <- c(labels, data$country_name[i])
-      parents <- c(parents, data$region[i])
-      values <- c(values, data$value[i])
+      labels      <- c(labels, data$country_name[i])
+      parents     <- c(parents, data$region[i])
+      values      <- c(values, data$value[i])
+      node_colors <- c(node_colors, region_colors[[data$region[i]]] %||% colors$grey)
     }
 
     plot_ly(
@@ -1973,9 +1976,7 @@ server <- function(input, output, session) {
       branchvalues = "total",
       hovertemplate = '%{label}<br>%{value:.1f}M<br>%{percentParent:.1%} of region<extra></extra>',
       texttemplate = '%{label}<br>%{value:.1f}M',
-      marker = list(colorscale = list(c(0, colors$teal), c(1, colors$navy)),
-                    colors = values,
-                    showscale = FALSE)
+      marker = list(colors = node_colors, line = list(width = 1, color = "white"))
     ) %>%
       layout(
         margin = list(l = 0, r = 0, b = 0, t = 0),
@@ -1995,22 +1996,25 @@ server <- function(input, output, session) {
                ))
     }
 
-    # Build hierarchical structure
-    labels <- c("World")
-    parents <- c("")
-    values <- c(sum(data$value, na.rm = TRUE))
+    # Build hierarchical structure with region-based colors
+    labels      <- c("World")
+    parents     <- c("")
+    values      <- c(sum(data$value, na.rm = TRUE))
+    node_colors <- c(colors$navy)
 
     regions <- unique(data$region)
     for(r in regions) {
-      labels <- c(labels, r)
-      parents <- c(parents, "World")
-      values <- c(values, sum(data$value[data$region == r], na.rm = TRUE))
+      labels      <- c(labels, r)
+      parents     <- c(parents, "World")
+      values      <- c(values, sum(data$value[data$region == r], na.rm = TRUE))
+      node_colors <- c(node_colors, region_colors[[r]] %||% colors$grey)
     }
 
     for(i in 1:nrow(data)) {
-      labels <- c(labels, data$country_name[i])
-      parents <- c(parents, data$region[i])
-      values <- c(values, data$value[i])
+      labels      <- c(labels, data$country_name[i])
+      parents     <- c(parents, data$region[i])
+      values      <- c(values, data$value[i])
+      node_colors <- c(node_colors, region_colors[[data$region[i]]] %||% colors$grey)
     }
 
     plot_ly(
@@ -2021,9 +2025,7 @@ server <- function(input, output, session) {
       branchvalues = "total",
       hovertemplate = '%{label}<br>%{value:.1f}M<br>%{percentParent:.1%} of region<extra></extra>',
       texttemplate = '%{label}<br>%{value:.1f}M',
-      marker = list(colorscale = list(c(0, colors$yellow), c(1, colors$navy)),
-                    colors = values,
-                    showscale = FALSE)
+      marker = list(colors = node_colors, line = list(width = 1, color = "white"))
     ) %>%
       layout(
         margin = list(l = 0, r = 0, b = 0, t = 0),
