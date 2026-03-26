@@ -530,15 +530,15 @@ custom_css <- paste0("
   }
 ")
 
-# Define region colors using the new palette
+# Define region colors using the new palette - one distinct color per region
 region_colors <- list(
-  "Sub-Saharan Africa" = colors$yellow,
-  "Middle East, North Africa, Afghanistan & Pakistan" = colors$teal,
-  "South Asia" = colors$blue,
-  "East Asia & Pacific" = colors$grey,
-  "Latin America & Caribbean" = colors$yellow,
-  "North America" = colors$teal,
-  "Europe & Central Asia" = colors$navy
+  "Sub-Saharan Africa"                                 = colors$yellow,
+  "South Asia"                                         = colors$blue,
+  "East Asia & Pacific"                                = colors$teal,
+  "Latin America & Caribbean"                          = "#e07b54",
+  "Middle East, North Africa, Afghanistan & Pakistan"  = colors$grey,
+  "Europe & Central Asia"                              = "#7b5ea7",
+  "North America"                                      = colors$navy
 )
 
 # Plotly layout theme
