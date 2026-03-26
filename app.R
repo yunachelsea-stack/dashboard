@@ -1135,6 +1135,27 @@ ui <- fluidPage(
                         column(12,
                                wellPanel(
                                  style = "background: white; border-radius: 10px;",
+                                 h3("Gender Gap by Region and Country", style = "text-align: center;"),
+                                 plotlyOutput("global_treemap_gender", height = "500px"),
+                                 tags$p("Block size = women offline (Millions). Color = direction and size of gender gap in internet usage.",
+                                        style = paste0("font-size: 11px; color: ", colors$grey, "; font-style: italic; text-align: center; margin-top: 6px;")),
+                                 fluidRow(
+                                   style = "text-align: center; margin-top: 8px;",
+                                   column(12,
+                                          tags$span(style = paste0("display:inline-block; background:#e6f2f5; color:", colors$navy, "; padding:3px 10px; border-radius:4px; margin:3px; font-size:12px;"), "Women disadvantaged: 0–5pp"),
+                                          tags$span(style = paste0("display:inline-block; background:#8ec8d8; color:", colors$navy, "; padding:3px 10px; border-radius:4px; margin:3px; font-size:12px;"), "5–15pp"),
+                                          tags$span(style = paste0("display:inline-block; background:", colors$blue, "; color:white; padding:3px 10px; border-radius:4px; margin:3px; font-size:12px;"), "15–25pp"),
+                                          tags$span(style = paste0("display:inline-block; background:", colors$navy, "; color:white; padding:3px 10px; border-radius:4px; margin:3px; font-size:12px;"), ">25pp"),
+                                          tags$span(style = paste0("display:inline-block; background:", colors$grey, "; color:white; padding:3px 10px; border-radius:4px; margin:3px; font-size:12px;"), "Reverse gap (women higher)")
+                                   )
+                                 )
+                               )
+                        )
+                      ),
+                      fluidRow(
+                        column(12,
+                               wellPanel(
+                                 style = "background: white; border-radius: 10px;",
                                  h3("Regional Statistics", style = "text-align: center;"),
                                  fluidRow(
                                    column(6,
@@ -1911,6 +1932,85 @@ server <- function(input, output, session) {
     }
   })
   
+  # Prepare gender gap data for treemap
+  treemap_data_gender <- reactive({
+    adoption_data %>%
+      filter(!is.na(internet_usage_gap_female_millions) & internet_usage_gap_female_millions > 0,
+             !is.na(internet_usage_male_pct), !is.na(internet_usage_female_pct)) %>%
+      mutate(
+        region = gsub("\\s*\\(.*", "", regionwb24_hi),
+        gender_gap = internet_usage_male_pct - internet_usage_female_pct,
+        value = internet_usage_gap_female_millions,
+        node_color = case_when(
+          gender_gap <  0            ~ "#7a96a4",  # reverse gap: grey
+          gender_gap <  5            ~ "#e6f2f5",  # 0-5pp: very light blue
+          gender_gap < 15            ~ "#8ec8d8",  # 5-15pp: medium blue
+          gender_gap < 25            ~ "#1984a2",  # 15-25pp: app blue
+          TRUE                       ~ "#003b4a"   # >25pp: navy
+        ),
+        text_color = ifelse(node_color %in% c("#e6f2f5", "#8ec8d8"), "#003b4a", "white")
+      ) %>%
+      select(country_name, region, value, gender_gap, node_color, text_color)
+  })
+
+  # Gender gap treemap
+  output$global_treemap_gender <- renderPlotly({
+    data <- treemap_data_gender()
+
+    if(nrow(data) == 0) {
+      return(plot_ly() %>%
+               layout(title = "No data available", font = list(size = 14, color = colors$grey)))
+    }
+
+    labels      <- c("World")
+    parents     <- c("")
+    values      <- c(sum(data$value, na.rm = TRUE))
+    node_colors <- c(colors$navy)
+    text_colors <- c("white")
+
+    regions <- unique(data$region)
+    for(r in regions) {
+      rdata <- data[data$region == r, ]
+      avg_gap <- weighted.mean(rdata$gender_gap, rdata$value, na.rm = TRUE)
+      rc <- case_when(
+        avg_gap <  0  ~ "#7a96a4",
+        avg_gap <  5  ~ "#e6f2f5",
+        avg_gap < 15  ~ "#8ec8d8",
+        avg_gap < 25  ~ "#1984a2",
+        TRUE          ~ "#003b4a"
+      )
+      labels      <- c(labels, r)
+      parents     <- c(parents, "World")
+      values      <- c(values, sum(rdata$value, na.rm = TRUE))
+      node_colors <- c(node_colors, rc)
+      text_colors <- c(text_colors, ifelse(rc %in% c("#e6f2f5", "#8ec8d8"), "#003b4a", "white"))
+    }
+
+    for(i in 1:nrow(data)) {
+      labels      <- c(labels, data$country_name[i])
+      parents     <- c(parents, data$region[i])
+      values      <- c(values, data$value[i])
+      node_colors <- c(node_colors, data$node_color[i])
+      text_colors <- c(text_colors, data$text_color[i])
+    }
+
+    plot_ly(
+      labels = labels,
+      parents = parents,
+      values = values,
+      type = 'treemap',
+      branchvalues = "total",
+      hovertemplate = '%{label}<br>Women offline: %{value:.1f}M<extra></extra>',
+      texttemplate = '%{label}<br>%{value:.1f}M',
+      textfont = list(color = text_colors),
+      marker = list(colors = node_colors, line = list(width = 1, color = "white"))
+    ) %>%
+      layout(
+        margin = list(l = 0, r = 0, b = 0, t = 0),
+        paper_bgcolor = 'rgba(0,0,0,0)'
+      )
+  })
+
   # Prepare sunburst data for coverage
   sunburst_data_coverage <- reactive({
     adoption_data %>%
