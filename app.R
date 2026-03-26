@@ -1935,119 +1935,99 @@ server <- function(input, output, session) {
       select(country_name, region, value, percentage)
   })
   
-  # Global sunburst chart for coverage
+  # Global treemap chart for coverage
   output$global_sunburst_coverage <- renderPlotly({
     data <- sunburst_data_coverage()
-    
-    # Debug: Check if we have data
+
     if(nrow(data) == 0) {
-      return(plot_ly() %>% 
+      return(plot_ly() %>%
                layout(
                  title = "No data available for coverage gaps",
                  font = list(size = 14, color = colors$grey)
                ))
     }
-    
-    # Debug: Print to console for checking
-    print(paste("Coverage data rows:", nrow(data)))
-    print(paste("Unique regions:", paste(unique(data$region), collapse = ", ")))
-    
+
     # Build hierarchical structure
     labels <- c("World")
     parents <- c("")
     values <- c(sum(data$value, na.rm = TRUE))
-    
-    # Add regions
+
     regions <- unique(data$region)
     for(r in regions) {
       labels <- c(labels, r)
       parents <- c(parents, "World")
       values <- c(values, sum(data$value[data$region == r], na.rm = TRUE))
     }
-    
-    # Add countries
+
     for(i in 1:nrow(data)) {
       labels <- c(labels, data$country_name[i])
       parents <- c(parents, data$region[i])
       values <- c(values, data$value[i])
     }
-    
-    # Debug: Print structure
-    print(paste("Total labels:", length(labels)))
-    print(paste("Total parents:", length(parents)))
-    print(paste("Total values:", length(values)))
-    
-    # Create the sunburst
+
     plot_ly(
       labels = labels,
       parents = parents,
       values = values,
-      type = 'sunburst',
+      type = 'treemap',
       branchvalues = "total",
-      hovertemplate = '%{label}<br>%{value:.1f}M<br>%{percentParent}<extra></extra>'
+      hovertemplate = '%{label}<br>%{value:.1f}M<br>%{percentParent:.1%} of region<extra></extra>',
+      texttemplate = '%{label}<br>%{value:.1f}M',
+      marker = list(colorscale = list(c(0, colors$teal), c(1, colors$navy)),
+                    colors = values,
+                    showscale = FALSE)
     ) %>%
       layout(
         margin = list(l = 0, r = 0, b = 0, t = 0),
-        paper_bgcolor = 'rgba(0,0,0,0)',
-        plot_bgcolor = 'rgba(0,0,0,0)'
+        paper_bgcolor = 'rgba(0,0,0,0)'
       )
   })
-  
-  # Global sunburst chart for usage
+
+  # Global treemap chart for usage
   output$global_sunburst_usage <- renderPlotly({
     data <- sunburst_data_usage()
-    
-    # Debug: Check if we have data
+
     if(nrow(data) == 0) {
-      return(plot_ly() %>% 
+      return(plot_ly() %>%
                layout(
                  title = "No data available for usage gaps",
                  font = list(size = 14, color = colors$grey)
                ))
     }
-    
-    # Debug: Print to console for checking
-    print(paste("Usage data rows:", nrow(data)))
-    print(paste("Unique regions:", paste(unique(data$region), collapse = ", ")))
-    
+
     # Build hierarchical structure
     labels <- c("World")
     parents <- c("")
     values <- c(sum(data$value, na.rm = TRUE))
-    
-    # Add regions
+
     regions <- unique(data$region)
     for(r in regions) {
       labels <- c(labels, r)
       parents <- c(parents, "World")
       values <- c(values, sum(data$value[data$region == r], na.rm = TRUE))
     }
-    
-    # Add countries
+
     for(i in 1:nrow(data)) {
       labels <- c(labels, data$country_name[i])
       parents <- c(parents, data$region[i])
       values <- c(values, data$value[i])
     }
-    
-    # Debug: Print structure
-    print(paste("Total labels:", length(labels)))
-    print(paste("Total parents:", length(parents)))
-    print(paste("Total values:", length(values)))
-    
-    # Create the sunburst
+
     plot_ly(
       labels = labels,
       parents = parents,
       values = values,
-      type = 'sunburst',
+      type = 'treemap',
       branchvalues = "total",
-      hovertemplate = '%{label}<br>%{value:.1f}M<br>%{percentParent}<extra></extra>'
+      hovertemplate = '%{label}<br>%{value:.1f}M<br>%{percentParent:.1%} of region<extra></extra>',
+      texttemplate = '%{label}<br>%{value:.1f}M',
+      marker = list(colorscale = list(c(0, colors$yellow), c(1, colors$navy)),
+                    colors = values,
+                    showscale = FALSE)
     ) %>%
       layout(
         margin = list(l = 0, r = 0, b = 0, t = 0),
-        paper_bgcolor = 'rgba(0,0,0,0)',
-        plot_bgcolor = 'rgba(0,0,0,0)'
+        paper_bgcolor = 'rgba(0,0,0,0)'
       )
   })
   
