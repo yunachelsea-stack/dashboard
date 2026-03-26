@@ -685,6 +685,15 @@ ui <- fluidPage(
                                          )
                                        )
                                    ),
+                                   div(style = "text-align: center; margin-top: 16px;",
+                                       tags$a(
+                                         icon("globe"), " Explore Global Comparisons",
+                                         href = "#",
+                                         class = "btn btn-default",
+                                         style = paste0("color: ", colors$blue, "; border: 1px solid ", colors$blue, "; border-radius: 20px; padding: 6px 20px; font-size: 13px; font-weight: 600;"),
+                                         onclick = "$('.navbar-nav a').filter(function(){return $(this).text().trim()==='Global Analysis';}).tab('show'); return false;"
+                                       )
+                                   ),
                                    div(style = paste0("margin-top: 18px; padding-top: 14px; border-top: 1px solid ", colors$light_grey, ";"),
                                        p(
                                          "The ",
