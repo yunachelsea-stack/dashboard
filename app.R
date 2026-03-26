@@ -1962,15 +1962,20 @@ server <- function(input, output, session) {
                layout(title = "No data available", font = list(size = 14, color = colors$grey)))
     }
 
+    world_total <- sum(data$value, na.rm = TRUE)
+    region_sums <- tapply(data$value, data$region, sum, na.rm = TRUE)
+
     labels      <- c("World")
     parents     <- c("")
-    values      <- c(sum(data$value, na.rm = TRUE))
+    values      <- c(world_total)
     node_colors <- c(colors$navy)
     text_colors <- c("white")
+    hover       <- c(paste0("World: ", round(world_total, 1), "M women offline"))
 
-    regions <- unique(data$region)
-    for(r in regions) {
-      rdata <- data[data$region == r, ]
+    for(r in names(region_sums)) {
+      rdata   <- data[data$region == r, ]
+      rv      <- region_sums[[r]]
+      pct     <- rv / world_total * 100
       avg_gap <- weighted.mean(rdata$gender_gap, rdata$value, na.rm = TRUE)
       rc <- case_when(
         avg_gap <  0  ~ "#7a96a4",
@@ -1981,34 +1986,33 @@ server <- function(input, output, session) {
       )
       labels      <- c(labels, r)
       parents     <- c(parents, "World")
-      values      <- c(values, sum(rdata$value, na.rm = TRUE))
+      values      <- c(values, rv)
       node_colors <- c(node_colors, rc)
       text_colors <- c(text_colors, ifelse(rc %in% c("#e6f2f5", "#8ec8d8"), "#003b4a", "white"))
+      hover       <- c(hover, paste0(r, ": ", round(rv, 1), "M women offline (", round(pct, 1), "% of world)"))
     }
 
     for(i in 1:nrow(data)) {
+      rv  <- region_sums[[data$region[i]]]
+      pct <- data$value[i] / rv * 100
       labels      <- c(labels, data$country_name[i])
       parents     <- c(parents, data$region[i])
       values      <- c(values, data$value[i])
       node_colors <- c(node_colors, data$node_color[i])
       text_colors <- c(text_colors, data$text_color[i])
+      hover       <- c(hover, paste0(data$country_name[i], ": ", round(data$value[i], 1), "M women offline (", round(pct, 1), "% of region)"))
     }
 
     plot_ly(
-      labels = labels,
-      parents = parents,
-      values = values,
-      type = 'treemap',
-      branchvalues = "total",
-      hovertemplate = '%{label}<br>Women offline: %{value:.1f}M<br>%{percentRoot:.1%} of world<extra></extra>',
+      labels = labels, parents = parents, values = values,
+      type = 'treemap', branchvalues = "total",
+      customdata = hover,
+      hovertemplate = '%{customdata}<extra></extra>',
       texttemplate = '%{label}<br>%{value:.1f}M',
       textfont = list(color = text_colors),
       marker = list(colors = node_colors, line = list(width = 1, color = "white"))
     ) %>%
-      layout(
-        margin = list(l = 0, r = 0, b = 0, t = 0),
-        paper_bgcolor = 'rgba(0,0,0,0)'
-      )
+      layout(margin = list(l = 0, r = 0, b = 0, t = 0), paper_bgcolor = 'rgba(0,0,0,0)')
   })
 
   # Prepare sunburst data for coverage
@@ -2035,108 +2039,76 @@ server <- function(input, output, session) {
       select(country_name, region, value, percentage)
   })
   
-  # Global treemap chart for coverage
-  output$global_sunburst_coverage <- renderPlotly({
-    data <- sunburst_data_coverage()
+  # Helper: build treemap vectors for coverage/usage treemaps
+  build_treemap <- function(data, value_label = "offline") {
+    world_total  <- sum(data$value, na.rm = TRUE)
+    region_sums  <- tapply(data$value, data$region, sum, na.rm = TRUE)
 
-    if(nrow(data) == 0) {
-      return(plot_ly() %>%
-               layout(
-                 title = "No data available for coverage gaps",
-                 font = list(size = 14, color = colors$grey)
-               ))
-    }
-
-    # Build hierarchical structure with region-based colors
     labels      <- c("World")
     parents     <- c("")
-    values      <- c(sum(data$value, na.rm = TRUE))
+    values      <- c(world_total)
     node_colors <- c(colors$navy)
+    hover       <- c(paste0("World: ", round(world_total, 1), "M ", value_label))
 
-    regions <- unique(data$region)
-    for(r in regions) {
+    for(r in names(region_sums)) {
+      rv  <- region_sums[[r]]
+      pct <- rv / world_total * 100
       labels      <- c(labels, r)
       parents     <- c(parents, "World")
-      values      <- c(values, sum(data$value[data$region == r], na.rm = TRUE))
+      values      <- c(values, rv)
       node_colors <- c(node_colors, region_colors[[r]] %||% colors$grey)
+      hover       <- c(hover, paste0(r, ": ", round(rv, 1), "M (", round(pct, 1), "% of world)"))
     }
 
     for(i in 1:nrow(data)) {
+      rv  <- region_sums[[data$region[i]]]
+      pct <- data$value[i] / rv * 100
       labels      <- c(labels, data$country_name[i])
       parents     <- c(parents, data$region[i])
       values      <- c(values, data$value[i])
       node_colors <- c(node_colors, region_colors[[data$region[i]]] %||% colors$grey)
+      hover       <- c(hover, paste0(data$country_name[i], ": ", round(data$value[i], 1), "M (", round(pct, 1), "% of region)"))
     }
 
     text_colors <- ifelse(node_colors == colors$yellow, colors$navy, "white")
+    list(labels = labels, parents = parents, values = values,
+         node_colors = node_colors, text_colors = text_colors, hover = hover)
+  }
 
+  # Global treemap chart for coverage
+  output$global_sunburst_coverage <- renderPlotly({
+    data <- sunburst_data_coverage()
+    if(nrow(data) == 0) return(plot_ly() %>% layout(title = "No data available for coverage gaps"))
+
+    d <- build_treemap(data, "offline")
     plot_ly(
-      labels = labels,
-      parents = parents,
-      values = values,
-      type = 'treemap',
-      branchvalues = "total",
-      hovertemplate = '%{label}<br>%{value:.1f}M<br>%{percentRoot:.1%} of world<extra></extra>',
+      labels = d$labels, parents = d$parents, values = d$values,
+      type = 'treemap', branchvalues = "total",
+      customdata = d$hover,
+      hovertemplate = '%{customdata}<extra></extra>',
       texttemplate = '%{label}<br>%{value:.1f}M',
-      textfont = list(color = text_colors),
-      marker = list(colors = node_colors, line = list(width = 1, color = "white"))
+      textfont = list(color = d$text_colors),
+      marker = list(colors = d$node_colors, line = list(width = 1, color = "white"))
     ) %>%
-      layout(
-        margin = list(l = 0, r = 0, b = 0, t = 0),
-        paper_bgcolor = 'rgba(0,0,0,0)'
-      )
+      layout(margin = list(l = 0, r = 0, b = 0, t = 0), paper_bgcolor = 'rgba(0,0,0,0)')
   })
 
   # Global treemap chart for usage
   output$global_sunburst_usage <- renderPlotly({
     data <- sunburst_data_usage()
+    if(nrow(data) == 0) return(plot_ly() %>% layout(title = "No data available for usage gaps"))
 
-    if(nrow(data) == 0) {
-      return(plot_ly() %>%
-               layout(
-                 title = "No data available for usage gaps",
-                 font = list(size = 14, color = colors$grey)
-               ))
-    }
-
-    # Build hierarchical structure with region-based colors
-    labels      <- c("World")
-    parents     <- c("")
-    values      <- c(sum(data$value, na.rm = TRUE))
-    node_colors <- c(colors$navy)
-
-    regions <- unique(data$region)
-    for(r in regions) {
-      labels      <- c(labels, r)
-      parents     <- c(parents, "World")
-      values      <- c(values, sum(data$value[data$region == r], na.rm = TRUE))
-      node_colors <- c(node_colors, region_colors[[r]] %||% colors$grey)
-    }
-
-    for(i in 1:nrow(data)) {
-      labels      <- c(labels, data$country_name[i])
-      parents     <- c(parents, data$region[i])
-      values      <- c(values, data$value[i])
-      node_colors <- c(node_colors, region_colors[[data$region[i]]] %||% colors$grey)
-    }
-
-    text_colors <- ifelse(node_colors == colors$yellow, colors$navy, "white")
-
+    d <- build_treemap(data, "offline")
     plot_ly(
-      labels = labels,
-      parents = parents,
-      values = values,
-      type = 'treemap',
-      branchvalues = "total",
-      hovertemplate = '%{label}<br>%{value:.1f}M<br>%{percentRoot:.1%} of world<extra></extra>',
+      labels = d$labels, parents = d$parents, values = d$values,
+      type = 'treemap', branchvalues = "total",
+      customdata = d$hover,
+      hovertemplate = '%{customdata}<extra></extra>',
       texttemplate = '%{label}<br>%{value:.1f}M',
-      textfont = list(color = text_colors),
-      marker = list(colors = node_colors, line = list(width = 1, color = "white"))
+      textfont = list(color = d$text_colors),
+      marker = list(colors = d$node_colors, line = list(width = 1, color = "white"))
     ) %>%
-      layout(
-        margin = list(l = 0, r = 0, b = 0, t = 0),
-        paper_bgcolor = 'rgba(0,0,0,0)'
-      )
+      layout(margin = list(l = 0, r = 0, b = 0, t = 0), paper_bgcolor = 'rgba(0,0,0,0)')
   })
   
   # Regional bar chart for coverage
