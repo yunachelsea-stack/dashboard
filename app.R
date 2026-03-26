@@ -1135,7 +1135,7 @@ ui <- fluidPage(
                         column(12,
                                wellPanel(
                                  style = "background: white; border-radius: 10px;",
-                                 h3("Gender Gap by Region and Country", style = "text-align: center;"),
+                                 h3("Women Offline and Gender Gap by Region and Country", style = "text-align: center;"),
                                  plotlyOutput("global_treemap_gender", height = "500px"),
                                  tags$p("Block size = women offline (Millions). Color = direction and size of gender gap in internet usage.",
                                         style = paste0("font-size: 11px; color: ", colors$grey, "; font-style: italic; text-align: center; margin-top: 6px;")),
@@ -1965,12 +1965,13 @@ server <- function(input, output, session) {
     world_total <- sum(data$value, na.rm = TRUE)
     region_sums <- tapply(data$value, data$region, sum, na.rm = TRUE)
 
-    labels      <- c("World")
-    parents     <- c("")
-    values      <- c(world_total)
-    node_colors <- c(colors$navy)
-    text_colors <- c("white")
-    hover       <- c(paste0("World: ", round(world_total, 1), "M women offline"))
+    labels       <- c("World")
+    parents      <- c("")
+    values       <- c(world_total)
+    node_colors  <- c(colors$navy)
+    text_colors  <- c("white")
+    display_text <- c(paste0("World: ", round(world_total, 1), "M offline"))
+    hover        <- c("")  # no popup for World
 
     for(r in names(region_sums)) {
       rdata   <- data[data$region == r, ]
@@ -1987,9 +1988,10 @@ server <- function(input, output, session) {
       labels      <- c(labels, r)
       parents     <- c(parents, "World")
       values      <- c(values, rv)
-      node_colors <- c(node_colors, rc)
-      text_colors <- c(text_colors, ifelse(rc %in% c("#e6f2f5", "#8ec8d8"), "#003b4a", "white"))
-      hover       <- c(hover, paste0(r, ": ", round(rv, 1), "M women offline (", round(pct, 1), "% of world)"))
+      node_colors  <- c(node_colors, rc)
+      text_colors  <- c(text_colors, ifelse(rc %in% c("#e6f2f5", "#8ec8d8"), "#003b4a", "white"))
+      display_text <- c(display_text, paste0(r, "<br>", round(rv, 1), "M"))
+      hover        <- c(hover, paste0(r, ": ", round(rv, 1), "M offline (", round(pct, 1), "% of world)"))
     }
 
     for(i in 1:nrow(data)) {
@@ -1998,17 +2000,19 @@ server <- function(input, output, session) {
       labels      <- c(labels, data$country_name[i])
       parents     <- c(parents, data$region[i])
       values      <- c(values, data$value[i])
-      node_colors <- c(node_colors, data$node_color[i])
-      text_colors <- c(text_colors, data$text_color[i])
-      hover       <- c(hover, paste0(data$country_name[i], ": ", round(data$value[i], 1), "M women offline (", round(pct, 1), "% of region)"))
+      node_colors  <- c(node_colors, data$node_color[i])
+      text_colors  <- c(text_colors, data$text_color[i])
+      display_text <- c(display_text, paste0(data$country_name[i], "<br>", round(data$value[i], 1), "M"))
+      hover        <- c(hover, paste0(data$country_name[i], ": ", round(data$value[i], 1), "M offline (", round(pct, 1), "% of region)"))
     }
 
     plot_ly(
       labels = labels, parents = parents, values = values,
       type = 'treemap', branchvalues = "total",
+      text = display_text,
       customdata = hover,
       hovertemplate = '%{customdata}<extra></extra>',
-      texttemplate = '%{label}<br>%{value:.1f}M',
+      texttemplate = '%{text}',
       textfont = list(color = text_colors),
       marker = list(colors = node_colors, line = list(width = 1, color = "white"))
     ) %>%
@@ -2044,35 +2048,39 @@ server <- function(input, output, session) {
     world_total  <- sum(data$value, na.rm = TRUE)
     region_sums  <- tapply(data$value, data$region, sum, na.rm = TRUE)
 
-    labels      <- c("World")
-    parents     <- c("")
-    values      <- c(world_total)
-    node_colors <- c(colors$navy)
-    hover       <- c(paste0("World: ", round(world_total, 1), "M ", value_label))
+    labels       <- c("World")
+    parents      <- c("")
+    values       <- c(world_total)
+    node_colors  <- c(colors$navy)
+    display_text <- c(paste0("World: ", round(world_total, 1), "M ", value_label))
+    hover        <- c("")  # no popup for World — info already on the label
 
     for(r in names(region_sums)) {
       rv  <- region_sums[[r]]
       pct <- rv / world_total * 100
-      labels      <- c(labels, r)
-      parents     <- c(parents, "World")
-      values      <- c(values, rv)
-      node_colors <- c(node_colors, region_colors[[r]] %||% colors$grey)
-      hover       <- c(hover, paste0(r, ": ", round(rv, 1), "M (", round(pct, 1), "% of world)"))
+      labels       <- c(labels, r)
+      parents      <- c(parents, "World")
+      values       <- c(values, rv)
+      node_colors  <- c(node_colors, region_colors[[r]] %||% colors$grey)
+      display_text <- c(display_text, paste0(r, "<br>", round(rv, 1), "M"))
+      hover        <- c(hover, paste0(r, ": ", round(rv, 1), "M (", round(pct, 1), "% of world)"))
     }
 
     for(i in 1:nrow(data)) {
       rv  <- region_sums[[data$region[i]]]
       pct <- data$value[i] / rv * 100
-      labels      <- c(labels, data$country_name[i])
-      parents     <- c(parents, data$region[i])
-      values      <- c(values, data$value[i])
-      node_colors <- c(node_colors, region_colors[[data$region[i]]] %||% colors$grey)
-      hover       <- c(hover, paste0(data$country_name[i], ": ", round(data$value[i], 1), "M (", round(pct, 1), "% of region)"))
+      labels       <- c(labels, data$country_name[i])
+      parents      <- c(parents, data$region[i])
+      values       <- c(values, data$value[i])
+      node_colors  <- c(node_colors, region_colors[[data$region[i]]] %||% colors$grey)
+      display_text <- c(display_text, paste0(data$country_name[i], "<br>", round(data$value[i], 1), "M"))
+      hover        <- c(hover, paste0(data$country_name[i], ": ", round(data$value[i], 1), "M (", round(pct, 1), "% of region)"))
     }
 
     text_colors <- ifelse(node_colors == colors$yellow, colors$navy, "white")
     list(labels = labels, parents = parents, values = values,
-         node_colors = node_colors, text_colors = text_colors, hover = hover)
+         node_colors = node_colors, text_colors = text_colors,
+         display_text = display_text, hover = hover)
   }
 
   # Global treemap chart for coverage
@@ -2084,9 +2092,10 @@ server <- function(input, output, session) {
     plot_ly(
       labels = d$labels, parents = d$parents, values = d$values,
       type = 'treemap', branchvalues = "total",
+      text = d$display_text,
       customdata = d$hover,
       hovertemplate = '%{customdata}<extra></extra>',
-      texttemplate = '%{label}<br>%{value:.1f}M',
+      texttemplate = '%{text}',
       textfont = list(color = d$text_colors),
       marker = list(colors = d$node_colors, line = list(width = 1, color = "white"))
     ) %>%
@@ -2102,9 +2111,10 @@ server <- function(input, output, session) {
     plot_ly(
       labels = d$labels, parents = d$parents, values = d$values,
       type = 'treemap', branchvalues = "total",
+      text = d$display_text,
       customdata = d$hover,
       hovertemplate = '%{customdata}<extra></extra>',
-      texttemplate = '%{label}<br>%{value:.1f}M',
+      texttemplate = '%{text}',
       textfont = list(color = d$text_colors),
       marker = list(colors = d$node_colors, line = list(width = 1, color = "white"))
     ) %>%
