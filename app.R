@@ -1965,12 +1965,13 @@ server <- function(input, output, session) {
     world_total <- sum(data$value, na.rm = TRUE)
     region_sums <- tapply(data$value, data$region, sum, na.rm = TRUE)
 
-    labels       <- c("World")
+    world_label  <- paste0("World: ", round(world_total, 1), "M offline")
+    labels       <- c(world_label)
     parents      <- c("")
     values       <- c(world_total)
     node_colors  <- c(colors$navy)
     text_colors  <- c("white")
-    display_text <- c(paste0("World: ", round(world_total, 1), "M offline"))
+    display_text <- c(world_label)
     hover        <- c("")  # no popup for World
 
     for(r in names(region_sums)) {
@@ -1986,7 +1987,7 @@ server <- function(input, output, session) {
         TRUE          ~ "#003b4a"
       )
       labels      <- c(labels, r)
-      parents     <- c(parents, "World")
+      parents     <- c(parents, world_label)
       values      <- c(values, rv)
       node_colors  <- c(node_colors, rc)
       text_colors  <- c(text_colors, ifelse(rc %in% c("#e6f2f5", "#8ec8d8"), "#003b4a", "white"))
@@ -2047,19 +2048,20 @@ server <- function(input, output, session) {
   build_treemap <- function(data, value_label = "offline") {
     world_total  <- sum(data$value, na.rm = TRUE)
     region_sums  <- tapply(data$value, data$region, sum, na.rm = TRUE)
+    world_label  <- paste0("World: ", round(world_total, 1), "M ", value_label)
 
-    labels       <- c("World")
+    labels       <- c(world_label)
     parents      <- c("")
     values       <- c(world_total)
     node_colors  <- c(colors$navy)
-    display_text <- c(paste0("World: ", round(world_total, 1), "M ", value_label))
+    display_text <- c(world_label)
     hover        <- c("")  # no popup for World — info already on the label
 
     for(r in names(region_sums)) {
       rv  <- region_sums[[r]]
       pct <- rv / world_total * 100
       labels       <- c(labels, r)
-      parents      <- c(parents, "World")
+      parents      <- c(parents, world_label)
       values       <- c(values, rv)
       node_colors  <- c(node_colors, region_colors[[r]] %||% colors$grey)
       display_text <- c(display_text, paste0(r, "<br>", round(rv, 1), "M"))
