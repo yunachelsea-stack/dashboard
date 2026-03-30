@@ -729,7 +729,7 @@ ui <- fluidPage(
                                      "Explore country diagnostics",
                                      href = "#",
                                      style = paste0("color: ", colors$blue, "; text-decoration: underline;"),
-                                     onclick = "$('.navbar-nav a').filter(function(){return $(this).text().trim()==='Country Diagnostic Prototype';}).tab('show'); return false;"
+                                     onclick = "$('.navbar-nav a').filter(function(){return $(this).text().trim()==='Country Analysis';}).tab('show'); setTimeout(function(){ $('a[data-value=\"Diagnostic\"]').tab('show'); }, 150); return false;"
                                    ),
                                    " to see which gap is most critical in each country, how it compares with regional peers, and the potential policy implications.",
                                    style = paste0("color: ", colors$navy, "; font-size: 18px; margin-bottom: 15px;")
@@ -748,7 +748,7 @@ ui <- fluidPage(
                                           href = "#",
                                           class = "btn btn-warning home-card-button",
                                           style = "padding: 10px 24px;",
-                                          onclick = "$('.navbar-nav a').filter(function(){return $(this).text().trim()==='Country Diagnostic Prototype';}).tab('show'); return false;"
+                                          onclick = "$('.navbar-nav a').filter(function(){return $(this).text().trim()==='Country Analysis';}).tab('show'); setTimeout(function(){ $('a[data-value=\"Diagnostic\"]').tab('show'); }, 150); return false;"
                                         )
                                      )
                                  )
@@ -938,20 +938,21 @@ ui <- fluidPage(
                         fluidRow(
                           column(6,
                                  h4("Internet Usage", style = "text-align: center;"),
-                                 plotlyOutput("compare_adoption", height = "420px")
+                                 plotlyOutput("compare_adoption", height = "380px")
                           ),
                           column(6,
                                  h4("Gender Gap in Internet Usage", style = "text-align: center;"),
-                                 plotlyOutput("compare_gender", height = "420px")
+                                 plotlyOutput("compare_gender", height = "380px")
                           )
                         ),
                         fluidRow(
-                          column(12,
-                                 hr(),
-                                 h4("Regional Context", style = paste0("color: ", colors$navy, ";")),
-                                 tags$p("All countries in the primary country's region. Selected countries highlighted.",
-                                        style = paste0("font-size: 12px; color: ", colors$grey, "; margin-bottom: 10px;")),
-                                 plotlyOutput("regional_benchmark", height = "500px")
+                          column(6,
+                                 h4("Coverage Gap", style = "text-align: center;"),
+                                 plotlyOutput("compare_coverage", height = "380px")
+                          ),
+                          column(6,
+                                 h4("Usage Gap", style = "text-align: center;"),
+                                 plotlyOutput("compare_usage", height = "380px")
                           )
                         )
                       )
@@ -2521,25 +2522,54 @@ server <- function(input, output, session) {
                   rownames = FALSE)
   })
   
-  # Comparative adoption plot with new colors
+  # Comparative adoption plot
   output$compare_adoption <- renderPlotly({
     req(input$comparison_countries)
     data <- comparison_data()
-    
-    internet_text <- paste0(round(data$internet_usage_all_pct, 1), "%")
-
     plot_ly(data, x = ~country_name, y = ~internet_usage_all_pct,
-            type = 'bar', name = 'Internet Usage',
-            marker = list(color = colors$blue),
-            text = internet_text, textposition = 'outside',
-            textfont = list(size = 10, color = colors$navy)) %>%
+            type = 'bar', marker = list(color = colors$blue),
+            text = paste0(round(data$internet_usage_all_pct, 1), "%"),
+            textposition = 'outside', textfont = list(size = 10, color = colors$navy),
+            hoverinfo = 'none') %>%
       layout(
         yaxis = list(title = 'Internet Usage (%)', range = c(0, 110)),
-        xaxis = list(title = '', side = 'top'),
-        plot_bgcolor = colors$light_grey,
-        paper_bgcolor = 'white',
-        font = list(color = colors$navy),
-        margin = list(t = 80)
+        xaxis = list(title = ''),
+        plot_bgcolor = colors$light_grey, paper_bgcolor = 'white',
+        font = list(color = colors$navy), margin = list(t = 30, b = 80)
+      )
+  })
+
+  # Compare coverage gap
+  output$compare_coverage <- renderPlotly({
+    req(input$comparison_countries)
+    data <- comparison_data()
+    plot_ly(data, x = ~country_name, y = ~gap_dominant_pct,
+            type = 'bar', marker = list(color = colors$yellow),
+            text = paste0(round(data$gap_dominant_pct, 1), "%"),
+            textposition = 'outside', textfont = list(size = 10, color = colors$navy),
+            hoverinfo = 'none') %>%
+      layout(
+        yaxis = list(title = 'Coverage Gap (%)', range = c(0, max(data$gap_dominant_pct, na.rm = TRUE) * 1.4)),
+        xaxis = list(title = ''),
+        plot_bgcolor = colors$light_grey, paper_bgcolor = 'white',
+        font = list(color = colors$navy), margin = list(t = 30, b = 80)
+      )
+  })
+
+  # Compare usage gap
+  output$compare_usage <- renderPlotly({
+    req(input$comparison_countries)
+    data <- comparison_data()
+    plot_ly(data, x = ~country_name, y = ~internet_usage_gap_all_pct,
+            type = 'bar', marker = list(color = colors$teal),
+            text = paste0(round(data$internet_usage_gap_all_pct, 1), "%"),
+            textposition = 'outside', textfont = list(size = 10, color = colors$navy),
+            hoverinfo = 'none') %>%
+      layout(
+        yaxis = list(title = 'Usage Gap (%)', range = c(0, max(data$internet_usage_gap_all_pct, na.rm = TRUE) * 1.4)),
+        xaxis = list(title = ''),
+        plot_bgcolor = colors$light_grey, paper_bgcolor = 'white',
+        font = list(color = colors$navy), margin = list(t = 30, b = 80)
       )
   })
   
@@ -2575,16 +2605,15 @@ server <- function(input, output, session) {
       mutate(internet_gap = internet_usage_male_pct - internet_usage_female_pct)
 
     plot_ly(gender_gap_data, x = ~country_name, y = ~internet_gap,
-            type = 'bar', name = 'Internet Gender Gap',
-            marker = list(color = colors$yellow),
+            type = 'bar', marker = list(color = colors$yellow),
             text = paste0(round(gender_gap_data$internet_gap, 1), "pp"),
-            textposition = 'outside') %>%
+            textposition = 'auto',
+            hoverinfo = 'none') %>%
       layout(
         yaxis = list(title = 'Gender Gap (percentage points)'),
         xaxis = list(title = ''),
-        plot_bgcolor = colors$light_grey,
-        paper_bgcolor = 'white',
-        font = list(color = colors$navy)
+        plot_bgcolor = colors$light_grey, paper_bgcolor = 'white',
+        font = list(color = colors$navy), margin = list(t = 30, b = 80)
       )
   })
   
