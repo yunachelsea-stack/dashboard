@@ -932,35 +932,28 @@ ui <- fluidPage(
                                              ),
 
                                              tabPanel("Deep Dive",
-                                                      # Row 1: Adoption plot (internet usage by gender)
+                                                      # Row 1: 3 charts side by side
                                                       fluidRow(
-                                                        column(12,
-                                                               h3("Internet Usage by Gender"),
-                                                               plotlyOutput("adoption_plot", height = "400px"),
-                                                               tags$p("Source: Findex Global Digital Connectivity Tracker 2025",
-                                                                      style = paste0("font-size: 11px; color: ", colors$grey, "; font-style: italic; margin-top: 5px;"))
-                                                        )
-                                                      ),
-                                                      # Row 2: Coverage and usage gap charts
-                                                      fluidRow(
-                                                        column(6,
-                                                               h4("Population in Coverage Gap"),
-                                                               plotlyOutput("coverage_gap_chart", height = "350px"),
-                                                               valueBoxOutput("coverage_gap_total")
+                                                        column(4,
+                                                               h4("Internet Usage by Gender", style = "text-align: center;"),
+                                                               plotlyOutput("adoption_plot", height = "350px")
                                                         ),
-                                                        column(6,
-                                                               h4("Population in Usage Gap"),
-                                                               plotlyOutput("usage_gap_chart", height = "350px"),
-                                                               valueBoxOutput("usage_gap_total")
+                                                        column(4,
+                                                               h4("Population in Coverage Gap", style = "text-align: center;"),
+                                                               plotlyOutput("coverage_gap_chart", height = "350px")
+                                                        ),
+                                                        column(4,
+                                                               h4("Population in Usage Gap", style = "text-align: center;"),
+                                                               plotlyOutput("usage_gap_chart", height = "350px")
                                                         )
                                                       ),
                                                       fluidRow(
                                                         column(12,
-                                                               tags$p("Source: Calculated using data from the International Telecommunication Union (2022-24) and Findex Global Digital Connectivity Tracker 2025.",
+                                                               tags$p("Sources: Findex Global Digital Connectivity Tracker 2025; ITU (2022-24).",
                                                                       style = paste0("font-size: 11px; color: ", colors$grey, "; font-style: italic; margin-top: 5px;"))
                                                         )
                                                       ),
-                                                      # Row 3: Offline population breakdown by gender (donuts)
+                                                      # Row 2: Offline population breakdown by gender (donuts)
                                                       fluidRow(
                                                         column(12,
                                                                hr(),
@@ -981,16 +974,6 @@ ui <- fluidPage(
                                                         column(4,
                                                                h4("Men Offline", style = "text-align: center;"),
                                                                plotlyOutput("men_gap_donut", height = "350px")
-                                                        )
-                                                      ),
-                                                      # Row 4: Detailed gender table
-                                                      fluidRow(
-                                                        column(12,
-                                                               hr(),
-                                                               h4("Detailed Gender Metrics"),
-                                                               tags$p("Note: 'Women Without' and 'Men Without' columns show the total population (in millions) who do NOT have access to each technology",
-                                                                      style = paste0("font-size: 12px; color: ", colors$grey, "; font-style: italic; margin-bottom: 10px;")),
-                                                               DT::dataTableOutput("gender_detailed_table")
                                                         )
                                                       )
                                              ),
@@ -2236,89 +2219,104 @@ server <- function(input, output, session) {
     
     plot_data <- plot_data %>% arrange(Category, Gender)
     
-    # Create text for bars - showing percentages
-    plot_data$TextLabel <- paste0(round(plot_data$Percentage, 1), "%")
-    
+    plot_data$TextLabel <- paste0(round(plot_data$Percentage, 1), "%<br>(", round(plot_data$Millions, 1), "M)")
+
     plot_ly(plot_data, x = ~Category, y = ~Percentage, color = ~Gender,
-            type = 'bar', 
+            type = 'bar',
             colors = c("All Adults" = colors$navy, "Women" = colors$teal, "Men" = colors$blue),
             text = ~TextLabel,
             textposition = 'outside',
-            textfont = list(size = 11, color = colors$navy),
-            hovertemplate = paste('%{x}<br>',
-                                  '%{fullData.name}: %{y:.1f}%<br>',
-                                  round(plot_data$Millions, 1), 'M people<extra></extra>')) %>%
+            textfont = list(size = 10, color = colors$navy),
+            hovertemplate = '%{fullData.name}: %{y:.1f}% &bull; %{customdata:.1f}M people<extra></extra>',
+            customdata = ~Millions) %>%
       layout(
-        yaxis = list(title = 'Adoption Rate (%)', range = c(0, 105), tickformat = '.0f'),
+        yaxis = list(title = 'Internet Usage (%)', range = c(0, 115), tickformat = '.0f'),
         xaxis = list(title = ''),
         barmode = 'group',
         showlegend = TRUE,
-        legend = list(orientation = "h", y = 1.05, x = 0.5, xanchor = "center"),
+        legend = list(orientation = "h", y = 1.08, x = 0.5, xanchor = "center"),
         plot_bgcolor = colors$light_grey,
         paper_bgcolor = 'white',
-        font = list(color = colors$navy)
+        font = list(color = colors$navy),
+        margin = list(t = 40)
       )
   })
   
   # Coverage gap chart with new colors
   output$coverage_gap_chart <- renderPlotly({
     data <- country_data()
-    
+
+    pop_all    <- data$adult_population[1] / 1e6
+    pop_female <- data$adult_pop_female[1]  / 1e6
+    pop_male   <- data$adult_pop_male[1]   / 1e6
+
     gap_data <- data.frame(
-      Category = c("All Adults", "Women", "Men"),
+      Category   = c("All Adults", "Women", "Men"),
       Population = c(
         data$adults_no_dominant_millions[1],
         data$women_no_dominant_millions[1],
         data$men_no_dominant_millions[1]
-      )
+      ),
+      Denom = c(pop_all, pop_female, pop_male)
     )
-    
+    gap_data$Pct <- round(gap_data$Population / gap_data$Denom * 100, 1)
     gap_data$Category <- factor(gap_data$Category, levels = c("All Adults", "Women", "Men"))
-    
+    gap_data$TextLabel <- paste0(round(gap_data$Population, 1), "M<br>(", gap_data$Pct, "%)")
+
     plot_ly(gap_data, x = ~Category, y = ~Population, type = 'bar',
             marker = list(color = c(colors$navy, colors$teal, colors$blue)),
-            text = paste0(round(gap_data$Population, 2), "M"),
+            text = ~TextLabel,
             textposition = 'outside',
-            hovertemplate = '%{x}: %{y:.2f} million people<extra></extra>') %>%
+            textfont = list(size = 10, color = colors$navy),
+            hovertemplate = '%{x}: %{y:.1f}M &bull; %{customdata}% of adults<extra></extra>',
+            customdata = ~Pct) %>%
       layout(
         yaxis = list(title = 'Population (Millions)'),
         xaxis = list(title = ''),
         showlegend = FALSE,
-        title = list(text = "People Without Network Coverage", font = list(size = 14)),
         plot_bgcolor = colors$light_grey,
         paper_bgcolor = 'white',
-        font = list(color = colors$navy)
+        font = list(color = colors$navy),
+        margin = list(t = 10)
       )
   })
   
   # Usage gap chart with new colors
   output$usage_gap_chart <- renderPlotly({
     data <- country_data()
-    
+
+    pop_all    <- data$adult_population[1] / 1e6
+    pop_female <- data$adult_pop_female[1]  / 1e6
+    pop_male   <- data$adult_pop_male[1]   / 1e6
+
     gap_data <- data.frame(
-      Category = c("All Adults", "Women", "Men"),
+      Category   = c("All Adults", "Women", "Men"),
       Population = c(
         data$internet_usage_gap_all_millions[1],
         data$internet_usage_gap_female_millions[1],
         data$internet_usage_gap_male_millions[1]
-      )
+      ),
+      Denom = c(pop_all, pop_female, pop_male)
     )
-    
+    gap_data$Pct <- round(gap_data$Population / gap_data$Denom * 100, 1)
     gap_data$Category <- factor(gap_data$Category, levels = c("All Adults", "Women", "Men"))
-    
+    gap_data$TextLabel <- paste0(round(gap_data$Population, 1), "M<br>(", gap_data$Pct, "%)")
+
     plot_ly(gap_data, x = ~Category, y = ~Population, type = 'bar',
             marker = list(color = c(colors$navy, colors$teal, colors$blue)),
-            text = paste0(round(gap_data$Population, 2), "M"),
+            text = ~TextLabel,
             textposition = 'outside',
-            hovertemplate = '%{x}: %{y:.2f} million people<extra></extra>') %>%
+            textfont = list(size = 10, color = colors$navy),
+            hovertemplate = '%{x}: %{y:.1f}M &bull; %{customdata}% of adults<extra></extra>',
+            customdata = ~Pct) %>%
       layout(
         yaxis = list(title = 'Population (Millions)'),
         xaxis = list(title = ''),
         showlegend = FALSE,
-        title = list(text = "People Not Using Internet (Despite Coverage)", font = list(size = 14)),
         plot_bgcolor = colors$light_grey,
         paper_bgcolor = 'white',
-        font = list(color = colors$navy)
+        font = list(color = colors$navy),
+        margin = list(t = 10)
       )
   })
   
