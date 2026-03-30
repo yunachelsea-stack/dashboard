@@ -931,8 +931,8 @@ ui <- fluidPage(
                                                       )
                                              ),
 
-                                             tabPanel("Deep Dive",
-                                                      # Shared legend for all 3 charts
+                                             tabPanel("Gender Deep Dive",
+                                                      # Shared legend for both charts
                                                       fluidRow(
                                                         column(12,
                                                                div(style = "display: flex; justify-content: center; gap: 28px; margin-top: 10px; margin-bottom: 4px;",
@@ -951,20 +951,18 @@ ui <- fluidPage(
                                                                )
                                                         )
                                                       ),
-                                                      # Row 1: 3 charts side by side
+                                                      # Row 1: 2 charts side by side
                                                       fluidRow(
-                                                        column(4,
+                                                        column(1),
+                                                        column(5,
                                                                h4("Internet Users", style = "text-align: center;"),
                                                                plotlyOutput("adoption_plot", height = "320px")
                                                         ),
-                                                        column(4,
-                                                               h4("Population in Coverage Gap", style = "text-align: center;"),
-                                                               plotlyOutput("coverage_gap_chart", height = "320px")
-                                                        ),
-                                                        column(4,
+                                                        column(5,
                                                                h4("Population in Usage Gap", style = "text-align: center;"),
                                                                plotlyOutput("usage_gap_chart", height = "320px")
-                                                        )
+                                                        ),
+                                                        column(1)
                                                       ),
                                                       fluidRow(
                                                         column(12,
@@ -2235,7 +2233,10 @@ server <- function(input, output, session) {
     )
     plot_data$Gender <- factor(plot_data$Gender, levels = c("All Adults", "Women", "Men"))
     plot_data <- plot_data %>% arrange(Category, Gender)
-    plot_data$TextLabel <- paste0(round(plot_data$Millions, 1), "M<br>(", round(plot_data$Percentage, 1), "%)")
+    plot_data$TextLabel <- paste0(
+      vapply(plot_data$Millions, format_pop_millions, character(1)),
+      "<br>(", round(plot_data$Percentage, 1), "%)"
+    )
 
     max_val <- max(plot_data$Millions, na.rm = TRUE)
 
@@ -2245,8 +2246,7 @@ server <- function(input, output, session) {
             text = ~TextLabel,
             textposition = 'outside',
             textfont = list(size = 10, color = colors$navy),
-            hovertemplate = '%{fullData.name}: %{y:.1f}M &bull; %{customdata:.1f}%<extra></extra>',
-            customdata = ~Percentage) %>%
+            hoverinfo = 'none') %>%
       layout(
         yaxis = list(title = 'Internet Users (Millions)', range = c(0, max_val * 1.45)),
         xaxis = list(title = ''),
@@ -2318,7 +2318,10 @@ server <- function(input, output, session) {
     )
     gap_data$Pct <- round(gap_data$Population / gap_data$Denom * 100, 1)
     gap_data$Category <- factor(gap_data$Category, levels = c("All Adults", "Women", "Men"))
-    gap_data$TextLabel <- paste0(round(gap_data$Population, 1), "M<br>(", gap_data$Pct, "%)")
+    gap_data$TextLabel <- paste0(
+      vapply(gap_data$Population, format_pop_millions, character(1)),
+      "<br>(", gap_data$Pct, "%)"
+    )
     max_val <- max(gap_data$Population, na.rm = TRUE)
 
     plot_ly(gap_data, x = ~Category, y = ~Population, type = 'bar',
@@ -2326,8 +2329,7 @@ server <- function(input, output, session) {
             text = ~TextLabel,
             textposition = 'outside',
             textfont = list(size = 10, color = colors$navy),
-            hovertemplate = '%{x}: %{y:.1f}M &bull; %{customdata}% of adults<extra></extra>',
-            customdata = ~Pct) %>%
+            hoverinfo = 'none') %>%
       layout(
         yaxis = list(title = 'Population (Millions)', range = c(0, max_val * 1.45)),
         xaxis = list(title = ''),
@@ -2338,7 +2340,7 @@ server <- function(input, output, session) {
         margin = list(t = 10, b = 40)
       )
   })
-  
+
   # Value boxes for gap totals
   output$coverage_gap_total <- renderValueBox({
     data <- country_data()
@@ -2429,21 +2431,21 @@ server <- function(input, output, session) {
   # Adults offline donut chart with new colors
   output$adults_gap_donut <- renderPlotly({
     data <- country_data()
-    
-    total_offline <- data$internet_usage_gap_all_millions[1]
+
     coverage_gap <- data$adults_no_dominant_millions[1]
-    usage_gap <- total_offline - coverage_gap
-    
+    usage_gap    <- data$internet_usage_gap_all_millions[1]
+    total_offline <- coverage_gap + usage_gap
+
     coverage_pct <- (coverage_gap / total_offline) * 100
-    usage_pct <- (usage_gap / total_offline) * 100
-    
+    usage_pct    <- (usage_gap    / total_offline) * 100
+
     donut_data <- data.frame(
       Category = c("Coverage Gap", "Usage Gap"),
       Value = c(coverage_gap, usage_gap),
       Percentage = c(coverage_pct, usage_pct),
       Label = c(
-        paste0("Coverage Gap<br>", round(coverage_gap, 1), "M (", round(coverage_pct, 1), "%)"),
-        paste0("Usage Gap<br>", round(usage_gap, 1), "M (", round(usage_pct, 1), "%)")
+        paste0("Coverage Gap<br>", format_pop_millions(coverage_gap), " (", round(coverage_pct, 1), "%)"),
+        paste0("Usage Gap<br>",    format_pop_millions(usage_gap),    " (", round(usage_pct,    1), "%)")
       )
     )
     
@@ -2459,7 +2461,7 @@ server <- function(input, output, session) {
         showlegend = TRUE,
         legend = list(orientation = "v", x = 1.05, y = 0.5, font = list(size = 11)),
         annotations = list(
-          list(text = paste0("<b>", round(total_offline, 1), "M</b>"),
+          list(text = paste0("<b>", format_pop_millions(total_offline), "</b>"),
                showarrow = FALSE,
                font = list(size = 16, color = colors$navy)),
           list(text = "Offline",
@@ -2476,21 +2478,21 @@ server <- function(input, output, session) {
   # Women offline donut chart with new colors
   output$women_gap_donut <- renderPlotly({
     data <- country_data()
-    
-    total_offline <- data$internet_usage_gap_female_millions[1]
-    coverage_gap <- data$women_no_dominant_millions[1]
-    usage_gap <- total_offline - coverage_gap
-    
+
+    coverage_gap  <- data$women_no_dominant_millions[1]
+    usage_gap     <- data$internet_usage_gap_female_millions[1]
+    total_offline <- coverage_gap + usage_gap
+
     coverage_pct <- (coverage_gap / total_offline) * 100
-    usage_pct <- (usage_gap / total_offline) * 100
-    
+    usage_pct    <- (usage_gap    / total_offline) * 100
+
     donut_data <- data.frame(
       Category = c("Coverage Gap", "Usage Gap"),
       Value = c(coverage_gap, usage_gap),
       Percentage = c(coverage_pct, usage_pct),
       Label = c(
-        paste0("Coverage Gap<br>", round(coverage_gap, 1), "M (", round(coverage_pct, 1), "%)"),
-        paste0("Usage Gap<br>", round(usage_gap, 1), "M (", round(usage_pct, 1), "%)")
+        paste0("Coverage Gap<br>", format_pop_millions(coverage_gap), " (", round(coverage_pct, 1), "%)"),
+        paste0("Usage Gap<br>",    format_pop_millions(usage_gap),    " (", round(usage_pct,    1), "%)")
       )
     )
     
@@ -2506,7 +2508,7 @@ server <- function(input, output, session) {
         showlegend = TRUE,
         legend = list(orientation = "v", x = 1.05, y = 0.5, font = list(size = 11)),
         annotations = list(
-          list(text = paste0("<b>", round(total_offline, 1), "M</b>"),
+          list(text = paste0("<b>", format_pop_millions(total_offline), "</b>"),
                showarrow = FALSE,
                font = list(size = 18, color = colors$navy)),
           list(text = "Offline",
@@ -2523,21 +2525,21 @@ server <- function(input, output, session) {
   # Men offline donut chart with new colors
   output$men_gap_donut <- renderPlotly({
     data <- country_data()
-    
-    total_offline <- data$internet_usage_gap_male_millions[1]
-    coverage_gap <- data$men_no_dominant_millions[1]
-    usage_gap <- total_offline - coverage_gap
-    
+
+    coverage_gap  <- data$men_no_dominant_millions[1]
+    usage_gap     <- data$internet_usage_gap_male_millions[1]
+    total_offline <- coverage_gap + usage_gap
+
     coverage_pct <- (coverage_gap / total_offline) * 100
-    usage_pct <- (usage_gap / total_offline) * 100
-    
+    usage_pct    <- (usage_gap    / total_offline) * 100
+
     donut_data <- data.frame(
       Category = c("Coverage Gap", "Usage Gap"),
       Value = c(coverage_gap, usage_gap),
       Percentage = c(coverage_pct, usage_pct),
       Label = c(
-        paste0("Coverage Gap<br>", round(coverage_gap, 1), "M (", round(coverage_pct, 1), "%)"),
-        paste0("Usage Gap<br>", round(usage_gap, 1), "M (", round(usage_pct, 1), "%)")
+        paste0("Coverage Gap<br>", format_pop_millions(coverage_gap), " (", round(coverage_pct, 1), "%)"),
+        paste0("Usage Gap<br>",    format_pop_millions(usage_gap),    " (", round(usage_pct,    1), "%)")
       )
     )
     
@@ -2553,7 +2555,7 @@ server <- function(input, output, session) {
         showlegend = TRUE,
         legend = list(orientation = "v", x = 1.05, y = 0.5, font = list(size = 11)),
         annotations = list(
-          list(text = paste0("<b>", round(total_offline, 1), "M</b>"),
+          list(text = paste0("<b>", format_pop_millions(total_offline), "</b>"),
                showarrow = FALSE,
                font = list(size = 18, color = colors$navy)),
           list(text = "Offline",
