@@ -2020,7 +2020,7 @@ server <- function(input, output, session) {
             text = paste0(round(regional_summary$total_millions, 1), "M<br>",
                           round(regional_summary$avg_percentage, 1), "% avg<br>",
                           regional_summary$countries, " countries"),
-            textposition = 'outside',
+            textposition = 'outside', cliponaxis = FALSE,
             hovertemplate = '%{x}<br>Total: %{y:.1f}M<br>%{text}<extra></extra>') %>%
       layout(
         xaxis = list(title = "", tickangle = -45),
@@ -2054,7 +2054,7 @@ server <- function(input, output, session) {
             text = paste0(round(regional_summary$total_millions, 1), "M<br>",
                           round(regional_summary$avg_percentage, 1), "% avg<br>",
                           regional_summary$countries, " countries"),
-            textposition = 'outside',
+            textposition = 'outside', cliponaxis = FALSE,
             hovertemplate = '%{x}<br>Total: %{y:.1f}M<br>%{text}<extra></extra>') %>%
       layout(
         xaxis = list(title = "", tickangle = -45),
@@ -2179,7 +2179,7 @@ server <- function(input, output, session) {
             type = 'bar',
             colors = c("All Adults" = colors$navy, "Women" = colors$teal, "Men" = colors$blue),
             text = ~TextLabel,
-            textposition = 'outside',
+            textposition = 'outside', cliponaxis = FALSE,
             textfont = list(size = 10, color = colors$navy),
             hoverinfo = 'none') %>%
       layout(
@@ -2219,7 +2219,7 @@ server <- function(input, output, session) {
     plot_ly(gap_data, x = ~Category, y = ~Population, type = 'bar',
             marker = list(color = c(colors$navy, colors$teal, colors$blue)),
             text = ~TextLabel,
-            textposition = 'outside',
+            textposition = 'outside', cliponaxis = FALSE,
             textfont = list(size = 10, color = colors$navy),
             hovertemplate = '%{x}: %{y:.1f}M &bull; %{customdata}% of adults<extra></extra>',
             customdata = ~Pct) %>%
@@ -2262,7 +2262,7 @@ server <- function(input, output, session) {
     plot_ly(gap_data, x = ~Category, y = ~Population, type = 'bar',
             marker = list(color = c(colors$navy, colors$teal, colors$blue)),
             text = ~TextLabel,
-            textposition = 'outside',
+            textposition = 'outside', cliponaxis = FALSE,
             textfont = list(size = 10, color = colors$navy),
             hoverinfo = 'none') %>%
       layout(
@@ -2327,7 +2327,7 @@ server <- function(input, output, session) {
     plot_ly(gap_data, x = ~Technology, y = ~Gap, type = 'bar',
             marker = list(color = ~Color),
             text = paste0(round(gap_data$Gap, 1), " pp"),
-            textposition = 'outside',
+            textposition = 'outside', cliponaxis = FALSE,
             hovertemplate = ~HoverText,
             hoverinfo = 'text') %>%
       layout(
@@ -2529,7 +2529,7 @@ server <- function(input, output, session) {
     plot_ly(data, x = ~country_name, y = ~internet_usage_all_pct,
             type = 'bar', marker = list(color = colors$navy),
             text = paste0(round(data$internet_usage_all_pct, 1), "%"),
-            textposition = 'outside', textfont = list(size = 10, color = colors$navy),
+            textposition = 'outside', cliponaxis = FALSE, textfont = list(size = 10, color = colors$navy),
             hoverinfo = 'none') %>%
       layout(
         yaxis = list(title = 'Internet Usage (%)', range = c(0, 110)),
@@ -2546,7 +2546,7 @@ server <- function(input, output, session) {
     plot_ly(data, x = ~country_name, y = ~gap_dominant_pct,
             type = 'bar', marker = list(color = colors$blue),
             text = paste0(round(data$gap_dominant_pct, 1), "%"),
-            textposition = 'outside', textfont = list(size = 10, color = colors$navy),
+            textposition = 'outside', cliponaxis = FALSE, textfont = list(size = 10, color = colors$navy),
             hoverinfo = 'none') %>%
       layout(
         yaxis = list(title = 'Coverage Gap (%)', range = c(0, max(data$gap_dominant_pct, na.rm = TRUE) * 1.4)),
@@ -2563,7 +2563,7 @@ server <- function(input, output, session) {
     plot_ly(data, x = ~country_name, y = ~internet_usage_gap_all_pct,
             type = 'bar', marker = list(color = colors$yellow),
             text = paste0(round(data$internet_usage_gap_all_pct, 1), "%"),
-            textposition = 'outside', textfont = list(size = 10, color = colors$navy),
+            textposition = 'outside', cliponaxis = FALSE, textfont = list(size = 10, color = colors$navy),
             hoverinfo = 'none') %>%
       layout(
         yaxis = list(title = 'Usage Gap (%)', range = c(0, max(data$internet_usage_gap_all_pct, na.rm = TRUE) * 1.4)),
@@ -2604,13 +2604,19 @@ server <- function(input, output, session) {
     gender_gap_data <- data %>%
       mutate(internet_gap = internet_usage_male_pct - internet_usage_female_pct)
 
+    gap_min <- min(gender_gap_data$internet_gap, na.rm = TRUE)
+    gap_max <- max(gender_gap_data$internet_gap, na.rm = TRUE)
+    y_lo <- if (gap_min < 0) gap_min * 1.45 else -2
+    y_hi <- if (gap_max > 0) gap_max * 1.45 else  2
+
     plot_ly(gender_gap_data, x = ~country_name, y = ~internet_gap,
             type = 'bar', marker = list(color = colors$teal),
             text = paste0(round(gender_gap_data$internet_gap, 1), "pp"),
-            textposition = 'auto',
+            textposition = 'outside', cliponaxis = FALSE,
+            textfont = list(size = 10, color = colors$navy),
             hoverinfo = 'none') %>%
       layout(
-        yaxis = list(title = 'Gender Gap (percentage points)'),
+        yaxis = list(title = 'Gender Gap (percentage points)', range = c(y_lo, y_hi)),
         xaxis = list(title = ''),
         plot_bgcolor = colors$light_grey, paper_bgcolor = 'white',
         font = list(color = colors$navy), margin = list(t = 30, b = 80)
@@ -2638,7 +2644,7 @@ server <- function(input, output, session) {
             type = 'bar', orientation = 'h',
             marker = list(color = bar_colors),
             text = bar_text,
-            textposition = 'outside',
+            textposition = 'outside', cliponaxis = FALSE,
             textfont = list(size = 10, color = colors$navy),
             hoverinfo = 'none') %>%
       layout(
