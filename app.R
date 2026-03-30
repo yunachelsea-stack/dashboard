@@ -956,13 +956,10 @@ ui <- fluidPage(
                                                         )
                                                       ),
                                                       fluidRow(
-                                                        column(4,
+                                                        column(6,
                                                                valueBoxOutput("women_no_internet")
                                                         ),
-                                                        column(4,
-                                                               valueBoxOutput("women_no_smartphone")
-                                                        ),
-                                                        column(4,
+                                                        column(6,
                                                                valueBoxOutput("women_gap_potential")
                                                         )
                                                       ),
@@ -2330,17 +2327,12 @@ server <- function(input, output, session) {
     
     # Key metrics in new order
     metrics <- list(
-      list(title = "Smartphone Ownership", 
-           value = paste0(round(data$smartphone_ownership_all_pct[1], 1), "%"),
-           subtitle = paste0(round(data$smartphone_ownership_all_millions[1], 1), "M owners"),
-           color = "navy",
-           tooltip = definitions$smartphone),
-      list(title = "Internet Usage", 
+      list(title = "Internet Usage",
            value = paste0(round(data$internet_usage_all_pct[1], 1), "%"),
            subtitle = paste0(round(data$internet_usage_all_millions[1], 1), "M users"),
            color = "blue",
            tooltip = definitions$internet),
-      list(title = "Coverage Gap", 
+      list(title = "Coverage Gap",
            value = paste0(round(data$gap_dominant_pct[1], 1), "%"),
            subtitle = paste0(round(data$adults_no_dominant_millions[1], 1), "M offline"),
            color = "yellow",
@@ -2424,46 +2416,21 @@ server <- function(input, output, session) {
   output$adoption_plot <- renderPlotly({
     data <- country_data()
     
-    categories <- c("Internet", "Any Phone", "Smartphone", "Mobile Money Account")
-    
     plot_data <- data.frame(
-      Category = rep(categories, 3),
-      Gender = rep(c("All Adults", "Women", "Men"), each = 4),
+      Category = rep("Internet Usage", 3),
+      Gender = c("All Adults", "Women", "Men"),
       Percentage = c(
         data$internet_usage_all_pct[1],
-        data$phone_ownership_all_pct[1],
-        data$smartphone_ownership_all_pct[1],
-        ifelse(!is.na(data$mobileaccount_all[1]), data$mobileaccount_all[1]*100, 0),
         data$internet_usage_female_pct[1],
-        data$phone_ownership_female_pct[1],
-        data$smartphone_ownership_female_pct[1],
-        ifelse(!is.na(data$mobileaccount_female[1]), data$mobileaccount_female[1]*100, 0),
-        data$internet_usage_male_pct[1],
-        data$phone_ownership_male_pct[1],
-        data$smartphone_ownership_male_pct[1],
-        ifelse(!is.na(data$mobileaccount_male[1]), data$mobileaccount_male[1]*100, 0)
+        data$internet_usage_male_pct[1]
       ),
       Millions = c(
         data$internet_usage_all_millions[1],
-        data$phone_ownership_all_millions[1],
-        data$smartphone_ownership_all_millions[1],
-        ifelse(!is.na(data$mobileaccount_all[1]), 
-               data$mobileaccount_all[1] * data$adult_population[1] / 1e6, 0),
         data$internet_usage_female_millions[1],
-        data$phone_ownership_female_millions[1],
-        data$smartphone_ownership_female_millions[1],
-        ifelse(!is.na(data$mobileaccount_female[1]), 
-               data$mobileaccount_female[1] * data$adult_pop_female[1] / 1e6, 0),
-        data$internet_usage_male_millions[1],
-        data$phone_ownership_male_millions[1],
-        data$smartphone_ownership_male_millions[1],
-        ifelse(!is.na(data$mobileaccount_male[1]), 
-               data$mobileaccount_male[1] * data$adult_pop_male[1] / 1e6, 0)
+        data$internet_usage_male_millions[1]
       )
     )
-    
-    plot_data$Category <- factor(plot_data$Category, 
-                                 levels = c("Internet", "Any Phone", "Smartphone", "Mobile Money Account"))
+
     plot_data$Gender <- factor(plot_data$Gender, levels = c("All Adults", "Women", "Men"))
     
     plot_data <- plot_data %>% arrange(Category, Gender)
@@ -2580,20 +2547,15 @@ server <- function(input, output, session) {
     data <- country_data()
     
     gaps <- c(
-      data$internet_usage_male_pct[1] - data$internet_usage_female_pct[1],
-      data$phone_ownership_male_pct[1] - data$phone_ownership_female_pct[1],
-      data$smartphone_ownership_male_pct[1] - data$smartphone_ownership_female_pct[1],
-      ifelse(!is.na(data$mobileaccount_male[1]) & !is.na(data$mobileaccount_female[1]),
-             (data$mobileaccount_male[1] - data$mobileaccount_female[1])*100, NA)
+      data$internet_usage_male_pct[1] - data$internet_usage_female_pct[1]
     )
-    
+
     gap_data <- data.frame(
-      Technology = c("Internet", "Any Phone", "Smartphone", "Mobile Money Account"),
+      Technology = c("Internet"),
       Gap = gaps,
       stringsAsFactors = FALSE
     )
-    
-    gap_data <- gap_data[!is.na(gap_data$Gap), ]
+
     gap_data$Technology <- factor(gap_data$Technology, levels = gap_data$Technology)
     gap_data$Color <- ifelse(gap_data$Gap > 0, colors$yellow, colors$teal)
     
@@ -2632,16 +2594,6 @@ server <- function(input, output, session) {
       subtitle = "Total women offline",
       icon = icon("wifi"),
       color = "yellow"
-    )
-  })
-  
-  output$women_no_smartphone <- renderValueBox({
-    data <- country_data()
-    valueBox(
-      value = paste0(round(data$women_no_dominant_millions[1], 1), "M"),
-      subtitle = "Women in coverage gap",
-      icon = icon("signal"),
-      color = "teal"
     )
   })
   
@@ -2802,37 +2754,15 @@ server <- function(input, output, session) {
     data <- country_data()
     
     gender_metrics <- tibble(
-      Metric = c("Internet Usage", "Phone Ownership", "Smartphone Ownership", "Mobile Account"),
-      `Men (%)` = round(c(data$internet_usage_male_pct[1], 
-                          data$phone_ownership_male_pct[1],
-                          data$smartphone_ownership_male_pct[1], 
-                          ifelse(!is.na(data$mobileaccount_male[1]), 
-                                 data$mobileaccount_male[1]*100, NA)), 1),
-      `Women (%)` = round(c(data$internet_usage_female_pct[1], 
-                            data$phone_ownership_female_pct[1],
-                            data$smartphone_ownership_female_pct[1], 
-                            ifelse(!is.na(data$mobileaccount_female[1]), 
-                                   data$mobileaccount_female[1]*100, NA)), 1),
-      `Gap (pp)` = round(c(data$internet_usage_male_pct[1] - data$internet_usage_female_pct[1],
-                           data$phone_ownership_male_pct[1] - data$phone_ownership_female_pct[1],
-                           data$smartphone_ownership_male_pct[1] - data$smartphone_ownership_female_pct[1],
-                           ifelse(!is.na(data$mobileaccount_male[1]) & !is.na(data$mobileaccount_female[1]),
-                                  (data$mobileaccount_male[1] - data$mobileaccount_female[1])*100, NA)), 1),
-      `Women Without (M)` = round(c(data$internet_usage_gap_female_millions[1],
-                                    data$phone_adoption_gap_female_millions[1],
-                                    data$smartphone_adoption_gap_female_millions[1],
-                                    ifelse(!is.na(data$mobileaccount_female[1]),
-                                           (1 - data$mobileaccount_female[1]) * data$adult_pop_female[1]/1e6, NA)), 2),
-      `Men Without (M)` = round(c(data$internet_usage_gap_male_millions[1],
-                                  data$phone_adoption_gap_male_millions[1],
-                                  data$smartphone_adoption_gap_male_millions[1],
-                                  ifelse(!is.na(data$mobileaccount_male[1]),
-                                         (1 - data$mobileaccount_male[1]) * data$adult_pop_male[1]/1e6, NA)), 2)
+      Metric = c("Internet Usage"),
+      `Men (%)` = round(c(data$internet_usage_male_pct[1]), 1),
+      `Women (%)` = round(c(data$internet_usage_female_pct[1]), 1),
+      `Gap (pp)` = round(c(data$internet_usage_male_pct[1] - data$internet_usage_female_pct[1]), 1),
+      `Women Without (M)` = round(c(data$internet_usage_gap_female_millions[1]), 2),
+      `Men Without (M)` = round(c(data$internet_usage_gap_male_millions[1]), 2)
     )
     
-    gender_metrics <- gender_metrics[!is.na(gender_metrics$`Men (%)`) & !is.na(gender_metrics$`Women (%)`), ]
-    
-    DT::datatable(gender_metrics, 
+    DT::datatable(gender_metrics,
                   options = list(dom = 't', paging = FALSE),
                   rownames = FALSE)
   })
@@ -3053,29 +2983,16 @@ server <- function(input, output, session) {
     req(input$comparison_countries)
     data <- comparison_data()
     
-    # Create text labels for bars
     internet_text <- paste0(round(data$internet_usage_all_pct, 1), "%")
-    smartphone_text <- paste0(round(data$smartphone_ownership_all_pct, 1), "%")
-    phone_text <- paste0(round(data$phone_ownership_all_pct, 1), "%")
-    
+
     plot_ly(data, x = ~country_name, y = ~internet_usage_all_pct,
             type = 'bar', name = 'Internet Usage',
             marker = list(color = colors$blue),
             text = internet_text, textposition = 'outside',
             textfont = list(size = 10, color = colors$navy)) %>%
-      add_trace(y = ~smartphone_ownership_all_pct, name = 'Smartphone',
-                marker = list(color = colors$teal),
-                text = smartphone_text, textposition = 'outside',
-                textfont = list(size = 10, color = colors$navy)) %>%
-      add_trace(y = ~phone_ownership_all_pct, name = 'Phone',
-                marker = list(color = colors$yellow),
-                text = phone_text, textposition = 'outside',
-                textfont = list(size = 10, color = colors$navy)) %>%
       layout(
-        yaxis = list(title = 'Percentage (%)', range = c(0, 110)),
+        yaxis = list(title = 'Internet Usage (%)', range = c(0, 110)),
         xaxis = list(title = '', side = 'top'),
-        barmode = 'group',
-        legend = list(orientation = "h", y = -0.15, x = 0.5, xanchor = "center"),
         plot_bgcolor = colors$light_grey,
         paper_bgcolor = 'white',
         font = list(color = colors$navy),
@@ -3090,15 +3007,13 @@ server <- function(input, output, session) {
     
     summary_table <- data %>%
       select(country_name, regionwb24_hi, incomegroupwb24,
-             internet_usage_all_pct, smartphone_ownership_all_pct,
-             coverage_dominant_pct, gap_dominant_pct) %>%
+             internet_usage_all_pct, coverage_dominant_pct, gap_dominant_pct) %>%
       mutate(across(where(is.numeric), ~round(., 1))) %>%
       rename(
         Country = country_name,
         Region = regionwb24_hi,
         `Income Group` = incomegroupwb24,
         `Internet (%)` = internet_usage_all_pct,
-        `Smartphone (%)` = smartphone_ownership_all_pct,
         `Coverage (%)` = coverage_dominant_pct,
         `Coverage Gap (%)` = gap_dominant_pct
       )
@@ -3114,21 +3029,16 @@ server <- function(input, output, session) {
     data <- comparison_data()
     
     gender_gap_data <- data %>%
-      mutate(internet_gap = internet_usage_male_pct - internet_usage_female_pct,
-             phone_gap = phone_ownership_male_pct - phone_ownership_female_pct,
-             smartphone_gap = smartphone_ownership_male_pct - smartphone_ownership_female_pct)
-    
+      mutate(internet_gap = internet_usage_male_pct - internet_usage_female_pct)
+
     plot_ly(gender_gap_data, x = ~country_name, y = ~internet_gap,
-            type = 'bar', name = 'Internet Gap',
-            marker = list(color = colors$yellow)) %>%
-      add_trace(y = ~phone_gap, name = 'Phone Gap',
-                marker = list(color = colors$teal)) %>%
-      add_trace(y = ~smartphone_gap, name = 'Smartphone Gap',
-                marker = list(color = colors$blue)) %>%
+            type = 'bar', name = 'Internet Gender Gap',
+            marker = list(color = colors$yellow),
+            text = paste0(round(gender_gap_data$internet_gap, 1), "pp"),
+            textposition = 'outside') %>%
       layout(
         yaxis = list(title = 'Gender Gap (percentage points)'),
         xaxis = list(title = ''),
-        barmode = 'group',
         plot_bgcolor = colors$light_grey,
         paper_bgcolor = 'white',
         font = list(color = colors$navy)
