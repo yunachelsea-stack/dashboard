@@ -886,12 +886,6 @@ ui <- fluidPage(
                                                       ),
                                                       # Row 2: Offline population breakdown by gender (donuts)
                                                       fluidRow(
-                                                        column(12,
-                                                               hr(),
-                                                               h3("Offline Population Breakdown by Gender")
-                                                        )
-                                                      ),
-                                                      fluidRow(
                                                         column(4,
                                                                h4("All Adults Offline", style = "text-align: center;"),
                                                                plotlyOutput("adults_gap_donut", height = "350px")
@@ -1365,59 +1359,55 @@ server <- function(input, output, session) {
       collapse = " and "
     )
     div(style = "margin-bottom: 0;",
-        div(style = "display: flex; flex-wrap: wrap; align-items: center; gap: 16px; margin-bottom: 12px;",
-            h2(data$country_name[1], style = paste0("color: ", colors$navy, "; margin: 0;")),
-            div(style = "display: flex; flex-wrap: wrap; gap: 10px;",
-                lapply(list(
-                  list(label = "Total Population",  value = paste0(round(data$total_population[1]/1e6, 2), "M")),
-                  list(label = "Adult Population",  value = paste0(round(data$adult_population[1]/1e6, 2), "M")),
-                  list(label = "Internet Users",    value = paste0(round(data$internet_usage_all_pct[1], 1), "%")),
-                  list(label = "Income Group",      value = gsub(" income", "", data$incomegroupwb24[1])),
-                  list(label = "Region",            value = gsub("\\s*\\(.*", "", data$regionwb24_hi[1]))
-                ), function(chip) {
-                  div(style = paste0(
-                    "background: ", colors$light_blue, ";",
-                    "border: 1px solid ", colors$blue, ";",
-                    "border-radius: 8px; padding: 6px 14px;",
-                    "display: inline-flex; flex-direction: column; align-items: flex-start;"
-                  ),
-                    span(chip$label, style = paste0("font-size: 11px; color: ", colors$grey, "; text-transform: uppercase; letter-spacing: 0.5px;")),
-                    span(chip$value, style = paste0("font-size: 15px; font-weight: 600; color: ", colors$navy, "; margin-top: 2px;"))
-                  )
-                })
+        # Row 1: country name + region & income pills
+        div(style = "display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-bottom: 18px;",
+            h2(data$country_name[1], style = paste0("color: ", colors$navy, "; margin: 0; font-size: clamp(26px, 2.2vw, 34px);")),
+            tags$span(gsub("\\s*\\(.*", "", data$regionwb24_hi[1]),
+                      style = "border: 1px solid #bbb; border-radius: 20px; padding: 4px 13px; font-size: 14px; color: #555; background: white;"),
+            tags$span(gsub(" income", "", data$incomegroupwb24[1]),
+                      style = "border: 1px solid #bbb; border-radius: 20px; padding: 4px 13px; font-size: 14px; color: #555; background: white;")
+        ),
+        # Row 2: 3 metric cards
+        div(style = "display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 18px;",
+            # Total Population
+            div(style = paste0("background: ", colors$light_grey, "; border-radius: 10px; padding: 16px 24px; min-width: 160px;"),
+                div(style = paste0("font-size: 11px; font-weight: 600; color: ", colors$grey, "; text-transform: uppercase; letter-spacing: 0.7px; margin-bottom: 6px;"),
+                    "Total Population"),
+                div(style = paste0("font-size: clamp(22px, 1.8vw, 28px); font-weight: 700; color: ", colors$navy, ";"),
+                    paste0(round(data$total_population[1]/1e6, 2), "M"))
+            ),
+            # Adult Population
+            div(style = paste0("background: ", colors$light_grey, "; border-radius: 10px; padding: 16px 24px; min-width: 160px;"),
+                div(style = paste0("font-size: 11px; font-weight: 600; color: ", colors$grey, "; text-transform: uppercase; letter-spacing: 0.7px; margin-bottom: 6px;"),
+                    "Adult Population"),
+                div(style = paste0("font-size: clamp(22px, 1.8vw, 28px); font-weight: 700; color: ", colors$navy, ";"),
+                    paste0(round(data$adult_population[1]/1e6, 2), "M"))
+            ),
+            # Internet Users — highlighted
+            div(style = paste0("background: ", colors$light_teal, "; border-radius: 10px; padding: 16px 24px; min-width: 160px;"),
+                div(style = paste0("font-size: 11px; font-weight: 600; color: ", colors$teal, "; text-transform: uppercase; letter-spacing: 0.7px; margin-bottom: 6px;"),
+                    "Internet Users"),
+                div(style = paste0("font-size: clamp(22px, 1.8vw, 28px); font-weight: 700; color: ", colors$teal, ";"),
+                    paste0(round(data$internet_usage_all_pct[1], 1), "%"))
             )
         ),
-        tags$p(
-          "Among ",
-          data$country_name[1],
-          "'s adult population of ",
-          format_pop_millions(data$adult_population[1] / 1e6),
-          ", ",
-          tags$strong(paste0(round(data$internet_usage_all_pct[1], 1), "%")),
-          " (",
-          format_pop_millions(data$internet_usage_all_millions[1]),
-          ") are internet users. This internet usage rate ",
-          tags$strong(
-            paste0(
-              "ranks ",
-              ordinal(region_rank),
-              " in the ",
-              region_label,
-              " region"
+        # Row 3: narrative with left-border accent
+        div(style = paste0("border-left: 3px solid ", colors$light_grey, "; padding-left: 14px;"),
+            tags$p(
+              "Among ",
+              data$country_name[1],
+              "'s adult population of ",
+              format_pop_millions(data$adult_population[1] / 1e6),
+              ", ",
+              tags$strong(paste0(round(data$internet_usage_all_pct[1], 1), "% (",
+                                 format_pop_millions(data$internet_usage_all_millions[1]), ")")),
+              " are internet users \u2014 ranking ",
+              tags$strong(paste0(ordinal(region_rank), " in ", region_label)),
+              " and ",
+              tags$strong(paste0(ordinal(lmic_rank), " among ", lmic_total, " LMICs")),
+              " with available data.",
+              style = paste0("color: ", colors$navy, "; font-size: clamp(16px, 1.2vw, 18px); line-height: 1.6; margin: 0;")
             )
-          ),
-          " and ",
-          tags$strong(
-            paste0(
-              ordinal(lmic_rank),
-              " among ",
-              lmic_total,
-              " LMICs"
-            )
-          ),
-          " with available data",
-          ".",
-          style = paste0("color: ", colors$navy, "; font-size: clamp(18px, 1.35vw, 20px); line-height: 1.5; margin-bottom: 0;")
         )
     )
   })
