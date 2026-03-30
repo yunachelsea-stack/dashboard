@@ -1210,8 +1210,8 @@ server <- function(input, output, session) {
       ),
       signed_value = c(data$gap_dominant_pct[1], country_usage_gap, gender_country_gap),
       threshold = c(significance_thresholds["coverage"], significance_thresholds["usage"], significance_thresholds["gender"]),
-      accent = c(colors$yellow, colors$teal, colors$blue),
-      background = c(colors$light_yellow, colors$light_teal, colors$light_blue)
+      accent = c(colors$blue, colors$yellow, colors$teal),
+      background = c(colors$light_blue, colors$light_yellow, colors$light_teal)
     ) %>%
       mutate(
         diff_vs_region = value - region_avg,
@@ -1328,8 +1328,8 @@ server <- function(input, output, session) {
         paste0(round(scenario_results$s2_total_rate, 1), "%"),
         paste0(round(scenario_results$s3_women_rate, 1), "%")
       ),
-      accent = c(colors$yellow, colors$teal, colors$blue),
-      background = c(colors$light_yellow, colors$light_teal, colors$light_blue)
+      accent = c(colors$blue, colors$yellow, colors$teal),
+      background = c(colors$light_blue, colors$light_yellow, colors$light_teal)
     ) %>%
       mutate(
         metric_1_show = !is.na(metric_1_before) & !is.na(metric_1_after),
@@ -2389,7 +2389,7 @@ server <- function(input, output, session) {
             values = ~Value,
             type = 'pie',
             hole = 0.65,
-            marker = list(colors = c(colors$yellow, colors$teal), line = list(color = 'white', width = 2)),
+            marker = list(colors = c(colors$blue, colors$yellow), line = list(color = 'white', width = 2)),
             textinfo = 'none',
             hovertemplate = '%{label}<extra></extra>') %>%
       layout(
@@ -2436,7 +2436,7 @@ server <- function(input, output, session) {
             values = ~Value,
             type = 'pie',
             hole = 0.65,
-            marker = list(colors = c(colors$yellow, colors$teal), line = list(color = 'white', width = 2)),
+            marker = list(colors = c(colors$blue, colors$yellow), line = list(color = 'white', width = 2)),
             textinfo = 'none',
             hovertemplate = '%{label}<extra></extra>') %>%
       layout(
@@ -2483,7 +2483,7 @@ server <- function(input, output, session) {
             values = ~Value,
             type = 'pie',
             hole = 0.65,
-            marker = list(colors = c(colors$yellow, colors$teal), line = list(color = 'white', width = 2)),
+            marker = list(colors = c(colors$blue, colors$yellow), line = list(color = 'white', width = 2)),
             textinfo = 'none',
             hovertemplate = '%{label}<extra></extra>') %>%
       layout(
@@ -2544,7 +2544,7 @@ server <- function(input, output, session) {
     req(input$comparison_countries)
     data <- comparison_data()
     plot_ly(data, x = ~country_name, y = ~gap_dominant_pct,
-            type = 'bar', marker = list(color = colors$yellow),
+            type = 'bar', marker = list(color = colors$blue),
             text = paste0(round(data$gap_dominant_pct, 1), "%"),
             textposition = 'outside', textfont = list(size = 10, color = colors$navy),
             hoverinfo = 'none') %>%
@@ -2561,7 +2561,7 @@ server <- function(input, output, session) {
     req(input$comparison_countries)
     data <- comparison_data()
     plot_ly(data, x = ~country_name, y = ~internet_usage_gap_all_pct,
-            type = 'bar', marker = list(color = colors$teal),
+            type = 'bar', marker = list(color = colors$yellow),
             text = paste0(round(data$internet_usage_gap_all_pct, 1), "%"),
             textposition = 'outside', textfont = list(size = 10, color = colors$navy),
             hoverinfo = 'none') %>%
@@ -2605,7 +2605,7 @@ server <- function(input, output, session) {
       mutate(internet_gap = internet_usage_male_pct - internet_usage_female_pct)
 
     plot_ly(gender_gap_data, x = ~country_name, y = ~internet_gap,
-            type = 'bar', marker = list(color = colors$blue),
+            type = 'bar', marker = list(color = colors$teal),
             text = paste0(round(gender_gap_data$internet_gap, 1), "pp"),
             textposition = 'auto',
             hoverinfo = 'none') %>%
