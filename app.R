@@ -838,8 +838,8 @@ ui <- fluidPage(
                                wellPanel(
                                  style = "background: white; border-radius: 10px;",
                                  fluidRow(
-                                   column(4,
-                                          selectInput("country", "Select Country:", 
+                                   column(3,
+                                          selectInput("country", "Select Country:",
                                                       choices = NULL, selected = NULL,
                                                       width = "100%")
                                    ),
@@ -849,36 +849,27 @@ ui <- fluidPage(
                                                          multiple = TRUE, width = "100%",
                                                          options = list(placeholder = "Select countries to compare"))
                                    ),
-                                   column(4,
+                                   column(3,
                                           radioButtons("view_mode", "View Mode:",
-                                                       choices = c("Country Analysis" = "single", 
+                                                       choices = c("Country Analysis" = "single",
                                                                    "Comparative View" = "compare"),
                                                        selected = "single", inline = TRUE)
+                                   ),
+                                   column(2,
+                                          br(),
+                                          downloadButton("download_data", "Download Data",
+                                                         class = "btn-info btn-block",
+                                                         style = "width: 100%;")
                                    )
                                  )
                                )
                         )
                       ),
-                      
+
                       conditionalPanel(
                         condition = "input.view_mode == 'single'",
                         fluidRow(
-                          column(3,
-                                 wellPanel(
-                                   style = "background: white; border-radius: 10px;",
-                                   h4("Actions", style = paste0("color: ", colors$navy, ";")),
-                                   actionButton("run_scenarios", "Run Policy Scenarios", 
-                                                class = "btn-primary btn-block",
-                                                style = paste0("background-color: ", colors$blue, ";")),
-                                   br(),
-                                   downloadButton("download_data", "Download Raw Data",
-                                                  class = "btn-info btn-block"),
-                                   hr(style = paste0("border-color: ", colors$light_grey, ";")),
-                                   h4("Key Metrics", style = paste0("color: ", colors$navy, ";")),
-                                   uiOutput("key_metrics")
-                                 )
-                          ),
-                          column(9,
+                          column(12,
                                  tabsetPanel(id = "main_tabs",
                                              tabPanel("Diagnostic",
                                                       fluidRow(
@@ -1042,26 +1033,6 @@ ui <- fluidPage(
                                                       )
                                              ),
                                              
-                                             tabPanel("Policy Scenarios",
-                                                      fluidRow(
-                                                        column(12,
-                                                               h3("Policy Impact Modeling"),
-                                                               p("Click 'Run Policy Scenarios' in the sidebar to analyze different intervention strategies")
-                                                        )
-                                                      ),
-                                                      fluidRow(
-                                                        column(12,
-                                                               h4("How Many Men and Women Can We Bring Online?"),
-                                                               plotlyOutput("scenarios_comparison", height = "400px")
-                                                        )
-                                                      ),
-                                                      fluidRow(
-                                                        column(12,
-                                                               h6("Note: Scenarios 1 and 2 both rely on strong assumptions, modeling the limits of what is possible when infrastructure and demand-side end-user adoption policies are perfectly implemented without explicit gender intentionality. Scenario 1 assumes that expanding coverage to unconnected areas would yield use rates comparable to those in better-served regions, but use in underserved areas may be lower due to rurality, poverty, and lower education levels. Scenario 2 posits that there exist policies that equally benefit men and women while pursuing demand-side interventions. Scenario 3 specifically models the effects of closing gender gaps across all countries where men’s use exceeds women’s. To do so, we close gender gaps by bringing women's internet usage up to men's current levels, without any infrastructure expansion or increases in male use.  Scenarios are modelled with these strict assumptions to understand ranges; they do not provide exact numbers that will come online as a result."),
-                                                               DT::dataTableOutput("scenarios_table")
-                                                        )
-                                                      )
-                                             )
                                  )
                           )
                         )
@@ -1549,7 +1520,31 @@ server <- function(input, output, session) {
           ),
           " with available data",
           ".",
-          style = paste0("color: ", colors$navy, "; font-size: clamp(18px, 1.35vw, 20px); line-height: 1.5; margin-bottom: 0;")
+          style = paste0("color: ", colors$navy, "; font-size: clamp(18px, 1.35vw, 20px); line-height: 1.5; margin-bottom: 16px;")
+        ),
+        fluidRow(
+          style = "margin-top: 4px;",
+          column(12,
+                 div(style = "display: flex; flex-wrap: wrap; gap: 10px;",
+                     lapply(list(
+                       list(label = "Total Population",  value = paste0(round(data$total_population[1]/1e6, 2), "M")),
+                       list(label = "Adult Population",  value = paste0(round(data$adult_population[1]/1e6, 2), "M")),
+                       list(label = "Internet Users",    value = paste0(round(data$internet_usage_all_pct[1], 1), "%")),
+                       list(label = "Income Group",      value = gsub(" income", "", data$incomegroupwb24[1])),
+                       list(label = "Region",            value = gsub("\\s*\\(.*", "", data$regionwb24_hi[1]))
+                     ), function(chip) {
+                       div(style = paste0(
+                         "background: ", colors$light_blue, ";",
+                         "border: 1px solid ", colors$blue, ";",
+                         "border-radius: 8px; padding: 6px 14px;",
+                         "display: inline-flex; flex-direction: column; align-items: flex-start;"
+                       ),
+                         span(chip$label, style = paste0("font-size: 11px; color: ", colors$grey, "; text-transform: uppercase; letter-spacing: 0.5px;")),
+                         span(chip$value, style = paste0("font-size: 15px; font-weight: 600; color: ", colors$navy, "; margin-top: 2px;"))
+                       )
+                     })
+                 )
+          )
         )
     )
   })
@@ -2256,134 +2251,6 @@ server <- function(input, output, session) {
       formatStyle('Total (M)', fontWeight = 'bold', color = colors$blue)
   })
   
-  # Key metrics boxes with new colors and tooltips
-  output$key_metrics <- renderUI({
-    data <- country_data()
-    
-    # Definitions for tooltips
-    definitions <- list(
-      total_pop = "Total number of people living in the country",
-      adult_pop = "Population aged 15 years and older",
-      income_group = "World Bank income classification based on GNI per capita",
-      region = "World Bank geographic region classification",
-      smartphone = "Percentage of adults who own a smartphone capable of accessing the internet",
-      internet = "Percentage of adults who have used the internet in the past 3 months",
-      coverage_gap = "Percentage of adults without access to broadband network coverage (3G or better)",
-      usage_gap = "Percentage of adults who have network coverage but do not use the internet",
-      gender_gap = "Difference in internet usage rates between men and women (in percentage points)"
-    )
-    
-    # Demographics at the top
-    demo_metrics <- list(
-      list(title = "Total Population", 
-           value = paste0(round(data$total_population[1]/1e6, 2), "M"),
-           subtitle = "Total country population",
-           color = "grey",
-           tooltip = definitions$total_pop),
-      list(title = "Adult Population", 
-           value = paste0(round(data$adult_population[1]/1e6, 2), "M"),
-           subtitle = "Population 15+ years",
-           color = "grey",
-           tooltip = definitions$adult_pop),
-      list(title = "Income Group", 
-           value = gsub(" income", "", data$incomegroupwb24[1]),
-           subtitle = "World Bank classification",
-           color = "grey",
-           tooltip = definitions$income_group),
-      list(title = "Region", 
-           value = gsub("\\s*\\(.*", "", data$regionwb24_hi[1]),
-           subtitle = "Geographic region",
-           color = "grey",
-           tooltip = definitions$region)
-    )
-    
-    # Key metrics in new order
-    metrics <- list(
-      list(title = "Internet Usage",
-           value = paste0(round(data$internet_usage_all_pct[1], 1), "%"),
-           subtitle = paste0(round(data$internet_usage_all_millions[1], 1), "M users"),
-           color = "blue",
-           tooltip = definitions$internet),
-      list(title = "Coverage Gap",
-           value = paste0(round(data$gap_dominant_pct[1], 1), "%"),
-           subtitle = paste0(round(data$adults_no_dominant_millions[1], 1), "M offline"),
-           color = "yellow",
-           tooltip = definitions$coverage_gap),
-      list(title = "Usage Gap", 
-           value = paste0(round(data$internet_usage_gap_all_pct[1], 1), "%"),
-           subtitle = paste0(round(data$internet_usage_gap_all_millions[1], 1), "M offline"),
-           color = "teal",
-           tooltip = definitions$usage_gap),
-      list(title = "Gender Gap", 
-           value = paste0(round(abs(data$internet_usage_male_pct[1] - 
-                                      data$internet_usage_female_pct[1]), 1), "pp"),
-           subtitle = paste0(round(data$internet_usage_gap_female_millions[1], 1), "M women offline"),
-           color = "blue",
-           tooltip = definitions$gender_gap)
-    )
-    
-    tagList(
-      # Demographics heading
-      h5("Country Demographics", style = paste0("color: ", colors$navy, "; margin-bottom: 15px;")),
-      
-      # Demographic metrics with panel colors and tooltips
-      lapply(demo_metrics, function(m) {
-        div(class = "metric-box",
-            title = m$tooltip,
-            style = paste0("background: white; border-left: 4px solid ", colors$grey, 
-                           "; box-shadow: 0 2px 4px rgba(0,0,0,0.05); cursor: help;"),
-            div(class = "metric-title", m$title, 
-                style = paste0("color: ", colors$grey, "; font-size: 13px; margin-bottom: 5px;")),
-            div(class = "metric-value", 
-                style = paste0("color: ", colors$navy, "; font-size: ", 
-                               ifelse(nchar(m$value) > 15, "18px", "24px"), ";"),
-                m$value),
-            div(style = paste0("color: ", colors$grey, "; font-size: 12px;"), m$subtitle)
-        )
-      }),
-      
-      # Separator
-      hr(style = paste0("border: 0; height: 1px; background: ", colors$light_grey, "; margin: 20px 0;")),
-      
-      # Key Metrics heading
-      h5("Digital Metrics", style = paste0("color: ", colors$navy, "; margin-bottom: 15px;")),
-      
-      # Digital metrics with colored panels and tooltips
-      lapply(metrics, function(m) {
-        div(class = "metric-box",
-            title = m$tooltip,
-            style = paste0("background: ", 
-                           switch(m$color,
-                                  "blue" = colors$light_blue,
-                                  "yellow" = colors$light_yellow,
-                                  "teal" = colors$light_teal,
-                                  "navy" = colors$light_grey,
-                                  colors$light_grey),
-                           "; border-left: 4px solid ",
-                           switch(m$color,
-                                  "blue" = colors$blue,
-                                  "yellow" = colors$yellow,
-                                  "teal" = colors$teal,
-                                  "navy" = colors$navy,
-                                  colors$grey),
-                           "; box-shadow: 0 2px 4px rgba(0,0,0,0.1); cursor: help;"),
-            div(class = "metric-title", m$title, 
-                style = paste0("color: ", colors$navy, "; font-size: 13px; margin-bottom: 5px;")),
-            div(class = "metric-value", 
-                style = paste0("color: ",
-                               switch(m$color,
-                                      "navy" = colors$navy,
-                                      "blue" = colors$blue,
-                                      "yellow" = colors$yellow,
-                                      "teal" = colors$teal,
-                                      colors$grey), ";"),
-                m$value),
-            div(style = paste0("color: ", colors$grey, "; font-size: 14px;"), m$subtitle)
-        )
-      })
-    )
-  })
-  
   # Main adoption plot with new colors
   output$adoption_plot <- renderPlotly({
     data <- country_data()
@@ -2738,119 +2605,6 @@ server <- function(input, output, session) {
                   options = list(dom = 't', paging = FALSE),
                   rownames = FALSE)
   })
-  
-  # Scenarios calculation
-  scenarios_results <- eventReactive(input$run_scenarios, {
-    data <- country_data()
-    
-    internet_male <- data$internet_usage_male_pct[1] / 100
-    internet_female <- data$internet_usage_female_pct[1] / 100
-    coverage_pct <- data$coverage_dominant_pct[1] / 100
-    gap_pct <- data$gap_dominant_pct[1] / 100
-    
-    # Scenario 1: Close coverage gaps only (maintaining current usage patterns)
-    # The proportional increase in coverage leads to proportional increase in usage
-    s1_male_usage <- min(internet_male + (gap_pct * internet_male / coverage_pct), 1)
-    s1_female_usage <- min(internet_female + (gap_pct * internet_female / coverage_pct), 1)
-    s1_men_gain <- (s1_male_usage - internet_male) * data$adult_pop_male[1] / 1e6
-    s1_women_gain <- (s1_female_usage - internet_female) * data$adult_pop_female[1] / 1e6
-    
-    # Scenario 2: Maximize usage with gender-agnostic approach (maintaining gender RATIO)
-    gender_ratio <- internet_female / internet_male  # This is the ratio we maintain
-    s2_men_final <- min(coverage_pct, 1)  # Men reach 100% of coverage
-    s2_women_final <- min(s2_men_final * gender_ratio, 1)  # Women maintain the same ratio
-    s2_men_gain <- (s2_men_final - internet_male) * data$adult_pop_male[1] / 1e6
-    s2_women_gain <- (s2_women_final - internet_female) * data$adult_pop_female[1] / 1e6
-    s2_women_offline <- (1 - s2_women_final) * data$adult_pop_female[1] / 1e6
-    s2_men_offline <- (1 - s2_men_final) * data$adult_pop_male[1] / 1e6
-    
-    # Scenario 3: Scenario 2 PLUS closing gender gaps (stacked)
-    # Additional women needed to reach parity with men at their maximized level
-    s3_additional_women <- (s2_men_final - s2_women_final) * data$adult_pop_female[1] / 1e6
-    s3_total_women_gain <- s2_women_gain + s3_additional_women
-    s3_men_gain <- s2_men_gain  # Men gain stays same as scenario 2
-    
-    list(
-      scenario1 = tibble(
-        scenario = "Coverage Gaps Only",
-        total_gain = s1_men_gain + s1_women_gain,
-        men_gain = s1_men_gain,
-        women_gain = s1_women_gain
-      ),
-      scenario2 = tibble(
-        scenario = "Usage Gaps (Gender-Agnostic)",
-        total_gain = s2_men_gain + s2_women_gain,
-        men_gain = s2_men_gain,
-        women_gain = s2_women_gain,
-        women_offline = s2_women_offline,
-        men_offline = s2_men_offline,
-        women_final_pct = s2_women_final * 100,
-        men_final_pct = s2_men_final * 100,
-        gender_ratio = gender_ratio
-      ),
-      scenario3 = tibble(
-        scenario = "Usage Gaps + Gender Parity",
-        total_gain = s3_men_gain + s3_total_women_gain,
-        men_gain = s3_men_gain,
-        women_gain_base = s2_women_gain,
-        women_gain_additional = s3_additional_women,
-        women_gain = s3_total_women_gain
-      )
-    )
-  })
-  
-  # Scenarios comparison plot with new colors
-  output$scenarios_comparison <- renderPlotly({
-    req(scenarios_results())
-    results <- scenarios_results()
-    
-    # Prepare data for plotting
-    plot_data <- data.frame(
-      scenario = c("Coverage Gaps Only", "Usage Gaps (Gender-Agnostic)", "Usage Gaps + Gender Parity"),
-      men_gain = c(results$scenario1$men_gain, results$scenario2$men_gain, results$scenario3$men_gain),
-      women_gain_base = c(results$scenario1$women_gain, results$scenario2$women_gain, results$scenario3$women_gain_base),
-      women_gain_additional = c(0, 0, results$scenario3$women_gain_additional)
-    )
-    
-    # Create the plot
-    p <- plot_ly(plot_data, x = ~scenario, y = ~men_gain, type = 'bar', 
-                 name = 'Men', marker = list(color = colors$blue),
-                 hovertemplate = 'Men: %{y:.1f}M<extra></extra>') %>%
-      add_trace(y = ~women_gain_base, name = 'Women (Base)', 
-                marker = list(color = colors$teal),
-                hovertemplate = 'Women (Base): %{y:.1f}M<extra></extra>') %>%
-      add_trace(y = ~women_gain_additional, name = 'Women (Additional for Parity)', 
-                marker = list(color = colors$yellow, 
-                              pattern = list(shape = "/")),
-                hovertemplate = 'Women (Additional): %{y:.1f}M<extra></extra>')
-    
-    # Calculate totals for labels
-    totals <- c(
-      results$scenario1$total_gain,
-      results$scenario2$total_gain,
-      results$scenario3$total_gain
-    )
-    
-    p %>% layout(
-      yaxis = list(title = 'Millions of New Users'),
-      xaxis = list(title = ''),
-      barmode = 'stack',
-      hovermode = 'x unified',
-      annotations = list(
-        list(x = 0, y = totals[1] + 2, text = paste0("Total: ", round(totals[1], 1), "M"),
-             showarrow = FALSE, font = list(size = 12, color = colors$navy)),
-        list(x = 1, y = totals[2] + 2, text = paste0("Total: ", round(totals[2], 1), "M"),
-             showarrow = FALSE, font = list(size = 12, color = colors$navy)),
-        list(x = 2, y = totals[3] + 2, text = paste0("Total: ", round(totals[3], 1), "M"),
-             showarrow = FALSE, font = list(size = 12, color = colors$navy))
-      ),
-      plot_bgcolor = colors$light_grey,
-      paper_bgcolor = 'white',
-      font = list(color = colors$navy),
-      legend = list(orientation = "h", y = -0.15, x = 0.5, xanchor = "center")
-    )
-  })
-  
   
   # Comparative adoption plot with new colors
   output$compare_adoption <- renderPlotly({
