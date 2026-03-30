@@ -2527,7 +2527,7 @@ server <- function(input, output, session) {
     req(input$comparison_countries)
     data <- comparison_data()
     plot_ly(data, x = ~country_name, y = ~internet_usage_all_pct,
-            type = 'bar', marker = list(color = colors$blue),
+            type = 'bar', marker = list(color = colors$navy),
             text = paste0(round(data$internet_usage_all_pct, 1), "%"),
             textposition = 'outside', textfont = list(size = 10, color = colors$navy),
             hoverinfo = 'none') %>%
@@ -2605,7 +2605,7 @@ server <- function(input, output, session) {
       mutate(internet_gap = internet_usage_male_pct - internet_usage_female_pct)
 
     plot_ly(gender_gap_data, x = ~country_name, y = ~internet_gap,
-            type = 'bar', marker = list(color = colors$yellow),
+            type = 'bar', marker = list(color = colors$blue),
             text = paste0(round(gender_gap_data$internet_gap, 1), "pp"),
             textposition = 'auto',
             hoverinfo = 'none') %>%
