@@ -880,6 +880,66 @@ ui <- fluidPage(
                           ),
                           column(9,
                                  tabsetPanel(id = "main_tabs",
+                                             tabPanel("Diagnostic",
+                                                      fluidRow(
+                                                        column(12,
+                                                               div(class = "diagnostic-shell",
+                                                                   uiOutput("diagnostic_headline")
+                                                               )
+                                                        )
+                                                      ),
+                                                      fluidRow(
+                                                        column(12,
+                                                               div(class = "diagnostic-shell",
+                                                                   h3(
+                                                                     tagList(
+                                                                       "1. What Is the Main Gap?",
+                                                                       tags$sup("*")
+                                                                     ),
+                                                                     style = paste0("color: ", colors$navy, "; margin-top: 0; margin-bottom: 8px;")
+                                                                   ),
+                                                                   uiOutput("diagnostic_main_gap_summary"),
+                                                                   uiOutput("diagnostic_gap_cards"),
+                                                                   div(style = "height: 10px;"),
+                                                                   uiOutput("diagnostic_significance_text"),
+                                                                   uiOutput("diagnostic_benchmark_plots"),
+                                                                   p(
+                                                                     tags$sup("*"),
+                                                                     " We flag gaps as significant when they are above simple thresholds: coverage gap >= 10%, usage gap >= 20%, and gender gap >= 5 percentage points where women are disadvantaged. For countries where none of these gaps are above the thresholds, the largest gap in magnitude is considered the main gap.",
+                                                                     class = "diagnostic-footnote"
+                                                                   )
+                                                               )
+                                                        )
+                                                      ),
+                                                      fluidRow(
+                                                        column(12,
+                                                               div(class = "diagnostic-shell",
+                                                                   h3("2. How Many People Could Come Online?", style = paste0("color: ", colors$navy, "; margin-top: 0; margin-bottom: 8px;")),
+                                                                   p("We modeled three hypothetical scenarios of possible approaches to closing coverage, usage, and gender gaps to illustrate the potential impact of different policy choices.",
+                                                                     style = paste0("color: ", colors$navy, "; font-size: clamp(17px, 1.2vw, 19px); line-height: 1.5; margin-bottom: 16px;")),
+                                                                   uiOutput("diagnostic_impact_cards"),
+                                                                   div(style = paste0("margin-top: 18px; padding-top: 14px; border-top: 1px solid ", colors$light_grey, ";"),
+                                                                       p(
+                                                                         tags$strong("In Scenario 1"),
+                                                                         ", mobile coverage is extended to all unserved areas while current usage patterns remain unchanged. This means that men's and women's internet use in newly covered areas continues to reflect current imbalances, if any.",
+                                                                         style = paste0("color: ", colors$navy, "; font-size: 16px; line-height: 1.6; margin-bottom: 12px;")
+                                                                       ),
+                                                                       p(
+                                                                         tags$strong("Scenario 2"),
+                                                                         " models fully closing the usage gap, while leaving all other parameters constant. This scenario assumes universal adoption among all individuals with network access, while maintaining the existing female-to-male internet use ratio. Men's usage increases to match coverage levels (up to 100%), and women's usage rises proportionally based on the current gender gap. This represents an optimistic ceiling where infrastructure barriers are eliminated and all demand-side barriers except gender-specific ones are addressed, showing the maximum potential reach under current gender dynamics.",
+                                                                         style = paste0("color: ", colors$navy, "; font-size: 16px; line-height: 1.6; margin-bottom: 12px;")
+                                                                       ),
+                                                                       p(
+                                                                         tags$strong("Scenario 3"),
+                                                                         " models the effects of closing gender gaps when men's use exceeds women's. This means bringing women's internet usage up to men's current levels, without any infrastructure expansion or increases in male use. While hypothetical, this scenario models potential gains from gender-focused interventions alone, revealing how many additional women would come online if they adopted the Internet at the same rate as men.",
+                                                                         style = paste0("color: ", colors$navy, "; font-size: 16px; line-height: 1.6; margin-bottom: 0;")
+                                                                       )
+                                                                   )
+                                                               )
+                                                        )
+                                                      )
+                                             ),
+
                                              tabPanel("Overview",
                                                       fluidRow(
                                                         column(12,
@@ -991,12 +1051,6 @@ ui <- fluidPage(
                                                       ),
                                                       fluidRow(
                                                         column(12,
-                                                               h4("Key Insights"),
-                                                               uiOutput("key_insights_box")
-                                                        )
-                                                      ),
-                                                      fluidRow(
-                                                        column(12,
                                                                h4("How Many Men and Women Can We Bring Online?"),
                                                                plotlyOutput("scenarios_comparison", height = "400px")
                                                         )
@@ -1032,85 +1086,6 @@ ui <- fluidPage(
                                    )
                                  )
                           )
-                        )
-                      )
-             ),
-             
-            tabPanel("Country Diagnostic Prototype",
-                     fluidRow(
-                       column(12,
-                              div(class = "diagnostic-shell diagnostic-top-shell",
-                                   fluidRow(
-                                     column(4,
-                                            selectInput("diagnostic_country", "Select Country",
-                                                        choices = NULL, selected = NULL,
-                                                        width = "100%")
-                                     ),
-                                     column(8,
-                                            h2("Country Diagnostic Prototype",
-                                               style = paste0("color: ", colors$navy, "; margin-top: 0; margin-bottom: 6px;")),
-                                            p("A narrative that highlights the main digital gaps, regional context, and the gains from closing them.",
-                                              class = "diagnostic-heading-copy")
-                                     )
-                                   )
-                              )
-                       )
-                     ),
-                     fluidRow(
-                        column(12,
-                               div(class = "diagnostic-shell",
-                                   uiOutput("diagnostic_headline")
-                               )
-                        )
-                     ),
-                     fluidRow(
-                        column(12,
-                               div(class = "diagnostic-shell",
-                                  h3(
-                                    tagList(
-                                      "1. What Is the Main Gap?",
-                                      tags$sup("*")
-                                    ),
-                                    style = paste0("color: ", colors$navy, "; margin-top: 0; margin-bottom: 8px;")
-                                  ),
-                                  uiOutput("diagnostic_main_gap_summary"),
-                                  uiOutput("diagnostic_gap_cards"),
-                                  div(style = "height: 10px;"),
-                                  uiOutput("diagnostic_significance_text"),
-                                  uiOutput("diagnostic_benchmark_plots"),
-                                   p(
-                                     tags$sup("*"),
-                                     " We flag gaps as significant when they are above simple thresholds: coverage gap >= 10%, usage gap >= 20%, and gender gap >= 5 percentage points where women are disadvantaged. For countries where none of these gaps are above the thresholds, the largest gap in magnitude is considered the main gap.",
-                                     class = "diagnostic-footnote"
-                                   )
-                               )
-                        )
-                      ),
-                      fluidRow(
-                        column(12,
-                               div(class = "diagnostic-shell",
-                                   h3("2. How Many People Could Come Online?", style = paste0("color: ", colors$navy, "; margin-top: 0; margin-bottom: 8px;")),
-                                   p("We modeled three hypothetical scenarios of possible approaches to closing coverage, usage, and gender gaps to illustrate the potential impact of different policy choices.",
-                                     style = paste0("color: ", colors$navy, "; font-size: clamp(17px, 1.2vw, 19px); line-height: 1.5; margin-bottom: 16px;")),
-                                   uiOutput("diagnostic_impact_cards"),
-                                   div(style = paste0("margin-top: 18px; padding-top: 14px; border-top: 1px solid ", colors$light_grey, ";"),
-                                       p(
-                                         tags$strong("In Scenario 1"),
-                                         ", mobile coverage is extended to all unserved areas while current usage patterns remain unchanged. This means that men's and women's internet use in newly covered areas continues to reflect current imbalances, if any.",
-                                         style = paste0("color: ", colors$navy, "; font-size: 16px; line-height: 1.6; margin-bottom: 12px;")
-                                       ),
-                                       p(
-                                         tags$strong("Scenario 2"),
-                                         " models fully closing the usage gap, while leaving all other parameters constant. This scenario assumes universal adoption among all individuals with network access, while maintaining the existing female-to-male internet use ratio. Men's usage increases to match coverage levels (up to 100%), and women's usage rises proportionally based on the current gender gap. This represents an optimistic ceiling where infrastructure barriers are eliminated and all demand-side barriers except gender-specific ones are addressed, showing the maximum potential reach under current gender dynamics.",
-                                         style = paste0("color: ", colors$navy, "; font-size: 16px; line-height: 1.6; margin-bottom: 12px;")
-                                       ),
-                                       p(
-                                         tags$strong("Scenario 3"),
-                                         " models the effects of closing gender gaps when men's use exceeds women's. This means bringing women's internet usage up to men's current levels, without any infrastructure expansion or increases in male use. While hypothetical, this scenario models potential gains from gender-focused interventions alone, revealing how many additional women would come online if they adopted the Internet at the same rate as men.",
-                                         style = paste0("color: ", colors$navy, "; font-size: 16px; line-height: 1.6; margin-bottom: 0;")
-                                       )
-                                   )
-                               )
                         )
                       )
              ),
@@ -1218,9 +1193,6 @@ server <- function(input, output, session) {
     updateSelectInput(session, "country",
                       choices = countries,
                       selected = countries[1])
-    updateSelectInput(session, "diagnostic_country",
-                      choices = countries,
-                      selected = countries[1])
     updateSelectizeInput(session, "comparison_countries",
                          choices = countries)
   })
@@ -1290,8 +1262,8 @@ server <- function(input, output, session) {
   
   # Prototype: selected country for the narrative diagnostic view
   diagnostic_country_data <- reactive({
-    req(input$diagnostic_country)
-    adoption_data %>% filter(country_name == input$diagnostic_country)
+    req(input$country)
+    adoption_data %>% filter(country_name == input$country)
   })
   
   diagnostic_gap_table <- reactive({
@@ -2879,104 +2851,6 @@ server <- function(input, output, session) {
     )
   })
   
-  
-  # Key Insights Box with new colors
-  output$key_insights_box <- renderUI({
-    req(scenarios_results())
-    results <- scenarios_results()
-    data <- country_data()
-    
-    total_population <- round(data$total_population[1]/1e6, 1)
-    adult_population <- round(data$adult_population[1]/1e6, 1)
-    total_offline <- round(data$internet_usage_gap_all_millions[1], 1)
-    coverage_gap_millions <- round(data$adults_no_dominant_millions[1], 1)
-    coverage_gap_pct <- round((coverage_gap_millions / total_offline) * 100, 1)
-    usage_gap_pct <- round(100 - coverage_gap_pct, 1)
-    gender_gap_pp <- round(data$internet_usage_male_pct[1] - data$internet_usage_female_pct[1], 1)
-    women_offline <- round(data$internet_usage_gap_female_millions[1], 1)
-    men_offline <- round(data$internet_usage_gap_male_millions[1], 1)
-    
-    s1_men <- round(results$scenario1$men_gain, 1)
-    s1_women <- round(results$scenario1$women_gain, 1)
-    
-    # Calculate final numbers for scenario 2
-    s2_women_online_final <- round(data$internet_usage_female_millions[1] + results$scenario2$women_gain, 1)
-    s2_men_online_final <- round(data$internet_usage_male_millions[1] + results$scenario2$men_gain, 1)
-    s2_women_final_pct <- round(results$scenario2$women_final_pct, 1)
-    s2_men_final_pct <- round(results$scenario2$men_final_pct, 1)
-    
-    div(style = paste0("background: ", colors$light_blue, "; border: 2px solid ", colors$blue, 
-                       "; border-radius: 10px; padding: 20px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);"),
-        
-        h4(icon("chart-line"), paste(input$country, "Digital Divide Analysis"), 
-           style = paste0("color: ", colors$navy, "; margin-bottom: 15px;")),
-        
-        p(style = paste0("font-size: 14px; line-height: 1.8; color: ", colors$grey, ";"),
-          strong(paste0(input$country, " has ", total_offline, " million people offline out of a total population of ", 
-                        total_population, " million (", adult_population, " million adults)."),
-                 style = paste0("color: ", colors$navy, ";")),
-          br(),
-          paste0("Of these, ", coverage_gap_millions, " million (", coverage_gap_pct, 
-                 "%) are offline due to no broadband network coverage, and ", 
-                 round(total_offline - coverage_gap_millions, 1), " million (", usage_gap_pct, 
-                 "%) are offline as they do not use the internet despite having access to broadband network coverage."),
-          br(),
-          paste0("Gender gaps in internet use are ", gender_gap_pp, " percentage points, leaving ", 
-                 women_offline, " million women offline, relative to ", men_offline, " million men.")
-        ),
-        
-        hr(style = paste0("border-color: ", colors$blue, "; margin: 20px 0;")),
-        
-        h5("Scenario 1: If we extend network coverage to all unserved areas but keep the same usage patterns (including gender gaps), what happens?", 
-           style = paste0("color: ", colors$navy, "; font-weight: bold;")),
-        p(style = paste0("font-size: 14px; line-height: 1.6; color: ", colors$grey, ";"),
-          
-          "In broadband network covered areas, men are ", round(data$internet_usage_male_pct[1], 1), "% users, while women are ",
-          round(data$internet_usage_female_pct[1], 1), "% users. If we extend coverage to everyone, ",
-          "the same ", gender_gap_pp, " percentage point gap persists in newly covered areas.",
-          br(), br(),
-          strong(paste0("In ", input$country, ", closing coverage gaps while maintaining usage and gender gaps fixed will bring online ",
-                        "a maximum of ", s1_men, " million men and ", s1_women, " million women."),
-                 style = paste0("color: ", colors$navy, ";"))
-        ),
-        
-        hr(style = paste0("border-color: ", colors$blue, "; margin: 20px 0;")),
-        
-        h5("Scenario 2: What if we maximize internet adoption for everyone with coverage but don't specifically target gender gaps?", 
-           style = paste0("color: ", colors$navy, "; font-weight: bold;")),
-        p(style = paste0("font-size: 14px; line-height: 1.6; color: ", colors$grey, ";"),
-          
-          "As women use the internet at the rate of ", round(results$scenario2$gender_ratio * 100, 1), 
-          "% as much as men, when men's use reaches 100%, women's use would reach ",
-          round(results$scenario2$gender_ratio * 100, 1), "%.",
-          br(), br(),
-          "If we target people within coverage areas without specific gender interventions, adoption rates reach ",
-          s2_men_final_pct, "% for men and ", s2_women_final_pct, "% for women ",
-          "(maintaining the current female to male ratio of internet use).",
-          br(), br(),
-          strong(paste0("Using gender-agnostic approaches, ", input$country, " would have ", 
-                        s2_women_online_final, " million women online versus ", s2_men_online_final, " million men, ",
-                        "leaving ", round(results$scenario2$women_offline, 1), " million women still offline."),
-                 style = paste0("color: ", colors$navy, ";"))
-        ),
-        
-        hr(style = paste0("border-color: ", colors$blue, "; margin: 20px 0;")),
-        
-        h5("Scenario 3: How many additional women can we bring online with gender-targeted interventions?", 
-           style = paste0("color: ", colors$navy, "; font-weight: bold;")),
-        p(style = paste0("font-size: 14px; line-height: 1.6; color: ", colors$grey, ";"),
-          
-          "This scenario combines maximizing usage (Scenario 2) with targeted interventions to close gender gaps, ",
-          "bringing women's usage rates to match men's within covered areas.",
-          br(), br(),
-          strong(paste0("This would bring an additional ", round(results$scenario3$women_gain_additional, 1), 
-                        " million women online beyond the gender-agnostic approach, for a total of ", 
-                        round(results$scenario3$women_gain, 1), 
-                        " million new women users, achieving full gender parity among those with coverage."),
-                 style = paste0("color: ", colors$navy, ";"))
-        )
-    )
-  })
   
   # Comparative adoption plot with new colors
   output$compare_adoption <- renderPlotly({
