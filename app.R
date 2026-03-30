@@ -757,73 +757,6 @@ ui <- fluidPage(
                       ),
                       fluidRow(
                         column(12,
-                               div(class = "home-section-shell",
-                                 h3("Explore the Dashboard", style = paste0("color: ", colors$navy, "; margin-top: 0; margin-bottom: 15px;")),
-                                 fluidRow(
-                                   column(4,
-                                          div(class = "home-explore-card global-card",
-                                              div(style = "text-align: center;",
-                                                  icon("globe", style = paste0("font-size: 44px; color: ", colors$blue, ";"))
-                                              ),
-                                              h3("Global Analysis", style = paste0("text-align: center; color: ", colors$navy, "; margin-top: 12px;")),
-                                              div(class = "home-explore-list",
-                                                  p(icon("check"), " Gap Distribution by Region and Country", style = paste0("color: ", colors$navy, "; margin-top: 14px;")),
-                                                  p(icon("check"), " Ranking by Region and Country", style = paste0("color: ", colors$navy, ";")),
-                                                  p(icon("check"), " Regional Statistics", style = paste0("color: ", colors$navy, "; margin-bottom: 0;"))
-                                              ),
-                                              tags$a(
-                                                "Explore Global Data",
-                                                href = "#",
-                                                class = "btn btn-primary btn-block home-card-button",
-                                                onclick = "$('.navbar-nav a').filter(function(){return $(this).text().trim()==='Global Analysis';}).tab('show'); return false;"
-                                              )
-                                          )
-                                   ),
-                                   column(4,
-                                          div(class = "home-explore-card country-card",
-                                              div(style = "text-align: center;",
-                                                  icon("chart-bar", style = "font-size: 44px; color: #d2951f;")
-                                              ),
-                                              h3("Country Analysis", style = paste0("text-align: center; color: ", colors$navy, "; margin-top: 12px;")),
-                                              div(class = "home-explore-list",
-                                                  p(icon("check"), " Gap Statistics", style = paste0("color: ", colors$navy, "; margin-top: 14px;")),
-                                                  p(icon("check"), " Regional Benchmarking", style = paste0("color: ", colors$navy, ";")),
-                                                  p(icon("check"), " Select Countries to Compare", style = paste0("color: ", colors$navy, "; margin-bottom: 0;"))
-                                              ),
-                                              tags$a(
-                                                "Explore Country Data",
-                                                href = "#",
-                                                class = "btn btn-warning btn-block home-card-button",
-                                                onclick = "$('.navbar-nav a').filter(function(){return $(this).text().trim()==='Country Analysis';}).tab('show'); setTimeout(function(){ $('a[data-value=\"Overview\"]').tab('show'); }, 100); return false;"
-                                              )
-                                          )
-                                   ),
-                                   column(4,
-                                          div(class = "home-explore-card policy-card",
-                                              div(style = "text-align: center;",
-                                                  icon("female", style = "font-size: 44px; color: #7b52c2;")
-                                              ),
-                                              h3("Policy Scenarios", style = paste0("text-align: center; color: ", colors$navy, "; margin-top: 12px;")),
-                                              div(class = "home-explore-list",
-                                                  p(icon("check"), " Scenario 1: Expand Infrastructure", style = paste0("color: ", colors$navy, "; margin-top: 14px;")),
-                                                  p(icon("check"), " Scenario 2: Boost Adoption", style = paste0("color: ", colors$navy, ";")),
-                                                  p(icon("check"), " Scenario 3: Close Gender Gap", style = paste0("color: ", colors$navy, "; margin-bottom: 0;"))
-                                              ),
-                                              tags$a(
-                                                "Run Scenarios",
-                                                href = "#",
-                                                class = "btn btn-block home-card-button",
-                                                style = "background: #7b52c2; color: white;",
-                                                onclick = "$('.navbar-nav a').filter(function(){return $(this).text().trim()==='Country Analysis';}).tab('show'); setTimeout(function(){ $('a[data-value=\"Policy Scenarios\"]').tab('show'); }, 100); return false;"
-                                              )
-                                          )
-                                   )
-                                 )
-                               )
-                        )
-                      ),
-                      fluidRow(
-                        column(12,
                                p(
                                  tags$sup("*"),
                                  " Methodology note: these scenario estimates are directional and rely on simplified assumptions about coverage expansion, adoption responses, and gender-gap closure. They are intended for policy prioritization in the prototype rather than as precise forecasts.",
@@ -1003,21 +936,22 @@ ui <- fluidPage(
                       conditionalPanel(
                         condition = "input.view_mode == 'compare'",
                         fluidRow(
+                          column(6,
+                                 h4("Internet Usage", style = "text-align: center;"),
+                                 plotlyOutput("compare_adoption", height = "420px")
+                          ),
+                          column(6,
+                                 h4("Gender Gap in Internet Usage", style = "text-align: center;"),
+                                 plotlyOutput("compare_gender", height = "420px")
+                          )
+                        ),
+                        fluidRow(
                           column(12,
-                                 h3("Comparative Analysis"),
-                                 tabsetPanel(
-                                   tabPanel("Adoption Comparison",
-                                            plotlyOutput("compare_adoption", height = "500px"),
-                                            hr(),
-                                            DT::dataTableOutput("compare_table")
-                                   ),
-                                   tabPanel("Gender Gap Comparison",
-                                            plotlyOutput("compare_gender", height = "500px")
-                                   ),
-                                   tabPanel("Regional Benchmarking",
-                                            plotlyOutput("regional_benchmark", height = "500px")
-                                   )
-                                 )
+                                 hr(),
+                                 h4("Regional Context", style = paste0("color: ", colors$navy, ";")),
+                                 tags$p("All countries in the primary country's region. Selected countries highlighted.",
+                                        style = paste0("font-size: 12px; color: ", colors$grey, "; margin-bottom: 10px;")),
+                                 plotlyOutput("regional_benchmark", height = "500px")
                           )
                         )
                       )
@@ -2656,20 +2590,35 @@ server <- function(input, output, session) {
   
   # Regional benchmarking with new colors
   output$regional_benchmark <- renderPlotly({
-    data <- adoption_data %>%
-      filter(regionwb24_hi == country_data()$regionwb24_hi[1])
-    
-    plot_ly(data, x = ~internet_usage_all_pct, y = ~country_name,
+    region_data <- adoption_data %>%
+      filter(regionwb24_hi == country_data()$regionwb24_hi[1]) %>%
+      arrange(internet_usage_all_pct)
+
+    selected <- c(input$country, input$comparison_countries)
+
+    bar_colors <- ifelse(
+      region_data$country_name == input$country, colors$blue,
+      ifelse(region_data$country_name %in% input$comparison_countries, colors$teal, colors$grey)
+    )
+    bar_text <- ifelse(region_data$country_name %in% selected,
+                       paste0(round(region_data$internet_usage_all_pct, 1), "%"), "")
+
+    plot_ly(region_data,
+            x = ~internet_usage_all_pct,
+            y = ~reorder(country_name, internet_usage_all_pct),
             type = 'bar', orientation = 'h',
-            marker = list(color = ifelse(data$country_name == input$country, 
-                                         colors$blue, colors$grey))) %>%
+            marker = list(color = bar_colors),
+            text = bar_text,
+            textposition = 'outside',
+            textfont = list(size = 10, color = colors$navy),
+            hoverinfo = 'none') %>%
       layout(
-        xaxis = list(title = 'Internet Usage (%)'),
+        xaxis = list(title = 'Internet Usage (%)', range = c(0, 110)),
         yaxis = list(title = ''),
-        title = paste("Regional Comparison -", country_data()$regionwb24_hi[1]),
         plot_bgcolor = colors$light_grey,
         paper_bgcolor = 'white',
-        font = list(color = colors$navy)
+        font = list(color = colors$navy),
+        margin = list(l = 10, r = 60)
       )
   })
   
