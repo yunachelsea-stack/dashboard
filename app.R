@@ -932,19 +932,38 @@ ui <- fluidPage(
                                              ),
 
                                              tabPanel("Deep Dive",
+                                                      # Shared legend for all 3 charts
+                                                      fluidRow(
+                                                        column(12,
+                                                               div(style = "display: flex; justify-content: center; gap: 28px; margin-top: 10px; margin-bottom: 4px;",
+                                                                   div(style = "display: flex; align-items: center; gap: 7px;",
+                                                                       div(style = paste0("width: 14px; height: 14px; background:", colors$navy, "; border-radius: 3px;")),
+                                                                       span("All Adults", style = paste0("font-size: 13px; color:", colors$navy, ";"))
+                                                                   ),
+                                                                   div(style = "display: flex; align-items: center; gap: 7px;",
+                                                                       div(style = paste0("width: 14px; height: 14px; background:", colors$teal, "; border-radius: 3px;")),
+                                                                       span("Women", style = paste0("font-size: 13px; color:", colors$navy, ";"))
+                                                                   ),
+                                                                   div(style = "display: flex; align-items: center; gap: 7px;",
+                                                                       div(style = paste0("width: 14px; height: 14px; background:", colors$blue, "; border-radius: 3px;")),
+                                                                       span("Men", style = paste0("font-size: 13px; color:", colors$navy, ";"))
+                                                                   )
+                                                               )
+                                                        )
+                                                      ),
                                                       # Row 1: 3 charts side by side
                                                       fluidRow(
                                                         column(4,
-                                                               h4("Internet Usage by Gender", style = "text-align: center;"),
-                                                               plotlyOutput("adoption_plot", height = "350px")
+                                                               h4("Internet Users", style = "text-align: center;"),
+                                                               plotlyOutput("adoption_plot", height = "320px")
                                                         ),
                                                         column(4,
                                                                h4("Population in Coverage Gap", style = "text-align: center;"),
-                                                               plotlyOutput("coverage_gap_chart", height = "350px")
+                                                               plotlyOutput("coverage_gap_chart", height = "320px")
                                                         ),
                                                         column(4,
                                                                h4("Population in Usage Gap", style = "text-align: center;"),
-                                                               plotlyOutput("usage_gap_chart", height = "350px")
+                                                               plotlyOutput("usage_gap_chart", height = "320px")
                                                         )
                                                       ),
                                                       fluidRow(
@@ -2199,46 +2218,44 @@ server <- function(input, output, session) {
   # Main adoption plot with new colors
   output$adoption_plot <- renderPlotly({
     data <- country_data()
-    
+
     plot_data <- data.frame(
       Category = rep("Internet Usage", 3),
       Gender = c("All Adults", "Women", "Men"),
-      Percentage = c(
-        data$internet_usage_all_pct[1],
-        data$internet_usage_female_pct[1],
-        data$internet_usage_male_pct[1]
-      ),
       Millions = c(
         data$internet_usage_all_millions[1],
         data$internet_usage_female_millions[1],
         data$internet_usage_male_millions[1]
+      ),
+      Percentage = c(
+        data$internet_usage_all_pct[1],
+        data$internet_usage_female_pct[1],
+        data$internet_usage_male_pct[1]
       )
     )
-
     plot_data$Gender <- factor(plot_data$Gender, levels = c("All Adults", "Women", "Men"))
-    
     plot_data <- plot_data %>% arrange(Category, Gender)
-    
-    plot_data$TextLabel <- paste0(round(plot_data$Percentage, 1), "%<br>(", round(plot_data$Millions, 1), "M)")
+    plot_data$TextLabel <- paste0(round(plot_data$Millions, 1), "M<br>(", round(plot_data$Percentage, 1), "%)")
 
-    plot_ly(plot_data, x = ~Category, y = ~Percentage, color = ~Gender,
+    max_val <- max(plot_data$Millions, na.rm = TRUE)
+
+    plot_ly(plot_data, x = ~Category, y = ~Millions, color = ~Gender,
             type = 'bar',
             colors = c("All Adults" = colors$navy, "Women" = colors$teal, "Men" = colors$blue),
             text = ~TextLabel,
             textposition = 'outside',
             textfont = list(size = 10, color = colors$navy),
-            hovertemplate = '%{fullData.name}: %{y:.1f}% &bull; %{customdata:.1f}M people<extra></extra>',
-            customdata = ~Millions) %>%
+            hovertemplate = '%{fullData.name}: %{y:.1f}M &bull; %{customdata:.1f}%<extra></extra>',
+            customdata = ~Percentage) %>%
       layout(
-        yaxis = list(title = 'Internet Usage (%)', range = c(0, 115), tickformat = '.0f'),
+        yaxis = list(title = 'Internet Users (Millions)', range = c(0, max_val * 1.45)),
         xaxis = list(title = ''),
         barmode = 'group',
-        showlegend = TRUE,
-        legend = list(orientation = "h", y = 1.08, x = 0.5, xanchor = "center"),
+        showlegend = FALSE,
         plot_bgcolor = colors$light_grey,
         paper_bgcolor = 'white',
         font = list(color = colors$navy),
-        margin = list(t = 40)
+        margin = list(t = 10, b = 40)
       )
   })
   
@@ -2262,6 +2279,7 @@ server <- function(input, output, session) {
     gap_data$Pct <- round(gap_data$Population / gap_data$Denom * 100, 1)
     gap_data$Category <- factor(gap_data$Category, levels = c("All Adults", "Women", "Men"))
     gap_data$TextLabel <- paste0(round(gap_data$Population, 1), "M<br>(", gap_data$Pct, "%)")
+    max_val <- max(gap_data$Population, na.rm = TRUE)
 
     plot_ly(gap_data, x = ~Category, y = ~Population, type = 'bar',
             marker = list(color = c(colors$navy, colors$teal, colors$blue)),
@@ -2271,16 +2289,16 @@ server <- function(input, output, session) {
             hovertemplate = '%{x}: %{y:.1f}M &bull; %{customdata}% of adults<extra></extra>',
             customdata = ~Pct) %>%
       layout(
-        yaxis = list(title = 'Population (Millions)'),
+        yaxis = list(title = 'Population (Millions)', range = c(0, max_val * 1.45)),
         xaxis = list(title = ''),
         showlegend = FALSE,
         plot_bgcolor = colors$light_grey,
         paper_bgcolor = 'white',
         font = list(color = colors$navy),
-        margin = list(t = 10)
+        margin = list(t = 10, b = 40)
       )
   })
-  
+
   # Usage gap chart with new colors
   output$usage_gap_chart <- renderPlotly({
     data <- country_data()
@@ -2301,6 +2319,7 @@ server <- function(input, output, session) {
     gap_data$Pct <- round(gap_data$Population / gap_data$Denom * 100, 1)
     gap_data$Category <- factor(gap_data$Category, levels = c("All Adults", "Women", "Men"))
     gap_data$TextLabel <- paste0(round(gap_data$Population, 1), "M<br>(", gap_data$Pct, "%)")
+    max_val <- max(gap_data$Population, na.rm = TRUE)
 
     plot_ly(gap_data, x = ~Category, y = ~Population, type = 'bar',
             marker = list(color = c(colors$navy, colors$teal, colors$blue)),
@@ -2310,13 +2329,13 @@ server <- function(input, output, session) {
             hovertemplate = '%{x}: %{y:.1f}M &bull; %{customdata}% of adults<extra></extra>',
             customdata = ~Pct) %>%
       layout(
-        yaxis = list(title = 'Population (Millions)'),
+        yaxis = list(title = 'Population (Millions)', range = c(0, max_val * 1.45)),
         xaxis = list(title = ''),
         showlegend = FALSE,
         plot_bgcolor = colors$light_grey,
         paper_bgcolor = 'white',
         font = list(color = colors$navy),
-        margin = list(t = 10)
+        margin = list(t = 10, b = 40)
       )
   })
   
