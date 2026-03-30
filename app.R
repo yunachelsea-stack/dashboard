@@ -931,26 +931,17 @@ ui <- fluidPage(
                                                       )
                                              ),
 
-                                             tabPanel("Overview",
+                                             tabPanel("Deep Dive",
+                                                      # Row 1: Adoption plot (internet usage by gender)
                                                       fluidRow(
                                                         column(12,
-                                                               h3("Ownership and Use of Digital Technologies"),
+                                                               h3("Internet Usage by Gender"),
                                                                plotlyOutput("adoption_plot", height = "400px"),
-                                                               tags$p("Source: Findex Global Digital Connectivity Tracker 2025", 
+                                                               tags$p("Source: Findex Global Digital Connectivity Tracker 2025",
                                                                       style = paste0("font-size: 11px; color: ", colors$grey, "; font-style: italic; margin-top: 5px;"))
                                                         )
                                                       ),
-                                                      fluidRow(
-                                                        column(12,
-                                                               infoBox(
-                                                                 "Understanding the Gaps",
-                                                                 "Coverage Gap: People without network access | Usage Gap: People with coverage but not using internet",
-                                                                 icon = icon("info-circle"),
-                                                                 color = "blue",
-                                                                 width = 12
-                                                               )
-                                                        )
-                                                      ),
+                                                      # Row 2: Coverage and usage gap charts
                                                       fluidRow(
                                                         column(6,
                                                                h4("Population in Coverage Gap"),
@@ -965,17 +956,16 @@ ui <- fluidPage(
                                                       ),
                                                       fluidRow(
                                                         column(12,
-                                                               tags$p("Source: Calculated using data from the International Telecommunication Union (2022-24) and Findex Global Digital Connectivity Tracker 2025.", 
-                                                                      style = paste0("font-size: 11px; color: ", colors$grey, "; font-style: italic; margin-top: 15px;"))
+                                                               tags$p("Source: Calculated using data from the International Telecommunication Union (2022-24) and Findex Global Digital Connectivity Tracker 2025.",
+                                                                      style = paste0("font-size: 11px; color: ", colors$grey, "; font-style: italic; margin-top: 5px;"))
                                                         )
-                                                      )
-                                             ),
-                                             
-                                             tabPanel("Gender Analysis",
+                                                      ),
+                                                      # Row 3: Offline population breakdown by gender (donuts)
                                                       fluidRow(
                                                         column(12,
-                                                               h3("Digital Access Gaps by Population Group"),
-                                                               tags$p("Coverage gap: People without network access | Usage gap: People with coverage but not using internet", 
+                                                               hr(),
+                                                               h3("Offline Population Breakdown by Gender"),
+                                                               tags$p("Coverage gap: People without network access | Usage gap: People with coverage but not using internet",
                                                                       style = paste0("font-size: 12px; color: ", colors$grey, "; margin-bottom: 20px;"))
                                                         )
                                                       ),
@@ -993,46 +983,18 @@ ui <- fluidPage(
                                                                plotlyOutput("men_gap_donut", height = "350px")
                                                         )
                                                       ),
+                                                      # Row 4: Detailed gender table
                                                       fluidRow(
                                                         column(12,
                                                                hr(),
-                                                               h4("Absolute Impact: Women Affected by Digital Gaps"),
-                                                               infoBox(
-                                                                 "Understanding the Scale",
-                                                                 "These numbers show the actual population of women affected by various digital gaps",
-                                                                 icon = icon("users"),
-                                                                 color = "teal",
-                                                                 width = 12
-                                                               )
-                                                        )
-                                                      ),
-                                                      fluidRow(
-                                                        column(6,
-                                                               valueBoxOutput("women_no_internet")
-                                                        ),
-                                                        column(6,
-                                                               valueBoxOutput("women_gap_potential")
-                                                        )
-                                                      ),
-                                                      fluidRow(
-                                                        column(12,
-                                                               hr(),
-                                                               h3("Gender Gaps in Ownership and Use of Digital Technologies"),
-                                                               plotlyOutput("gender_gap_comparison", height = "400px"),
-                                                               tags$p("Note: Positive values indicate men have higher usage rates than women", 
-                                                                      style = paste0("font-size: 11px; color: ", colors$grey, "; font-style: italic; margin-top: 5px;"))
-                                                        )
-                                                      ),
-                                                      fluidRow(
-                                                        column(12,
                                                                h4("Detailed Gender Metrics"),
-                                                               tags$p("Note: 'Women Without' and 'Men Without' columns show the total population (in millions) who do NOT have access to each technology", 
+                                                               tags$p("Note: 'Women Without' and 'Men Without' columns show the total population (in millions) who do NOT have access to each technology",
                                                                       style = paste0("font-size: 12px; color: ", colors$grey, "; font-style: italic; margin-bottom: 10px;")),
                                                                DT::dataTableOutput("gender_detailed_table")
                                                         )
                                                       )
                                              ),
-                                             
+
                                  )
                           )
                         )
