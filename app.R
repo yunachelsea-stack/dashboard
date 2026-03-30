@@ -865,25 +865,6 @@ ui <- fluidPage(
                                              ),
 
                                              tabPanel("Gender Deep Dive",
-                                                      # Shared legend for both charts
-                                                      fluidRow(
-                                                        column(12,
-                                                               div(style = "display: flex; justify-content: center; gap: 28px; margin-top: 10px; margin-bottom: 4px;",
-                                                                   div(style = "display: flex; align-items: center; gap: 7px;",
-                                                                       div(style = paste0("width: 14px; height: 14px; background:", colors$navy, "; border-radius: 3px;")),
-                                                                       span("All Adults", style = paste0("font-size: 13px; color:", colors$navy, ";"))
-                                                                   ),
-                                                                   div(style = "display: flex; align-items: center; gap: 7px;",
-                                                                       div(style = paste0("width: 14px; height: 14px; background:", colors$teal, "; border-radius: 3px;")),
-                                                                       span("Women", style = paste0("font-size: 13px; color:", colors$navy, ";"))
-                                                                   ),
-                                                                   div(style = "display: flex; align-items: center; gap: 7px;",
-                                                                       div(style = paste0("width: 14px; height: 14px; background:", colors$blue, "; border-radius: 3px;")),
-                                                                       span("Men", style = paste0("font-size: 13px; color:", colors$navy, ";"))
-                                                                   )
-                                                               )
-                                                        )
-                                                      ),
                                                       # Row 1: 2 charts side by side
                                                       fluidRow(
                                                         column(1),
@@ -907,9 +888,7 @@ ui <- fluidPage(
                                                       fluidRow(
                                                         column(12,
                                                                hr(),
-                                                               h3("Offline Population Breakdown by Gender"),
-                                                               tags$p("Coverage gap: People without network access | Usage gap: People with coverage but not using internet",
-                                                                      style = paste0("font-size: 12px; color: ", colors$grey, "; margin-bottom: 20px;"))
+                                                               h3("Offline Population Breakdown by Gender")
                                                         )
                                                       ),
                                                       fluidRow(
@@ -1386,7 +1365,28 @@ server <- function(input, output, session) {
       collapse = " and "
     )
     div(style = "margin-bottom: 0;",
-        h2(data$country_name[1], style = paste0("color: ", colors$navy, "; margin-top: 0; margin-bottom: 8px;")),
+        div(style = "display: flex; flex-wrap: wrap; align-items: center; gap: 16px; margin-bottom: 12px;",
+            h2(data$country_name[1], style = paste0("color: ", colors$navy, "; margin: 0;")),
+            div(style = "display: flex; flex-wrap: wrap; gap: 10px;",
+                lapply(list(
+                  list(label = "Total Population",  value = paste0(round(data$total_population[1]/1e6, 2), "M")),
+                  list(label = "Adult Population",  value = paste0(round(data$adult_population[1]/1e6, 2), "M")),
+                  list(label = "Internet Users",    value = paste0(round(data$internet_usage_all_pct[1], 1), "%")),
+                  list(label = "Income Group",      value = gsub(" income", "", data$incomegroupwb24[1])),
+                  list(label = "Region",            value = gsub("\\s*\\(.*", "", data$regionwb24_hi[1]))
+                ), function(chip) {
+                  div(style = paste0(
+                    "background: ", colors$light_blue, ";",
+                    "border: 1px solid ", colors$blue, ";",
+                    "border-radius: 8px; padding: 6px 14px;",
+                    "display: inline-flex; flex-direction: column; align-items: flex-start;"
+                  ),
+                    span(chip$label, style = paste0("font-size: 11px; color: ", colors$grey, "; text-transform: uppercase; letter-spacing: 0.5px;")),
+                    span(chip$value, style = paste0("font-size: 15px; font-weight: 600; color: ", colors$navy, "; margin-top: 2px;"))
+                  )
+                })
+            )
+        ),
         tags$p(
           "Among ",
           data$country_name[1],
@@ -1417,31 +1417,7 @@ server <- function(input, output, session) {
           ),
           " with available data",
           ".",
-          style = paste0("color: ", colors$navy, "; font-size: clamp(18px, 1.35vw, 20px); line-height: 1.5; margin-bottom: 16px;")
-        ),
-        fluidRow(
-          style = "margin-top: 4px;",
-          column(12,
-                 div(style = "display: flex; flex-wrap: wrap; gap: 10px;",
-                     lapply(list(
-                       list(label = "Total Population",  value = paste0(round(data$total_population[1]/1e6, 2), "M")),
-                       list(label = "Adult Population",  value = paste0(round(data$adult_population[1]/1e6, 2), "M")),
-                       list(label = "Internet Users",    value = paste0(round(data$internet_usage_all_pct[1], 1), "%")),
-                       list(label = "Income Group",      value = gsub(" income", "", data$incomegroupwb24[1])),
-                       list(label = "Region",            value = gsub("\\s*\\(.*", "", data$regionwb24_hi[1]))
-                     ), function(chip) {
-                       div(style = paste0(
-                         "background: ", colors$light_blue, ";",
-                         "border: 1px solid ", colors$blue, ";",
-                         "border-radius: 8px; padding: 6px 14px;",
-                         "display: inline-flex; flex-direction: column; align-items: flex-start;"
-                       ),
-                         span(chip$label, style = paste0("font-size: 11px; color: ", colors$grey, "; text-transform: uppercase; letter-spacing: 0.5px;")),
-                         span(chip$value, style = paste0("font-size: 15px; font-weight: 600; color: ", colors$navy, "; margin-top: 2px;"))
-                       )
-                     })
-                 )
-          )
+          style = paste0("color: ", colors$navy, "; font-size: clamp(18px, 1.35vw, 20px); line-height: 1.5; margin-bottom: 0;")
         )
     )
   })
@@ -2175,9 +2151,9 @@ server <- function(input, output, session) {
 
     max_val <- max(plot_data$Millions, na.rm = TRUE)
 
-    plot_ly(plot_data, x = ~Category, y = ~Millions, color = ~Gender,
+    plot_ly(plot_data, x = ~Gender, y = ~Millions,
             type = 'bar',
-            colors = c("All Adults" = colors$navy, "Women" = colors$teal, "Men" = colors$blue),
+            marker = list(color = c(colors$navy, colors$teal, colors$blue)),
             text = ~TextLabel,
             textposition = 'outside', cliponaxis = FALSE,
             textfont = list(size = 10, color = colors$navy),
@@ -2185,7 +2161,6 @@ server <- function(input, output, session) {
       layout(
         yaxis = list(title = 'Internet Users (Millions)', range = c(0, max_val * 1.45)),
         xaxis = list(title = ''),
-        barmode = 'group',
         showlegend = FALSE,
         plot_bgcolor = colors$light_grey,
         paper_bgcolor = 'white',
