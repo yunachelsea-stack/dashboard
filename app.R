@@ -16,7 +16,7 @@ adoption_data <- adoption_data %>%
   mutate(across(where(is.character) & !any_of(.text_cols),
                 ~ suppressWarnings(as.numeric(.x)))) %>%
   # Exclude specific countries (removable if needed)
-  filter(!codewb %in% c("MRT", "PSE", "XKX"))
+  filter(!country_name %in% c("Mauritania", "West Bank and Gaza", "Kosovo"))
 
 # Define color palette
 colors <- list(
