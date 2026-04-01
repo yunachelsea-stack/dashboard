@@ -615,7 +615,7 @@ ui <- fluidPage(
                                                         ),
                                                         p(
                                                           span("171 million", style = paste0("font-weight: 700; font-size: 1.4em; color: ", colors$blue, ";")),
-                                                          " offline people live outside broadband reach.",
+                                                          " of those offline live outside broadband reach.",
                                                           class = "home-gap-text"
                                                         )
                                                     ),
@@ -645,7 +645,7 @@ ui <- fluidPage(
                                                         ),
                                                         p(
                                                           span("1.28 billion", style = "font-weight: 700; font-size: 1.4em; color: #a9791f;"),
-                                                          " offline people have broadband coverage but do not use the internet.",
+                                                          " of those offline have broadband coverage but do not use the internet.",
                                                           class = "home-gap-text"
                                                         )
                                                     ),
@@ -675,7 +675,7 @@ ui <- fluidPage(
                                                         ),
                                                         p(
                                                           span("800 million", style = paste0("font-weight: 700; font-size: 1.4em; color: ", colors$teal, ";")),
-                                                          " offline people are women.",
+                                                          " of those offline are women.",
                                                           class = "home-gap-text"
                                                         )
                                                     ),
@@ -1138,7 +1138,7 @@ server <- function(input, output, session) {
       affected_text = c(
         "outside broadband reach",
         "offline despite coverage",
-        "of the offline are women"
+        "of those offline are women"
       ),
       region_avg = c(
         mean(region_data$gap_dominant_pct, na.rm = TRUE),
@@ -1976,11 +1976,12 @@ server <- function(input, output, session) {
       ) %>%
       arrange(desc(total_millions))
     
-    plot_ly(regional_summary, 
-            x = ~reorder(region, total_millions), 
+    max_cov <- max(regional_summary$total_millions, na.rm = TRUE)
+    plot_ly(regional_summary,
+            x = ~reorder(region, total_millions),
             y = ~total_millions,
             type = 'bar',
-            marker = list(color = sapply(regional_summary$region, 
+            marker = list(color = sapply(regional_summary$region,
                                          function(r) region_colors[[r]] %||% colors$grey)),
             text = paste0(round(regional_summary$total_millions, 1), "M<br>",
                           round(regional_summary$avg_percentage, 1), "% avg<br>",
@@ -1989,18 +1990,18 @@ server <- function(input, output, session) {
             hovertemplate = '%{x}<br>Total: %{y:.1f}M<br>%{text}<extra></extra>') %>%
       layout(
         xaxis = list(title = "", tickangle = -45),
-        yaxis = list(title = "Population (Millions)"),
+        yaxis = list(title = "Population (Millions)", range = c(0, max_cov * 1.45)),
         margin = list(b = 120),
         plot_bgcolor = colors$light_grey,
         paper_bgcolor = 'white',
         font = list(color = colors$navy)
       )
   })
-  
+
   # Regional bar chart for usage
   output$regional_bar_chart_usage <- renderPlotly({
     data <- sunburst_data_usage()
-    
+
     regional_summary <- data %>%
       group_by(region) %>%
       summarise(
@@ -2009,12 +2010,13 @@ server <- function(input, output, session) {
         countries = n()
       ) %>%
       arrange(desc(total_millions))
-    
-    plot_ly(regional_summary, 
-            x = ~reorder(region, total_millions), 
+
+    max_use <- max(regional_summary$total_millions, na.rm = TRUE)
+    plot_ly(regional_summary,
+            x = ~reorder(region, total_millions),
             y = ~total_millions,
             type = 'bar',
-            marker = list(color = sapply(regional_summary$region, 
+            marker = list(color = sapply(regional_summary$region,
                                          function(r) region_colors[[r]] %||% colors$grey)),
             text = paste0(round(regional_summary$total_millions, 1), "M<br>",
                           round(regional_summary$avg_percentage, 1), "% avg<br>",
@@ -2023,7 +2025,7 @@ server <- function(input, output, session) {
             hovertemplate = '%{x}<br>Total: %{y:.1f}M<br>%{text}<extra></extra>') %>%
       layout(
         xaxis = list(title = "", tickangle = -45),
-        yaxis = list(title = "Population (Millions)"),
+        yaxis = list(title = "Population (Millions)", range = c(0, max_use * 1.45)),
         margin = list(b = 120),
         plot_bgcolor = colors$light_grey,
         paper_bgcolor = 'white',
