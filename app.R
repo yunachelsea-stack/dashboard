@@ -9,6 +9,11 @@ library(scales)
 
 # Load the adoption data
 adoption_data <- readRDS("adoption_data.rds")
+# Coerce any numeric columns that were stored as character in the RDS
+.text_cols <- c("country_name", "regionwb24_hi", "incomegroupwb24")
+adoption_data <- adoption_data %>%
+  mutate(across(where(is.character) & !any_of(.text_cols),
+                ~ suppressWarnings(as.numeric(.x))))
 
 # Define color palette
 colors <- list(
