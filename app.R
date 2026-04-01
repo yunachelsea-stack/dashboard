@@ -987,14 +987,14 @@ ui <- fluidPage(
                                  fluidRow(
                                    column(6,
                                           h4("Coverage Gap Rankings"),
-                                          plotlyOutput("regional_bar_chart_coverage", height = "350px"),
+                                          plotlyOutput("regional_bar_chart_coverage", height = "600px"),
                                           hr(style = paste0("border-color: ", colors$light_grey, ";")),
                                           h5("Top 10 Countries - Coverage Gap"),
                                           DT::dataTableOutput("top_countries_table_coverage")
                                    ),
                                    column(6,
                                           h4("Usage Gap Rankings"),
-                                          plotlyOutput("regional_bar_chart_usage", height = "350px"),
+                                          plotlyOutput("regional_bar_chart_usage", height = "600px"),
                                           hr(style = paste0("border-color: ", colors$light_grey, ";")),
                                           h5("Top 10 Countries - Usage Gap"),
                                           DT::dataTableOutput("top_countries_table_usage")
@@ -1612,7 +1612,7 @@ server <- function(input, output, session) {
       x_max <- max(benchmark_data$value, na.rm = TRUE)
       x_pad <- max((x_max - x_min) * 0.03, 0.8)
       neg_label_min <- if(any(benchmark_data$value < 0, na.rm = TRUE)) {
-        min(benchmark_data$value[benchmark_data$value < 0], na.rm = TRUE) - x_pad * 1.1
+        min(benchmark_data$value[benchmark_data$value < 0], na.rm = TRUE) - x_pad * 2.5
       } else {
         x_min
       }
@@ -1624,12 +1624,12 @@ server <- function(input, output, session) {
         geom_col(width = 0.74) +
         geom_text(
           data = benchmark_data %>% filter(value >= 0),
-          aes(x = value + x_pad, label = text_label),
+          aes(x = pmax(value, 0) + x_pad, label = text_label),
           hjust = 0, size = 4.8, color = colors$navy
         ) +
         geom_text(
           data = benchmark_data %>% filter(value < 0),
-          aes(x = value - x_pad * 0.35, label = text_label),
+          aes(x = pmin(value, 0) - x_pad, label = text_label),
           hjust = 1, size = 4.8, color = colors$navy
         ) +
         scale_fill_manual(
