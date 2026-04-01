@@ -14,7 +14,9 @@ adoption_data <- readRDS("adoption_data.rds")
 .text_cols <- c("country_name", "regionwb24_hi", "incomegroupwb24")
 adoption_data <- adoption_data %>%
   mutate(across(where(is.character) & !any_of(.text_cols),
-                ~ suppressWarnings(as.numeric(.x))))
+                ~ suppressWarnings(as.numeric(.x)))) %>%
+  # Exclude specific countries (removable if needed)
+  filter(!codewb %in% c("MRT", "PSE", "XKX"))
 
 # Define color palette
 colors <- list(
