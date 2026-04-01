@@ -1856,23 +1856,27 @@ server <- function(input, output, session) {
     adoption_data %>%
       filter(!is.na(adults_no_dominant_millions) & adults_no_dominant_millions > 0) %>%
       mutate(
-        region = gsub("\\s*\\(.*", "", regionwb24_hi),  # Remove text after parenthesis
+        region = gsub("\\s*\\(.*", "", regionwb24_hi),
         value = adults_no_dominant_millions,
-        percentage = gap_dominant_pct
+        percentage = gap_dominant_pct,
+        value_female = women_no_dominant_millions,
+        value_male   = men_no_dominant_millions
       ) %>%
-      select(country_name, region, value, percentage)
+      select(country_name, region, value, percentage, value_female, value_male)
   })
-  
+
   # Prepare sunburst data for usage
   sunburst_data_usage <- reactive({
     adoption_data %>%
       filter(!is.na(internet_usage_gap_all_millions) & internet_usage_gap_all_millions > 0) %>%
       mutate(
-        region = gsub("\\s*\\(.*", "", regionwb24_hi),  # Remove text after parenthesis
+        region = gsub("\\s*\\(.*", "", regionwb24_hi),
         value = internet_usage_gap_all_millions,
-        percentage = internet_usage_gap_all_pct
+        percentage = internet_usage_gap_all_pct,
+        value_female = internet_usage_gap_female_millions,
+        value_male   = internet_usage_gap_male_millions
       ) %>%
-      select(country_name, region, value, percentage)
+      select(country_name, region, value, percentage, value_female, value_male)
   })
   
   # Helper: build treemap vectors for coverage/usage treemaps
@@ -1908,6 +1912,30 @@ server <- function(input, output, session) {
       node_colors  <- c(node_colors, region_colors[[data$region[i]]] %||% colors$grey)
       display_text <- c(display_text, paste0(data$country_name[i], "<br>", round(data$value[i], 1), "M"))
       hover        <- c(hover, paste0(data$country_name[i], ": ", round(data$value[i], 1), "M (", round(pct, 1), "% of region)"))
+
+      # Gender level — normalise to sum exactly to country total so branchvalues="total" holds
+      fv_raw <- if(!is.null(data$value_female)) data$value_female[i] else NA_real_
+      mv_raw <- if(!is.null(data$value_male))   data$value_male[i]   else NA_real_
+      if (!is.na(fv_raw) && !is.na(mv_raw) && (fv_raw + mv_raw) > 0) {
+        total      <- data$value[i]
+        gender_sum <- fv_raw + mv_raw
+        fv <- total * fv_raw / gender_sum
+        mv <- total * mv_raw / gender_sum
+
+        labels       <- c(labels, paste0(data$country_name[i], "|W"))
+        parents      <- c(parents, data$country_name[i])
+        values       <- c(values, fv)
+        node_colors  <- c(node_colors, colors$teal)
+        display_text <- c(display_text, paste0("Women<br>", round(fv_raw, 1), "M"))
+        hover        <- c(hover, paste0("Women in ", data$country_name[i], ": ", round(fv_raw, 1), "M (", round(fv_raw / total * 100, 1), "% of offline)"))
+
+        labels       <- c(labels, paste0(data$country_name[i], "|M"))
+        parents      <- c(parents, data$country_name[i])
+        values       <- c(values, mv)
+        node_colors  <- c(node_colors, colors$blue)
+        display_text <- c(display_text, paste0("Men<br>", round(mv_raw, 1), "M"))
+        hover        <- c(hover, paste0("Men in ", data$country_name[i], ": ", round(mv_raw, 1), "M (", round(mv_raw / total * 100, 1), "% of offline)"))
+      }
     }
 
     text_colors <- ifelse(node_colors == colors$yellow, colors$navy, "white")
