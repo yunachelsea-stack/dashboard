@@ -6,6 +6,7 @@ library(plotly)
 library(DT)
 library(shinythemes)
 library(scales)
+library(patchwork)
 
 # Load the adoption data
 adoption_data <- readRDS("adoption_data.rds")
@@ -1559,33 +1560,25 @@ server <- function(input, output, session) {
       filter(regionwb24_hi == data$regionwb24_hi[1]) %>%
       nrow()
     plot_height <- max(360, min(920, 190 + (region_n + 1) * 30))
-    
-    tagList(
-      lapply(seq_len(nrow(benchmark_gaps)), function(i) {
-        plot_id <- paste0("diagnostic_benchmark_plot_", benchmark_gaps$gap_key[i])
-        div(
-          style = if(i < nrow(benchmark_gaps)) "margin-bottom: 20px;" else "",
-          div(
-            style = "overflow-x: auto; overflow-y: hidden; display: flex; justify-content: center;",
-            div(
-              style = "width: 100%; min-width: 980px; max-width: 1400px;",
-              plotOutput(plot_id, height = paste0(plot_height, "px"), width = "100%")
-            )
-          )
-        )
-      })
+    total_height <- plot_height * nrow(benchmark_gaps)
+
+    div(
+      style = "overflow-x: auto; overflow-y: hidden; display: flex; justify-content: center;",
+      div(
+        style = "width: 100%; min-width: 980px; max-width: 1400px;",
+        plotOutput("diagnostic_benchmark_all", height = paste0(total_height, "px"), width = "100%")
+      )
     )
   })
 
-  observe({
+  output$diagnostic_benchmark_all <- renderPlot({
     data <- diagnostic_country_data()
     benchmark_gaps <- diagnostic_benchmark_gaps()
     region_data <- adoption_data %>% filter(regionwb24_hi == data$regionwb24_hi[1])
-    
-    lapply(seq_len(nrow(benchmark_gaps)), function(i) {
+
+    plots <- lapply(seq_len(nrow(benchmark_gaps)), function(i) {
       gap_row <- benchmark_gaps[i, ]
-      plot_id <- paste0("diagnostic_benchmark_plot_", gap_row$gap_key)
-      
+
       peer_data <- switch(
         gap_row$gap_key,
         "coverage" = region_data %>%
@@ -1597,7 +1590,7 @@ server <- function(input, output, session) {
       ) %>%
         filter(!is.na(label), nzchar(trimws(label)), !is.na(value)) %>%
         mutate(series = ifelse(label == data$country_name[1], "Selected Country", "Peer Country"))
-      
+
       benchmark_data <- bind_rows(
         peer_data,
         tibble(
@@ -1626,60 +1619,56 @@ server <- function(input, output, session) {
       plot_x_min <- min(x_min, neg_label_min)
       x_breaks <- pretty(c(0, x_max), n = 5)
       x_breaks <- x_breaks[x_breaks >= 0]
-      
-      output[[plot_id]] <- renderPlot({
-        ggplot(benchmark_data, aes(x = value, y = label_factor, fill = series)) +
-          geom_col(width = 0.74) +
-          geom_text(
-            data = benchmark_data %>% filter(value >= 0),
-            aes(x = value + x_pad, label = text_label),
-            hjust = 0,
-            size = 4.8,
-            color = colors$navy
-          ) +
-          geom_text(
-            data = benchmark_data %>% filter(value < 0),
-            aes(x = value - x_pad * 0.35, label = text_label),
-            hjust = 1,
-            size = 4.8,
-            color = colors$navy
-          ) +
-          scale_fill_manual(
-            values = c("Peer Country" = colors$grey, "Regional Average" = colors$teal, "Selected Country" = colors$blue),
-            breaks = c("Peer Country", "Regional Average", "Selected Country")
-          ) +
-          scale_x_continuous(
-            expand = c(0, 0),
-            breaks = x_breaks,
-            name = if(gap_row$gap_key == "gender") "Gender Gap (pp)" else "Gap Size (%)"
-          ) +
-          scale_y_discrete(expand = expansion(mult = c(0.06, 0.08))) +
-          labs(
-            title = paste0(gap_row$gap, " Across ", gsub("\\s*\\(.*", "", data$regionwb24_hi[1])),
-            y = NULL,
-            fill = NULL
-          ) +
-          coord_cartesian(xlim = c(plot_x_min, x_max + x_pad * 3), clip = "off") +
-          theme_minimal(base_size = 13) +
-          theme(
-            plot.title = element_text(size = 16, color = colors$navy, hjust = 0.5, margin = margin(b = 12)),
-            legend.position = "top",
-            legend.justification = "center",
-            legend.text = element_text(size = 11, color = colors$navy),
-            legend.margin = margin(t = 0, b = 2),
-            legend.box.margin = margin(t = 0, b = 4),
-            panel.grid.major.y = element_blank(),
-            panel.grid.minor = element_blank(),
-            panel.grid.major.x = element_line(color = "#d9dfe4", linewidth = 0.4),
-            axis.text.y = element_text(color = colors$navy, size = 11),
-            axis.ticks.y = element_blank(),
-            axis.text.x = element_text(color = colors$navy, size = 11),
-            axis.title.x = element_text(color = colors$navy, size = 12, margin = margin(t = 12)),
-            axis.title.y = element_blank(),
-            plot.margin = margin(t = 10, r = 28, b = 10, l = 20)
-          )
-      })
+
+      ggplot(benchmark_data, aes(x = value, y = label_factor, fill = series)) +
+        geom_col(width = 0.74) +
+        geom_text(
+          data = benchmark_data %>% filter(value >= 0),
+          aes(x = value + x_pad, label = text_label),
+          hjust = 0, size = 4.8, color = colors$navy
+        ) +
+        geom_text(
+          data = benchmark_data %>% filter(value < 0),
+          aes(x = value - x_pad * 0.35, label = text_label),
+          hjust = 1, size = 4.8, color = colors$navy
+        ) +
+        scale_fill_manual(
+          values = c("Peer Country" = colors$grey, "Regional Average" = colors$teal, "Selected Country" = colors$blue),
+          breaks = c("Peer Country", "Regional Average", "Selected Country")
+        ) +
+        scale_x_continuous(
+          expand = c(0, 0),
+          breaks = x_breaks,
+          name = if(gap_row$gap_key == "gender") "Gender Gap (pp)" else "Gap Size (%)"
+        ) +
+        scale_y_discrete(expand = expansion(mult = c(0.06, 0.08))) +
+        labs(
+          title = paste0(gap_row$gap, " Across ", gsub("\\s*\\(.*", "", data$regionwb24_hi[1])),
+          y = NULL, fill = NULL
+        ) +
+        coord_cartesian(xlim = c(plot_x_min, x_max + x_pad * 3), clip = "off") +
+        theme_minimal(base_size = 13) +
+        theme(
+          plot.title = element_text(size = 16, color = colors$navy, hjust = 0.5, margin = margin(b = 12)),
+          legend.position = "top",
+          legend.justification = "center",
+          legend.text = element_text(size = 11, color = colors$navy),
+          legend.margin = margin(t = 0, b = 2),
+          legend.box.margin = margin(t = 0, b = 4),
+          panel.grid.major.y = element_blank(),
+          panel.grid.minor = element_blank(),
+          panel.grid.major.x = element_line(color = "#d9dfe4", linewidth = 0.4),
+          axis.text.y = element_text(color = colors$navy, size = 11),
+          axis.ticks.y = element_blank(),
+          axis.text.x = element_text(color = colors$navy, size = 11),
+          axis.title.x = element_text(color = colors$navy, size = 12, margin = margin(t = 12)),
+          axis.title.y = element_blank(),
+          plot.margin = margin(t = 10, r = 28, b = 10, l = 20)
+        )
     })
+
+    if (length(plots) == 1) plots[[1]]
+    else Reduce(`/`, plots)
   })
   
   output$diagnostic_impact_cards <- renderUI({
