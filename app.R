@@ -878,12 +878,6 @@ ui <- fluidPage(
                                                         ),
                                                         column(1)
                                                       ),
-                                                      fluidRow(
-                                                        column(12,
-                                                               tags$p("Sources: Findex Global Digital Connectivity Tracker 2025; ITU (2022-24).",
-                                                                      style = paste0("font-size: 11px; color: ", colors$grey, "; font-style: italic; margin-top: 5px;"))
-                                                        )
-                                                      ),
                                                       # Row 2: Offline population breakdown by gender (donuts)
                                                       fluidRow(
                                                         column(4,
