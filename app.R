@@ -1952,7 +1952,7 @@ server <- function(input, output, session) {
     d <- build_treemap(data, "offline")
     plot_ly(
       labels = d$labels, parents = d$parents, values = d$values,
-      type = 'treemap', branchvalues = "total",
+      type = 'treemap', branchvalues = "total", maxdepth = 3,
       text = d$display_text,
       customdata = d$hover,
       hovertemplate = '%{customdata}<extra></extra>',
@@ -1971,7 +1971,7 @@ server <- function(input, output, session) {
     d <- build_treemap(data, "offline")
     plot_ly(
       labels = d$labels, parents = d$parents, values = d$values,
-      type = 'treemap', branchvalues = "total",
+      type = 'treemap', branchvalues = "total", maxdepth = 3,
       text = d$display_text,
       customdata = d$hover,
       hovertemplate = '%{customdata}<extra></extra>',
