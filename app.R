@@ -750,6 +750,11 @@ ui <- fluidPage(
                                        style = paste0("text-align: center; color: ", colors$navy, "; margin-top: 6px; margin-bottom: 0;")
                                      ),
                                      plotlyOutput("home_global_scenarios", height = "390px"),
+                                     p(
+                                       tags$sup("*"),
+                                       " Methodology note: these scenario estimates are directional and rely on simplified assumptions about coverage expansion, adoption responses, and gender-gap closure. They are intended for policy prioritization in the prototype rather than as precise forecasts.",
+                                       style = paste0("color: ", colors$grey, "; font-size: 12px; line-height: 1.5; margin-top: 8px; margin-bottom: 8px;")
+                                     ),
                                      div(style = "text-align: center; margin-top: 2px; margin-bottom: 2px;",
                                         tags$a(
                                           "Run a Country Diagnostic",
@@ -766,14 +771,9 @@ ui <- fluidPage(
                       fluidRow(
                         column(12,
                                p(
-                                 tags$sup("*"),
-                                 " Methodology note: these scenario estimates are directional and rely on simplified assumptions about coverage expansion, adoption responses, and gender-gap closure. They are intended for policy prioritization in the prototype rather than as precise forecasts.",
-                                 style = paste0("color: ", colors$navy, "; font-size: 13px; line-height: 1.5; margin-top: 4px; margin-bottom: 6px;")
-                               ),
-                               p(
                                  tags$sup("\u2020"),
                                  " This dashboard covers 81 LMICs. The Global Findex Digital Connectivity Tracker collects data for 90 LMICs. Of these, 7 were exclusively interviewed by phone, and are excluded in the analysis. For 2 additional countries \u2013 West Bank and Gaza, and Mauritania \u2013 coverage data was not updated, leading to their exclusion from the analysis.",
-                                 style = paste0("color: ", colors$grey, "; font-size: 12px; line-height: 1.5; margin-top: 0; margin-bottom: 10px;")
+                                 style = paste0("color: ", colors$grey, "; font-size: 12px; line-height: 1.5; margin-top: 4px; margin-bottom: 10px;")
                                )
                         )
                       )
