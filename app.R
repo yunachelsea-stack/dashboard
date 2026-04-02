@@ -583,7 +583,7 @@ ui <- fluidPage(
                                              style = paste0("color: ", colors$navy, "; margin-top: 0; margin-bottom: 14px; font-size: clamp(36px, 3.2vw, 46px); line-height: 1.08;")),
                                            tags$p(
                                              tags$strong("Today, 1.4 billion people across low- and middle-income countries remain offline."),
-                                             tags$sup("*"),
+                                             tags$sup("\u2020"),
                                              " Digital connectivity has become a powerful driver of economic growth, poverty reduction, and job creation, making digital exclusion an increasingly urgent development challenge.",
                                              style = paste0("font-size: clamp(17px, 1.35vw, 19px); line-height: 1.6; color: ", colors$navy, "; margin-bottom: 12px;")
                                            ),
@@ -592,7 +592,7 @@ ui <- fluidPage(
                                             style = paste0("font-size: clamp(16px, 1.2vw, 18px); line-height: 1.6; color: ", colors$navy, "; margin-bottom: 0;")
                                           ),
                                           tags$p(
-                                            tags$sup("*"),
+                                            tags$sup("\u2020"),
                                             "This dashboard covers 81 LMICs. The Global Findex Digital Connectivity Tracker collects data for 90 LMICs. Of these, 7 were exclusively interviewed by phone, and are excluded in the analysis. For 2 additional countries \u2013 West Bank and Gaza, and Mauritania \u2013 coverage data was not updated, leading to their exclusion from the analysis.",
                                             style = paste0("font-size: 12px; color: ", colors$grey, "; line-height: 1.5; margin-top: 10px; margin-bottom: 0;")
                                           )
