@@ -800,7 +800,8 @@ ui <- fluidPage(
                                           radioButtons("view_mode", "View Mode:",
                                                        choices = c("Country Analysis" = "single",
                                                                    "Comparative View" = "compare"),
-                                                       selected = "single", inline = TRUE)
+                                                       selected = "single", inline = TRUE),
+                                          tags$style("#view_mode .radio-inline { white-space: nowrap; display: inline-flex; align-items: center; margin-right: 12px; } #view_mode .shiny-options-group { flex-wrap: nowrap !important; display: flex; }")
                                    ),
                                    column(2,
                                           br(),
