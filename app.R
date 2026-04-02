@@ -1796,7 +1796,7 @@ server <- function(input, output, session) {
     world_total <- sum(data$value, na.rm = TRUE)
     region_sums <- tapply(data$value, data$region, sum, na.rm = TRUE)
 
-    world_label  <- paste0("World: ", round(world_total, 1), "M offline")
+    world_label  <- paste0("World: ", round(world_total, 1), "M women offline")
     labels       <- c(world_label)
     parents      <- c("")
     values       <- c(world_total)
@@ -1921,7 +1921,7 @@ server <- function(input, output, session) {
     data <- sunburst_data_coverage()
     if(nrow(data) == 0) return(plot_ly() %>% layout(title = "No data available for coverage gaps"))
 
-    d <- build_treemap(data, "offline")
+    d <- build_treemap(data, "without broadband coverage")
     plot_ly(
       labels = d$labels, parents = d$parents, values = d$values,
       type = 'treemap', branchvalues = "total",
@@ -1940,7 +1940,7 @@ server <- function(input, output, session) {
     data <- sunburst_data_usage()
     if(nrow(data) == 0) return(plot_ly() %>% layout(title = "No data available for usage gaps"))
 
-    d <- build_treemap(data, "offline")
+    d <- build_treemap(data, "with broadband coverage but remain offline")
     plot_ly(
       labels = d$labels, parents = d$parents, values = d$values,
       type = 'treemap', branchvalues = "total",
