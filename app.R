@@ -583,6 +583,7 @@ ui <- fluidPage(
                                              style = paste0("color: ", colors$navy, "; margin-top: 0; margin-bottom: 14px; font-size: clamp(36px, 3.2vw, 46px); line-height: 1.08;")),
                                            tags$p(
                                              tags$strong("Today, 1.4 billion people across low- and middle-income countries remain offline."),
+                                             tags$sup("*"),
                                              " Digital connectivity has become a powerful driver of economic growth, poverty reduction, and job creation, making digital exclusion an increasingly urgent development challenge.",
                                              style = paste0("font-size: clamp(17px, 1.35vw, 19px); line-height: 1.6; color: ", colors$navy, "; margin-bottom: 12px;")
                                            ),
@@ -590,6 +591,11 @@ ui <- fluidPage(
                                             "This interactive dashboard draws on the latest data from the Global Findex 2025 Digital Connectivity Tracker and the International Telecommunication Union (ITU). Explore global, regional and gender patterns in internet access and usage, and dive deeper into country-level trends and policy insights.",
                                             style = paste0("font-size: clamp(16px, 1.2vw, 18px); line-height: 1.6; color: ", colors$navy, "; margin-bottom: 0;")
                                           ),
+                                          tags$p(
+                                            tags$sup("*"),
+                                            "This dashboard covers 81 LMICs. The Global Findex Digital Connectivity Tracker collects data for 90 LMICs. Of these, 7 were exclusively interviewed by phone, and are excluded in the analysis. For 2 additional countries \u2013 West Bank and Gaza, and Mauritania \u2013 coverage data was not updated, leading to their exclusion from the analysis.",
+                                            style = paste0("font-size: 12px; color: ", colors$grey, "; line-height: 1.5; margin-top: 10px; margin-bottom: 0;")
+                                          )
                                       )
                                   )
                                )
@@ -750,11 +756,6 @@ ui <- fluidPage(
                                        style = paste0("text-align: center; color: ", colors$navy, "; margin-top: 6px; margin-bottom: 0;")
                                      ),
                                      plotlyOutput("home_global_scenarios", height = "390px"),
-                                     p(
-                                       tags$sup("*"),
-                                       " Methodology note: these scenario estimates are directional and rely on simplified assumptions about coverage expansion, adoption responses, and gender-gap closure. They are intended for policy prioritization in the prototype rather than as precise forecasts.",
-                                       style = paste0("color: ", colors$grey, "; font-size: 12px; line-height: 1.5; margin-top: 8px; margin-bottom: 8px;")
-                                     ),
                                      div(style = "text-align: center; margin-top: 2px; margin-bottom: 2px;",
                                         tags$a(
                                           "Run a Country Diagnostic",
@@ -771,9 +772,9 @@ ui <- fluidPage(
                       fluidRow(
                         column(12,
                                p(
-                                 tags$sup("\u2020"),
-                                 " This dashboard covers 81 LMICs. The Global Findex Digital Connectivity Tracker collects data for 90 LMICs. Of these, 7 were exclusively interviewed by phone, and are excluded in the analysis. For 2 additional countries \u2013 West Bank and Gaza, and Mauritania \u2013 coverage data was not updated, leading to their exclusion from the analysis.",
-                                 style = paste0("color: ", colors$grey, "; font-size: 12px; line-height: 1.5; margin-top: 4px; margin-bottom: 10px;")
+                                 tags$sup("*"),
+                                 " Methodology note: these scenario estimates are directional and rely on simplified assumptions about coverage expansion, adoption responses, and gender-gap closure. They are intended for policy prioritization in the prototype rather than as precise forecasts.",
+                                 style = paste0("color: ", colors$navy, "; font-size: 13px; line-height: 1.5; margin-top: 4px; margin-bottom: 10px;")
                                )
                         )
                       )
