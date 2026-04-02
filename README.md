@@ -44,8 +44,8 @@ The dashboard frames the digital divide through three gaps:
 
 | Source | Coverage | Variables |
 |---|---|---|
-| Global Findex Digital Connectivity Tracker 2025 | ~81 LMICs | Internet usage rates, coverage, gender breakdown |
-| ITU (2022–24) | Global | Supplementary connectivity indicators |
+| Global Findex Digital Connectivity Tracker 2025 | ~81 LMICs | Internet usage |
+| ITU (2022–24) | Global | Broadband coverage |
 
 **Country coverage note:** This dashboard covers 81 LMICs. The Findex Tracker collects data for 90 LMICs. Seven countries interviewed exclusively by phone are excluded. West Bank and Gaza and Mauritania are excluded due to incomplete coverage data.
 
@@ -95,4 +95,4 @@ dashboard/
 
 ## Authors
 
-World Bank — Development Data Group
+Yuna
