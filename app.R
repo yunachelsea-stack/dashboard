@@ -785,25 +785,25 @@ ui <- fluidPage(
                                wellPanel(
                                  style = "background: white; border-radius: 10px;",
                                  fluidRow(
-                                   column(3,
+                                   column(2,
                                           selectInput("country", "Select Country:",
                                                       choices = NULL, selected = NULL,
                                                       width = "100%")
                                    ),
-                                   column(4,
+                                   column(3,
                                           selectizeInput("comparison_countries", "Compare with:",
                                                          choices = NULL, selected = NULL,
                                                          multiple = TRUE, width = "100%",
                                                          options = list(placeholder = "Select countries to compare"))
                                    ),
-                                   column(3,
+                                   column(4,
                                           radioButtons("view_mode", "View Mode:",
                                                        choices = c("Country Analysis" = "single",
                                                                    "Comparative View" = "compare"),
                                                        selected = "single", inline = TRUE),
                                           tags$style("#view_mode .radio-inline { white-space: nowrap; display: inline-flex; align-items: center; margin-right: 12px; } #view_mode .shiny-options-group { flex-wrap: nowrap !important; display: flex; }")
                                    ),
-                                   column(2,
+                                   column(3,
                                           br(),
                                           downloadButton("download_data", "Download Data",
                                                          class = "btn-info btn-block",
