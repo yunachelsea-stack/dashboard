@@ -6,7 +6,6 @@ library(plotly)
 library(DT)
 library(shinythemes)
 library(scales)
-library(gridExtra)
 
 # Load the adoption data
 adoption_data <- readRDS("adoption_data.rds")
@@ -1682,7 +1681,16 @@ server <- function(input, output, session) {
       grobs <- lapply(plots, ggplotGrob)
       max_widths <- Reduce(grid::unit.pmax, lapply(grobs, function(g) g$widths))
       for (i in seq_along(grobs)) grobs[[i]]$widths <- max_widths
-      grid::grid.draw(do.call(gridExtra::arrangeGrob, c(grobs, list(ncol = 1))))
+      n <- length(grobs)
+      grid::grid.newpage()
+      vp_h <- 1 / n
+      for (i in seq_along(grobs)) {
+        vp <- grid::viewport(x = 0.5, y = 1 - (i - 0.5) * vp_h,
+                             width = 1, height = vp_h)
+        grid::pushViewport(vp)
+        grid::grid.draw(grobs[[i]])
+        grid::popViewport()
+      }
     }
   })
   
