@@ -1,27 +1,49 @@
-Eastern & Southern Africa,Western & Central Africa
-Angola,Benin
-Botswana,Burkina Faso
-Burundi,Cabo Verde
-Comoros,Cameroon
-Congo DR,Central African Republic
-Eritrea,Chad
-Eswatini,Congo Republic of
-Ethiopia,Cote d'Ivoire
-Kenya,Equatorial Guinea
-Lesotho,Gabon
-Madagascar,Gambia
-Malawi,Ghana
-Mauritius,Guinea
-Mozambique,Guinea-Bissau
-Namibia,Liberia
-Rwanda,Mali
-Sao Tome & Principe,Mauritania
-Seychelles,Niger
-Somalia FR,Nigeria
-South Africa,Senegal
-South Sudan,Sierra Leone
-Sudan,Togo
-Tanzania,,
-Uganda,,
-Zambia,,
-Zimbabwe,,
+country_name,regionwb24_hi,new_subregion
+Angola,Sub-Saharan Africa,Eastern & Southern Africa
+Botswana,Sub-Saharan Africa,Eastern & Southern Africa
+Burundi,Sub-Saharan Africa,Eastern & Southern Africa
+Comoros,Sub-Saharan Africa,Eastern & Southern Africa
+Congo DR,Sub-Saharan Africa,Eastern & Southern Africa
+Eritrea,Sub-Saharan Africa,Eastern & Southern Africa
+Eswatini,Sub-Saharan Africa,Eastern & Southern Africa
+Ethiopia,Sub-Saharan Africa,Eastern & Southern Africa
+Kenya,Sub-Saharan Africa,Eastern & Southern Africa
+Lesotho,Sub-Saharan Africa,Eastern & Southern Africa
+Madagascar,Sub-Saharan Africa,Eastern & Southern Africa
+Malawi,Sub-Saharan Africa,Eastern & Southern Africa
+Mauritius,Sub-Saharan Africa,Eastern & Southern Africa
+Mozambique,Sub-Saharan Africa,Eastern & Southern Africa
+Namibia,Sub-Saharan Africa,Eastern & Southern Africa
+Rwanda,Sub-Saharan Africa,Eastern & Southern Africa
+Sao Tome and Principe,Sub-Saharan Africa,Eastern & Southern Africa
+Seychelles,Sub-Saharan Africa,Eastern & Southern Africa
+Somalia,Sub-Saharan Africa,Eastern & Southern Africa
+South Africa,Sub-Saharan Africa,Eastern & Southern Africa
+South Sudan,Sub-Saharan Africa,Eastern & Southern Africa
+Sudan,Sub-Saharan Africa,Eastern & Southern Africa
+Tanzania,Sub-Saharan Africa,Eastern & Southern Africa
+Uganda,Sub-Saharan Africa,Eastern & Southern Africa
+Zambia,Sub-Saharan Africa,Eastern & Southern Africa
+Zimbabwe,Sub-Saharan Africa,Eastern & Southern Africa
+Benin,Sub-Saharan Africa,Western & Central Africa
+Burkina Faso,Sub-Saharan Africa,Western & Central Africa
+Cabo Verde,Sub-Saharan Africa,Western & Central Africa
+Cameroon,Sub-Saharan Africa,Western & Central Africa
+Central African Republic,Sub-Saharan Africa,Western & Central Africa
+Chad,Sub-Saharan Africa,Western & Central Africa
+Congo Republic,Sub-Saharan Africa,Western & Central Africa
+Cote d'Ivoire,Sub-Saharan Africa,Western & Central Africa
+Equatorial Guinea,Sub-Saharan Africa,Western & Central Africa
+Gabon,Sub-Saharan Africa,Western & Central Africa
+Gambia,Sub-Saharan Africa,Western & Central Africa
+Ghana,Sub-Saharan Africa,Western & Central Africa
+Guinea,Sub-Saharan Africa,Western & Central Africa
+Guinea-Bissau,Sub-Saharan Africa,Western & Central Africa
+Liberia,Sub-Saharan Africa,Western & Central Africa
+Mali,Sub-Saharan Africa,Western & Central Africa
+Mauritania,Sub-Saharan Africa,Western & Central Africa
+Niger,Sub-Saharan Africa,Western & Central Africa
+Nigeria,Sub-Saharan Africa,Western & Central Africa
+Senegal,Sub-Saharan Africa,Western & Central Africa
+Sierra Leone,Sub-Saharan Africa,Western & Central Africa
+Togo,Sub-Saharan Africa,Western & Central Africa
