@@ -762,14 +762,27 @@ ui <- fluidPage(
                                        "New internet users under each policy scenario",
                                        style = paste0("text-align: center; color: ", colors$navy, "; margin-top: 6px; margin-bottom: 2px;")
                                      ),
-                                     div(style = "display: flex; justify-content: center; gap: 28px; margin-bottom: 10px;",
+                                     div(style = "display: flex; justify-content: center; align-items: center; gap: 28px; margin-bottom: 10px; flex-wrap: wrap;",
                                          div(style = "display: flex; align-items: center; gap: 7px;",
                                              div(style = paste0("width: 14px; height: 14px; border-radius: 3px; background:", colors$blue, ";")),
-                                             tags$span("Men", style = "font-size: 13px; color: #444;")
+                                             tags$span("S1: Coverage Gap", style = "font-size: 13px; color: #444;")
+                                         ),
+                                         div(style = "display: flex; align-items: center; gap: 7px;",
+                                             div(style = paste0("width: 14px; height: 14px; border-radius: 3px; background:", colors$yellow, ";")),
+                                             tags$span("S2: Usage Gap", style = "font-size: 13px; color: #444;")
                                          ),
                                          div(style = "display: flex; align-items: center; gap: 7px;",
                                              div(style = paste0("width: 14px; height: 14px; border-radius: 3px; background:", colors$teal, ";")),
-                                             tags$span("Women", style = "font-size: 13px; color: #444;")
+                                             tags$span("S3: Gender Gap", style = "font-size: 13px; color: #444;")
+                                         ),
+                                         div(style = "width: 1px; height: 16px; background: #ddd;"),
+                                         div(style = "display: flex; align-items: center; gap: 5px;",
+                                             div(style = "width: 14px; height: 14px; border-radius: 3px; background: #555;"),
+                                             tags$span("darker = Men", style = "font-size: 12px; color: #666; font-style: italic;")
+                                         ),
+                                         div(style = "display: flex; align-items: center; gap: 5px;",
+                                             div(style = "width: 14px; height: 14px; border-radius: 3px; background: #bbb;"),
+                                             tags$span("lighter = Women", style = "font-size: 12px; color: #666; font-style: italic;")
                                          )
                                      ),
                                      fluidRow(
@@ -1075,18 +1088,27 @@ server <- function(input, output, session) {
     }
     sc <- compute_scenarios(data)
 
-    # X labels for each scenario
+    # Scenario-matched colors: darker = men, lighter = women
+    # S1 blue shades, S2 yellow shades, S3 teal (women only)
+    blue_men   <- colors$blue      # "#1984a2"
+    blue_women <- "#85c0d2"        # lighter blue
+    yel_men    <- colors$yellow    # "#ffbd59"
+    yel_women  <- "#ffdfa0"        # lighter yellow
+    teal_women <- colors$teal      # "#26a69a" — S3 women only
+
     s_labels <- c("S1: Close\nCoverage Gap", "S2: Close\nUsage Gap", "S3: Close\nGender Gap")
 
-    # Men: S1 + S2 only (S3 is women-only gain)
-    men_x   <- c(s_labels[1], s_labels[2])
-    men_y   <- c(sc$s1_men_gain, sc$s2_men_gain)
-    men_txt <- paste0("+", round(men_y, 1), "M")
+    # Men bars: S1 + S2 only (S3 has no men gain)
+    men_x     <- c(s_labels[1], s_labels[2])
+    men_y     <- c(sc$s1_men_gain, sc$s2_men_gain)
+    men_color <- c(blue_men, yel_men)
+    men_txt   <- paste0("+", round(men_y, 1), "M")
 
-    # Women: S1 + S2 + S3
-    women_x   <- s_labels
-    women_y   <- c(sc$s1_women_gain, sc$s2_women_gain, sc$gender_gain)
-    women_txt <- paste0("+", round(women_y, 1), "M")
+    # Women bars: S1 + S2 + S3
+    women_x     <- s_labels
+    women_y     <- c(sc$s1_women_gain, sc$s2_women_gain, sc$gender_gain)
+    women_color <- c(blue_women, yel_women, teal_women)
+    women_txt   <- paste0("+", round(women_y, 1), "M")
 
     y_max <- max(c(men_y, women_y), na.rm = TRUE)
 
@@ -1094,7 +1116,7 @@ server <- function(input, output, session) {
       add_bars(
         x = men_x, y = men_y,
         name = "Men",
-        marker = list(color = colors$blue),
+        marker = list(color = men_color),
         text = men_txt,
         textposition = "outside",
         textfont = list(size = 12, color = colors$navy),
@@ -1103,7 +1125,7 @@ server <- function(input, output, session) {
       add_bars(
         x = women_x, y = women_y,
         name = "Women",
-        marker = list(color = colors$teal),
+        marker = list(color = women_color),
         text = women_txt,
         textposition = "outside",
         textfont = list(size = 12, color = colors$navy),
@@ -1263,8 +1285,9 @@ server <- function(input, output, session) {
     s2_men_gain <- (s2_men_final - internet_male) * data$adult_pop_male[1] / 1e6
     s2_women_gain <- (s2_women_final - internet_female) * data$adult_pop_female[1] / 1e6
     
-    if(s2_men_final >= s2_women_final) {
-      s3_gender_gain <- (s2_men_final - s2_women_final) * data$adult_pop_female[1] / 1e6
+    # S3: standalone — bring women's current rate up to men's current rate
+    if(internet_male > internet_female) {
+      s3_gender_gain <- (internet_male - internet_female) * data$adult_pop_female[1] / 1e6
       s3_target_group <- "women"
     } else {
       s3_gender_gain <- 0
