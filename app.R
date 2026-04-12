@@ -967,8 +967,10 @@ ui <- fluidPage(
              tabPanel("Global Analysis",
                       fluidRow(
                         column(12,
-                               h2("Global Digital Divide Analysis", 
-                                  style = paste0("text-align: center; margin-bottom: 30px; color: ", colors$navy, ";"))
+                               h2("Global Digital Divide Analysis",
+                                  style = paste0("text-align: center; margin-bottom: 6px; color: ", colors$navy, ";")),
+                               p("Click on a region to explore country-level distribution.",
+                                 style = paste0("text-align: center; margin-bottom: 24px; font-size: 13px; color: ", colors$grey, "; font-style: italic;"))
                         )
                       ),
                       fluidRow(
