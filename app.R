@@ -956,7 +956,7 @@ ui <- fluidPage(
                                                       hr(style = "margin: 20px 0;"),
                                                       fluidRow(
                                                         column(12,
-                                                          h4("New Internet Users Under Each Policy Scenario",
+                                                          h4("New Internet Users by Gender Under Each Policy Scenario",
                                                              style = paste0("text-align: center; color: ", colors$navy, "; margin-bottom: 4px;")),
                                                           div(style = "display: flex; justify-content: center; gap: 20px; margin-bottom: 10px;",
                                                               div(style = "display: flex; align-items: center; gap: 5px;",
