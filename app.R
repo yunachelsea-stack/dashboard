@@ -567,39 +567,23 @@ region_colors <- list(
   "North America"                                      = colors$navy
 )
 
-# Gender gap shades per region: [reverse(<0), tiny(0-5pp), small(5-15pp), medium(15-25pp), large(>25pp)]
-# Each region uses its own color family, light→dark by gap severity
-gender_region_shades <- list(
-  "Eastern & Southern Africa"                         = c("#c0c8cc","#fff3d9","#ffd98a","#ffbd59","#d4890a"),
-  "Western & Central Africa"                          = c("#c0c8cc","#fdf0e6","#f9c898","#f4a460","#b86820"),
-  "Sub-Saharan Africa"                                = c("#c0c8cc","#fff3d9","#ffd98a","#ffbd59","#d4890a"),
-  "South Asia"                                        = c("#c0c8cc","#e6f2f5","#8ec8d8","#1984a2","#0d4d61"),
-  "East Asia & Pacific"                               = c("#c0c8cc","#e6f5f3","#7dc7c0","#26a69a","#14615b"),
-  "Latin America & Caribbean"                         = c("#c0c8cc","#fce8e0","#f0b89e","#e07b54","#9c3e1e"),
-  "Middle East, North Africa, Afghanistan & Pakistan" = c("#c0c8cc","#e8eef1","#b0c4cc","#7a96a4","#456070"),
-  "Europe & Central Asia"                             = c("#c0c8cc","#ede7f6","#b39ddb","#7b5ea7","#4a2d7a"),
-  "North America"                                     = c("#c0c8cc","#d0dfe4","#7aa3b0","#003b4a","#001c24")
+# Gender gap shades: single rose/mauve family (distinct from all region colors)
+# light → dark by gap severity
+.gender_shades <- c(
+  reverse = "#c0c8cc",   # reverse gap: neutral grey
+  tiny    = "#f5dde8",   # 0-5pp:   very light rose
+  small   = "#d48aaa",   # 5-15pp:  medium rose
+  medium  = "#a84878",   # 15-25pp: deep rose
+  large   = "#6e1f45"    # >25pp:   dark plum
 )
-# Shades that are light enough to need dark (navy) text
-.light_gender_shades <- c(
-  "#c0c8cc",
-  "#fff3d9","#ffd98a","#ffbd59",   # ESA/SSA (yellow is light even at medium)
-  "#fdf0e6","#f9c898","#f4a460",   # WCA (sandy is light even at medium)
-  "#e6f2f5","#8ec8d8",             # South Asia
-  "#e6f5f3","#7dc7c0",             # EAP
-  "#fce8e0","#f0b89e",             # LAC
-  "#e8eef1","#b0c4cc",             # MENA
-  "#ede7f6","#b39ddb",             # ECA
-  "#d0dfe4","#7aa3b0"              # North America
-)
-gender_shade <- function(region, gap) {
-  shades <- gender_region_shades[[region]]
-  if (is.null(shades)) return("#808080")
-  if      (gap <  0) shades[1]
-  else if (gap <  5) shades[2]
-  else if (gap < 15) shades[3]
-  else if (gap < 25) shades[4]
-  else               shades[5]
+.light_gender_shades <- c("#c0c8cc", "#f5dde8", "#d48aaa")
+
+gender_shade <- function(region = NULL, gap) {
+  if      (gap <  0) .gender_shades[["reverse"]]
+  else if (gap <  5) .gender_shades[["tiny"]]
+  else if (gap < 15) .gender_shades[["small"]]
+  else if (gap < 25) .gender_shades[["medium"]]
+  else               .gender_shades[["large"]]
 }
 
 # Plotly layout theme
