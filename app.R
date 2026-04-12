@@ -747,7 +747,7 @@ ui <- fluidPage(
                                    span("we model the increase in internet users from closing each gap individually", style = "font-weight: 700;"),
                                    " to help identify policy priorities.",
                                    tags$sup("*"),
-                                   " On average, closing the usage gap would bring the largest gains, though country contexts vary significantly. ",
+                                   " Globally, on average, closing the usage gap would bring the largest gains, but country contexts vary significantly. Below, we present two country examples with distinct opportunities to expand internet use. ",
                                    tags$a(
                                      "Explore country diagnostics",
                                      href = "#",
