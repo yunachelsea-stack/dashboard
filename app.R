@@ -567,6 +567,41 @@ region_colors <- list(
   "North America"                                      = colors$navy
 )
 
+# Gender gap shades per region: [reverse(<0), tiny(0-5pp), small(5-15pp), medium(15-25pp), large(>25pp)]
+# Each region uses its own color family, light→dark by gap severity
+gender_region_shades <- list(
+  "Eastern & Southern Africa"                         = c("#c0c8cc","#fff3d9","#ffd98a","#ffbd59","#d4890a"),
+  "Western & Central Africa"                          = c("#c0c8cc","#fdf0e6","#f9c898","#f4a460","#b86820"),
+  "Sub-Saharan Africa"                                = c("#c0c8cc","#fff3d9","#ffd98a","#ffbd59","#d4890a"),
+  "South Asia"                                        = c("#c0c8cc","#e6f2f5","#8ec8d8","#1984a2","#0d4d61"),
+  "East Asia & Pacific"                               = c("#c0c8cc","#e6f5f3","#7dc7c0","#26a69a","#14615b"),
+  "Latin America & Caribbean"                         = c("#c0c8cc","#fce8e0","#f0b89e","#e07b54","#9c3e1e"),
+  "Middle East, North Africa, Afghanistan & Pakistan" = c("#c0c8cc","#e8eef1","#b0c4cc","#7a96a4","#456070"),
+  "Europe & Central Asia"                             = c("#c0c8cc","#ede7f6","#b39ddb","#7b5ea7","#4a2d7a"),
+  "North America"                                     = c("#c0c8cc","#d0dfe4","#7aa3b0","#003b4a","#001c24")
+)
+# Shades that are light enough to need dark (navy) text
+.light_gender_shades <- c(
+  "#c0c8cc",
+  "#fff3d9","#ffd98a","#ffbd59",   # ESA/SSA (yellow is light even at medium)
+  "#fdf0e6","#f9c898","#f4a460",   # WCA (sandy is light even at medium)
+  "#e6f2f5","#8ec8d8",             # South Asia
+  "#e6f5f3","#7dc7c0",             # EAP
+  "#fce8e0","#f0b89e",             # LAC
+  "#e8eef1","#b0c4cc",             # MENA
+  "#ede7f6","#b39ddb",             # ECA
+  "#d0dfe4","#7aa3b0"              # North America
+)
+gender_shade <- function(region, gap) {
+  shades <- gender_region_shades[[region]]
+  if (is.null(shades)) return("#808080")
+  if      (gap <  0) shades[1]
+  else if (gap <  5) shades[2]
+  else if (gap < 15) shades[3]
+  else if (gap < 25) shades[4]
+  else               shades[5]
+}
+
 # Plotly layout theme
 plotly_theme <- function() {
   list(
@@ -1871,14 +1906,8 @@ server <- function(input, output, session) {
         region = gsub("\\s*\\(.*", "", regionwb24_hi),
         gender_gap = internet_usage_male_pct - internet_usage_female_pct,
         value = internet_usage_gap_female_millions,
-        node_color = case_when(
-          gender_gap <  0            ~ "#7a96a4",  # reverse gap: grey
-          gender_gap <  5            ~ "#e6f2f5",  # 0-5pp: very light blue
-          gender_gap < 15            ~ "#8ec8d8",  # 5-15pp: medium blue
-          gender_gap < 25            ~ "#1984a2",  # 15-25pp: app blue
-          TRUE                       ~ "#003b4a"   # >25pp: navy
-        ),
-        text_color = ifelse(node_color %in% c("#e6f2f5", "#8ec8d8"), "#003b4a", "white")
+        node_color = mapply(gender_shade, region, gender_gap),
+        text_color = ifelse(node_color %in% .light_gender_shades, colors$navy, "white")
       ) %>%
       select(country_name, region, value, gender_gap, node_color, text_color)
   })
@@ -1909,18 +1938,12 @@ server <- function(input, output, session) {
       rv      <- region_sums[[r]]
       pct     <- rv / world_total * 100
       avg_gap <- weighted.mean(rdata$gender_gap, rdata$value, na.rm = TRUE)
-      rc <- case_when(
-        avg_gap <  0  ~ "#7a96a4",
-        avg_gap <  5  ~ "#e6f2f5",
-        avg_gap < 15  ~ "#8ec8d8",
-        avg_gap < 25  ~ "#1984a2",
-        TRUE          ~ "#003b4a"
-      )
+      rc <- gender_shade(r, avg_gap)
       labels      <- c(labels, r)
       parents     <- c(parents, world_label)
       values      <- c(values, rv)
       node_colors  <- c(node_colors, rc)
-      text_colors  <- c(text_colors, ifelse(rc %in% c("#e6f2f5", "#8ec8d8"), "#003b4a", "white"))
+      text_colors  <- c(text_colors, ifelse(rc %in% .light_gender_shades, colors$navy, "white"))
       display_text <- c(display_text, paste0(r, "<br>", round(rv, 1), "M"))
       hover        <- c(hover, paste0(r, ": ", round(rv, 1), "M offline (", round(pct, 1), "% of world)"))
     }
