@@ -17,6 +17,24 @@ adoption_data <- adoption_data %>%
   # Exclude specific countries (removable if needed)
   filter(!country_name %in% c("Mauritania", "West Bank and Gaza", "Kosovo"))
 
+# Split Sub-Saharan Africa into Eastern & Southern Africa and Western & Central Africa
+.esa_countries <- c(
+  "Botswana", "Comoros", "Congo, Dem. Rep.", "Eswatini", "Ethiopia",
+  "Kenya", "Lesotho", "Madagascar", "Malawi", "Mozambique", "Namibia",
+  "South Africa", "Tanzania", "Uganda", "Zambia", "Zimbabwe"
+)
+.wca_countries <- c(
+  "Benin", "Burkina Faso", "Cameroon", "Chad", "Congo, Rep.",
+  "Cote d'Ivoire", "Gabon", "Gambia, The", "Ghana", "Guinea",
+  "Liberia", "Mali", "Niger", "Nigeria", "Senegal", "Sierra Leone", "Togo"
+)
+adoption_data <- adoption_data %>%
+  mutate(regionwb24_hi = case_when(
+    country_name %in% .esa_countries ~ "Eastern & Southern Africa",
+    country_name %in% .wca_countries ~ "Western & Central Africa",
+    TRUE ~ regionwb24_hi
+  ))
+
 # Define color palette
 colors <- list(
   blue = "#1984a2",
@@ -539,7 +557,8 @@ custom_css <- paste0("
 
 # Define region colors using the new palette - one distinct color per region
 region_colors <- list(
-  "Sub-Saharan Africa"                                 = colors$yellow,
+  "Eastern & Southern Africa"                          = colors$yellow,
+  "Western & Central Africa"                           = "#f4a460",
   "South Asia"                                         = colors$blue,
   "East Asia & Pacific"                                = colors$teal,
   "Latin America & Caribbean"                          = "#e07b54",
@@ -547,6 +566,7 @@ region_colors <- list(
   "Europe & Central Asia"                              = "#7b5ea7",
   "North America"                                      = colors$navy
 )
+
 
 # Plotly layout theme
 plotly_theme <- function() {
@@ -1853,13 +1873,13 @@ server <- function(input, output, session) {
         gender_gap = internet_usage_male_pct - internet_usage_female_pct,
         value = internet_usage_gap_female_millions,
         node_color = case_when(
-          gender_gap <  0            ~ "#7a96a4",  # reverse gap: grey
-          gender_gap <  5            ~ "#e6f2f5",  # 0-5pp: very light blue
-          gender_gap < 15            ~ "#8ec8d8",  # 5-15pp: medium blue
-          gender_gap < 25            ~ "#1984a2",  # 15-25pp: app blue
-          TRUE                       ~ "#003b4a"   # >25pp: navy
+          gender_gap <  0            ~ "#7a96a4",
+          gender_gap <  5            ~ "#e6f2f5",
+          gender_gap < 15            ~ "#8ec8d8",
+          gender_gap < 25            ~ "#1984a2",
+          TRUE                       ~ "#003b4a"
         ),
-        text_color = ifelse(node_color %in% c("#e6f2f5", "#8ec8d8"), "#003b4a", "white")
+        text_color = ifelse(node_color %in% c("#e6f2f5", "#8ec8d8"), colors$navy, "white")
       ) %>%
       select(country_name, region, value, gender_gap, node_color, text_color)
   })
@@ -1901,7 +1921,7 @@ server <- function(input, output, session) {
       parents     <- c(parents, world_label)
       values      <- c(values, rv)
       node_colors  <- c(node_colors, rc)
-      text_colors  <- c(text_colors, ifelse(rc %in% c("#e6f2f5", "#8ec8d8"), "#003b4a", "white"))
+      text_colors  <- c(text_colors, ifelse(rc %in% c("#e6f2f5", "#8ec8d8"), colors$navy, "white"))
       display_text <- c(display_text, paste0(r, "<br>", round(rv, 1), "M"))
       hover        <- c(hover, paste0(r, ": ", round(rv, 1), "M offline (", round(pct, 1), "% of world)"))
     }
