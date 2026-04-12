@@ -567,16 +567,15 @@ region_colors <- list(
   "North America"                                      = colors$navy
 )
 
-# Gender gap shades: single rose/mauve family (distinct from all region colors)
-# light → dark by gap severity
+# Gender gap shades: teal family (matches gender color used elsewhere in app)
 .gender_shades <- c(
   reverse = "#c0c8cc",   # reverse gap: neutral grey
-  tiny    = "#f5dde8",   # 0-5pp:   very light rose
-  small   = "#d48aaa",   # 5-15pp:  medium rose
-  medium  = "#a84878",   # 15-25pp: deep rose
-  large   = "#6e1f45"    # >25pp:   dark plum
+  tiny    = "#e6f5f3",   # 0-5pp:   very light teal
+  small   = "#7dc7c0",   # 5-15pp:  medium teal
+  medium  = "#26a69a",   # 15-25pp: teal
+  large   = "#14615b"    # >25pp:   dark teal
 )
-.light_gender_shades <- c("#c0c8cc", "#f5dde8", "#d48aaa")
+.light_gender_shades <- c("#c0c8cc", "#e6f5f3", "#7dc7c0")
 
 gender_shade <- function(region = NULL, gap) {
   if      (gap <  0) .gender_shades[["reverse"]]
