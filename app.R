@@ -1150,9 +1150,25 @@ server <- function(input, output, session) {
 
     y_max <- max(c(men_y, women_y), na.rm = TRUE)
 
+    # Use K if all values are below 1M
+    use_k <- y_max < 1
+    if (use_k) {
+      plot_men_y   <- men_y   * 1000
+      plot_women_y <- women_y * 1000
+      men_txt      <- paste0("+", round(men_y   * 1000, 0), "K")
+      women_txt    <- paste0("+", round(women_y * 1000, 0), "K")
+      y_axis_title <- "New internet users (K)"
+      plot_y_max   <- y_max * 1000
+    } else {
+      plot_men_y   <- men_y
+      plot_women_y <- women_y
+      y_axis_title <- "New internet users (M)"
+      plot_y_max   <- y_max
+    }
+
     plot_ly() %>%
       add_bars(
-        x = men_x, y = men_y,
+        x = men_x, y = plot_men_y,
         name = "Men",
         marker = list(color = men_color),
         text = men_txt,
@@ -1161,7 +1177,7 @@ server <- function(input, output, session) {
         hoverinfo = "skip"
       ) %>%
       add_bars(
-        x = women_x, y = women_y,
+        x = women_x, y = plot_women_y,
         name = "Women",
         marker = list(color = women_color),
         text = women_txt,
@@ -1184,10 +1200,10 @@ server <- function(input, output, session) {
           automargin = TRUE
         ),
         yaxis = list(
-          title = "New internet users (M)",
+          title = y_axis_title,
           titlefont = list(size = 12),
           tickfont  = list(size = 11),
-          range = c(0, y_max * 1.3),
+          range = c(0, plot_y_max * 1.3),
           automargin = TRUE
         ),
         showlegend = FALSE,
