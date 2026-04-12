@@ -762,27 +762,14 @@ ui <- fluidPage(
                                        "New internet users under each policy scenario",
                                        style = paste0("text-align: center; color: ", colors$navy, "; margin-top: 6px; margin-bottom: 2px;")
                                      ),
-                                     div(style = "display: flex; justify-content: center; align-items: center; gap: 28px; margin-bottom: 10px; flex-wrap: wrap;",
-                                         div(style = "display: flex; align-items: center; gap: 7px;",
-                                             div(style = paste0("width: 14px; height: 14px; border-radius: 3px; background:", colors$blue, ";")),
-                                             tags$span("S1: Coverage Gap", style = "font-size: 13px; color: #444;")
-                                         ),
-                                         div(style = "display: flex; align-items: center; gap: 7px;",
-                                             div(style = paste0("width: 14px; height: 14px; border-radius: 3px; background:", colors$yellow, ";")),
-                                             tags$span("S2: Usage Gap", style = "font-size: 13px; color: #444;")
-                                         ),
-                                         div(style = "display: flex; align-items: center; gap: 7px;",
-                                             div(style = paste0("width: 14px; height: 14px; border-radius: 3px; background:", colors$teal, ";")),
-                                             tags$span("S3: Gender Gap", style = "font-size: 13px; color: #444;")
-                                         ),
-                                         div(style = "width: 1px; height: 16px; background: #ddd;"),
+                                     div(style = "display: flex; justify-content: center; align-items: center; gap: 20px; margin-bottom: 10px;",
                                          div(style = "display: flex; align-items: center; gap: 5px;",
                                              div(style = "width: 14px; height: 14px; border-radius: 3px; background: #555;"),
-                                             tags$span("darker = Men", style = "font-size: 12px; color: #666; font-style: italic;")
+                                             tags$span("Men (darker shade)", style = "font-size: 13px; color: #555;")
                                          ),
                                          div(style = "display: flex; align-items: center; gap: 5px;",
                                              div(style = "width: 14px; height: 14px; border-radius: 3px; background: #bbb;"),
-                                             tags$span("lighter = Women", style = "font-size: 12px; color: #666; font-style: italic;")
+                                             tags$span("Women (lighter shade)", style = "font-size: 13px; color: #555;")
                                          )
                                      ),
                                      fluidRow(
@@ -1094,7 +1081,7 @@ server <- function(input, output, session) {
     blue_women <- "#85c0d2"        # lighter blue
     yel_men    <- colors$yellow    # "#ffbd59"
     yel_women  <- "#ffdfa0"        # lighter yellow
-    teal_women <- colors$teal      # "#26a69a" — S3 women only
+    teal_women <- "#7dc7c0"        # light teal — S3 women only
 
     s_labels <- c("S1: Close\nCoverage Gap", "S2: Close\nUsage Gap", "S3: Close\nGender Gap")
 
