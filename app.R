@@ -599,7 +599,7 @@ ui <- fluidPage(
                                                    style = paste0("color: ", colors$blue, "; text-decoration: underline;")),
                                             ". It accompanies ",
                                             tags$a("our full analysis",
-                                                   href = "https://documents.worldbank.org/en/publication/documents-reports/documentdetail/099033126143097016",
+                                                   href = "https://documents1.worldbank.org/curated/en/099033126143097016/pdf/P506842-871c2940-d708-4ef5-bf78-a7617d0547a2.pdf",
                                                    target = "_blank",
                                                    style = paste0("color: ", colors$blue, "; text-decoration: underline;")),
                                             " and presents global, regional and gender patterns in internet access and usage, and country-level trends and policy insights.",
