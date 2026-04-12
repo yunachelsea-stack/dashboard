@@ -17,6 +17,24 @@ adoption_data <- adoption_data %>%
   # Exclude specific countries (removable if needed)
   filter(!country_name %in% c("Mauritania", "West Bank and Gaza", "Kosovo"))
 
+# Split Sub-Saharan Africa into Eastern & Southern Africa and Western & Central Africa
+.esa_countries <- c(
+  "Botswana", "Comoros", "Congo, Dem. Rep.", "Eswatini", "Ethiopia",
+  "Kenya", "Lesotho", "Madagascar", "Malawi", "Mozambique", "Namibia",
+  "South Africa", "Tanzania", "Uganda", "Zambia", "Zimbabwe"
+)
+.wca_countries <- c(
+  "Benin", "Burkina Faso", "Cameroon", "Chad", "Congo, Rep.",
+  "Cote d'Ivoire", "Gabon", "Gambia, The", "Ghana", "Guinea",
+  "Liberia", "Mali", "Niger", "Nigeria", "Senegal", "Sierra Leone", "Togo"
+)
+adoption_data <- adoption_data %>%
+  mutate(regionwb24_hi = case_when(
+    country_name %in% .esa_countries ~ "Eastern & Southern Africa",
+    country_name %in% .wca_countries ~ "Western & Central Africa",
+    TRUE ~ regionwb24_hi
+  ))
+
 # Define color palette
 colors <- list(
   blue = "#1984a2",
@@ -539,7 +557,8 @@ custom_css <- paste0("
 
 # Define region colors using the new palette - one distinct color per region
 region_colors <- list(
-  "Sub-Saharan Africa"                                 = colors$yellow,
+  "Eastern & Southern Africa"                          = colors$yellow,
+  "Western & Central Africa"                           = "#f4a460",
   "South Asia"                                         = colors$blue,
   "East Asia & Pacific"                                = colors$teal,
   "Latin America & Caribbean"                          = "#e07b54",
