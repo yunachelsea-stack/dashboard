@@ -759,13 +759,28 @@ ui <- fluidPage(
                                  ),
                                  div(class = "home-policy-frame",
                                      h3(
-                                       tagList(
-                                         "Number of new internet users under the different policy scenarios"
-                                       ),
-                                       style = paste0("text-align: center; color: ", colors$navy, "; margin-top: 6px; margin-bottom: 0;")
+                                       "New internet users under each policy scenario",
+                                       style = paste0("text-align: center; color: ", colors$navy, "; margin-top: 6px; margin-bottom: 2px;")
                                      ),
-                                     plotlyOutput("home_global_scenarios", height = "390px"),
-                                     div(style = "text-align: center; margin-top: 2px; margin-bottom: 2px;",
+                                     div(style = "display: flex; justify-content: center; gap: 24px; margin-bottom: 10px;",
+                                         div(style = paste0("display: flex; align-items: center; gap: 6px;"),
+                                             div(style = paste0("width: 14px; height: 14px; border-radius: 3px; background:", colors$blue, ";")),
+                                             tags$span("Scenario 1: Close Coverage Gap", style = "font-size: 13px; color: #444;")
+                                         ),
+                                         div(style = paste0("display: flex; align-items: center; gap: 6px;"),
+                                             div(style = paste0("width: 14px; height: 14px; border-radius: 3px; background:", colors$yellow, ";")),
+                                             tags$span("Scenario 2: Close Usage Gap", style = "font-size: 13px; color: #444;")
+                                         ),
+                                         div(style = paste0("display: flex; align-items: center; gap: 6px;"),
+                                             div(style = paste0("width: 14px; height: 14px; border-radius: 3px; background:", colors$teal, ";")),
+                                             tags$span("Scenario 3: Close Gender Gap", style = "font-size: 13px; color: #444;")
+                                         )
+                                     ),
+                                     fluidRow(
+                                       column(6, plotlyOutput("home_niger_scenarios",   height = "320px")),
+                                       column(6, plotlyOutput("home_pakistan_scenarios", height = "320px"))
+                                     ),
+                                     div(style = "text-align: center; margin-top: 8px; margin-bottom: 2px;",
                                         tags$a(
                                           "Run a Country Diagnostic",
                                           href = "#",
@@ -1056,62 +1071,63 @@ server <- function(input, output, session) {
                          choices = countries)
   })
   
-  # Home: global scenario chart (values provided for prototype)
-  output$home_global_scenarios <- renderPlotly({
-    scenario_levels <- c("s1", "s2", "s3")
-    scenario_labels <- c(
-      "Expand Coverage to All",
-      "Maximize Adoption Rate<br>(without addressing gender disparity in adoption)",
-      "Increase Adoption Rate of Women<br>to Current Level of Men's"
-    )
-    
-    scenario_data <- tibble(
-      scenario = factor(
-        c("s1", "s1", "s2", "s2", "s3"),
-        levels = scenario_levels
+  # Home: per-country scenario chart helper
+  make_home_scenario_chart <- function(country_name_str) {
+    data <- adoption_data %>% filter(country_name == country_name_str)
+    if (nrow(data) == 0) {
+      return(plot_ly() %>% layout(title = list(text = paste(country_name_str, "- No data"))))
+    }
+    sc <- compute_scenarios(data)
+    scenario_df <- data.frame(
+      label = factor(
+        c("Scenario 1\nCoverage Gap", "Scenario 2\nUsage Gap", "Scenario 3\nGender Gap"),
+        levels = c("Scenario 1\nCoverage Gap", "Scenario 2\nUsage Gap", "Scenario 3\nGender Gap")
       ),
-      group = c("Men", "Women", "Men", "Women", "Women"),
-      value = c(53, 35, 519, 350, 208)
+      gain  = c(sc$coverage_gain, sc$usage_gain, sc$gender_gain),
+      color = c(colors$blue, colors$yellow, colors$teal),
+      stringsAsFactors = FALSE
     )
-    
+    y_max <- max(scenario_df$gain, na.rm = TRUE)
     plot_ly(
-      scenario_data,
-      x = ~scenario,
-      y = ~value,
-      color = ~group,
-      colors = c("Men" = colors$blue, "Women" = "#5a9cab"),
+      scenario_df,
+      x = ~label,
+      y = ~gain,
       type = "bar",
-      text = ~value,
+      marker = list(color = ~color),
+      text = ~paste0("+", round(gain, 1), "M"),
       textposition = "outside",
-      textfont = list(size = 14, color = colors$navy),
+      textfont = list(size = 13, color = colors$navy),
       hoverinfo = "skip"
     ) %>%
       layout(
-        barmode = "group",
+        title = list(
+          text = country_name_str,
+          font = list(size = 16, color = colors$navy),
+          x = 0.5, xanchor = "center"
+        ),
         xaxis = list(
           title = "",
-          tickvals = scenario_levels,
-          ticktext = scenario_labels,
-          tickfont = list(size = 13),
-          automargin = TRUE
-        ),
-        yaxis = list(
-          title = "",
-          range = c(0, 620),
-          ticksuffix = "M",
-          dtick = 100,
-          titlefont = list(size = 16),
           tickfont = list(size = 12),
           automargin = TRUE
         ),
-        legend = list(orientation = "h", y = 1.08, x = 0.5, xanchor = "center", font = list(size = 12)),
-        plot_bgcolor = "white",
+        yaxis = list(
+          title = "New internet users (M)",
+          titlefont = list(size = 12),
+          tickfont  = list(size = 11),
+          range = c(0, y_max * 1.25),
+          automargin = TRUE
+        ),
+        showlegend = FALSE,
+        plot_bgcolor  = "white",
         paper_bgcolor = "white",
-        font = list(color = colors$navy),
-        margin = list(l = 90, r = 30, t = 30, b = 90),
+        font   = list(color = colors$navy),
+        margin = list(l = 60, r = 20, t = 50, b = 80),
         hovermode = FALSE
       )
-  })
+  }
+
+  output$home_niger_scenarios   <- renderPlotly({ make_home_scenario_chart("Niger") })
+  output$home_pakistan_scenarios <- renderPlotly({ make_home_scenario_chart("Pakistan") })
   
   # Reactive: filtered data
   country_data <- reactive({
