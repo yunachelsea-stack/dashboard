@@ -597,7 +597,12 @@ ui <- fluidPage(
                                                    href = "https://www.itu.int/itu-d/sites/statistics/",
                                                    target = "_blank",
                                                    style = paste0("color: ", colors$blue, "; text-decoration: underline;")),
-                                            ", presenting global, regional and gender patterns in internet access and usage, and dive deeper into country-level trends and policy insights.",
+                                            ". It accompanies ",
+                                            tags$a("our full analysis",
+                                                   href = "https://documents1.worldbank.org/curated/en/099033126143097016/pdf/P506842-871c2940-d708-4ef5-bf78-a7617d0547a2.pdf",
+                                                   target = "_blank",
+                                                   style = paste0("color: ", colors$blue, "; text-decoration: underline;")),
+                                            " and presents global, regional and gender patterns in internet access and usage, and country-level trends and policy insights.",
                                             style = paste0("font-size: clamp(16px, 1.2vw, 18px); line-height: 1.6; color: ", colors$navy, "; margin-bottom: 0;")
                                           ),
                                           tags$p(
