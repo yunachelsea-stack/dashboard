@@ -951,6 +951,31 @@ ui <- fluidPage(
                                                                h4("Men Offline", style = "text-align: center;"),
                                                                plotlyOutput("men_gap_donut", height = "350px")
                                                         )
+                                                      ),
+                                                      # Row 3: Policy scenarios by gender
+                                                      hr(style = "margin: 20px 0;"),
+                                                      fluidRow(
+                                                        column(12,
+                                                          h4("New Internet Users Under Each Policy Scenario",
+                                                             style = paste0("text-align: center; color: ", colors$navy, "; margin-bottom: 4px;")),
+                                                          div(style = "display: flex; justify-content: center; gap: 20px; margin-bottom: 10px;",
+                                                              div(style = "display: flex; align-items: center; gap: 5px;",
+                                                                  div(style = "width: 13px; height: 13px; border-radius: 3px; background: #555;"),
+                                                                  tags$span("Men (darker shade)", style = "font-size: 13px; color: #555;")
+                                                              ),
+                                                              div(style = "display: flex; align-items: center; gap: 5px;",
+                                                                  div(style = "width: 13px; height: 13px; border-radius: 3px; background: #bbb;"),
+                                                                  tags$span("Women (lighter shade)", style = "font-size: 13px; color: #555;")
+                                                              )
+                                                          )
+                                                        )
+                                                      ),
+                                                      fluidRow(
+                                                        column(2),
+                                                        column(8,
+                                                               plotlyOutput("gender_dive_scenarios", height = "320px")
+                                                        ),
+                                                        column(2)
                                                       )
                                              ),
 
@@ -1174,8 +1199,9 @@ server <- function(input, output, session) {
       )
   }
 
-  output$home_niger_scenarios   <- renderPlotly({ make_home_scenario_chart("Niger") })
+  output$home_niger_scenarios    <- renderPlotly({ make_home_scenario_chart("Niger") })
   output$home_pakistan_scenarios <- renderPlotly({ make_home_scenario_chart("Pakistan") })
+  output$gender_dive_scenarios   <- renderPlotly({ make_home_scenario_chart(input$country) })
   
   # Reactive: filtered data
   country_data <- reactive({
