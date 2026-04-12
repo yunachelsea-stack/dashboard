@@ -587,7 +587,17 @@ ui <- fluidPage(
                                              style = paste0("font-size: clamp(17px, 1.35vw, 19px); line-height: 1.6; color: ", colors$navy, "; margin-bottom: 12px;")
                                            ),
                                           tags$p(
-                                            "This interactive dashboard draws on the latest data from the Global Findex 2025 Digital Connectivity Tracker and the International Telecommunication Union (ITU). Explore global, regional and gender patterns in internet access and usage, and dive deeper into country-level trends and policy insights.",
+                                            "This interactive dashboard draws on the latest data from the ",
+                                            tags$a("Global Findex 2025 Digital Connectivity Tracker",
+                                                   href = "https://www.worldbank.org/en/publication/globalfindex",
+                                                   target = "_blank",
+                                                   style = paste0("color: ", colors$blue, "; text-decoration: underline;")),
+                                            " and the ",
+                                            tags$a("International Telecommunication Union (ITU)",
+                                                   href = "https://www.itu.int/itu-d/sites/statistics/",
+                                                   target = "_blank",
+                                                   style = paste0("color: ", colors$blue, "; text-decoration: underline;")),
+                                            ". Explore global, regional and gender patterns in internet access and usage, and dive deeper into country-level trends and policy insights.",
                                             style = paste0("font-size: clamp(16px, 1.2vw, 18px); line-height: 1.6; color: ", colors$navy, "; margin-bottom: 0;")
                                           ),
                                           tags$p(
