@@ -745,9 +745,9 @@ ui <- fluidPage(
                                  p(
                                    "Different connectivity gaps require different policy responses. While closing all gaps requires comprehensive action, ",
                                    span("we model the increase in internet users from closing each gap individually", style = "font-weight: 700;"),
-                                   " to help identify policy priorities (see methodology",
+                                   " to help identify policy priorities.",
                                    tags$sup("*"),
-                                   "). On average, closing the usage gap would bring the largest gains, though country contexts vary significantly. ",
+                                   " On average, closing the usage gap would bring the largest gains, though country contexts vary significantly. ",
                                    tags$a(
                                      "Explore country diagnostics",
                                      href = "#",
@@ -793,7 +793,7 @@ ui <- fluidPage(
                         column(12,
                                p(
                                  tags$sup("*"),
-                                 " Methodology note: these scenario estimates are directional and rely on simplified assumptions about coverage expansion, adoption responses, and gender-gap closure. They are intended for policy prioritization in the prototype rather than as precise forecasts.",
+                                 " These scenario estimates are directional and rely on simplified assumptions about coverage expansion, adoption responses, and gender-gap closure. They are intended for policy prioritization rather than as precise forecasts. Detailed descriptions of the assumptions can be found in the country analysis section.",
                                  style = paste0("color: ", colors$navy, "; font-size: 13px; line-height: 1.5; margin-top: 4px; margin-bottom: 10px;")
                                )
                         )
