@@ -567,23 +567,6 @@ region_colors <- list(
   "North America"                                      = colors$navy
 )
 
-# Gender gap shades: teal family (matches gender color used elsewhere in app)
-.gender_shades <- c(
-  reverse = "#c0c8cc",   # reverse gap: neutral grey
-  tiny    = "#e6f5f3",   # 0-5pp:   very light teal
-  small   = "#7dc7c0",   # 5-15pp:  medium teal
-  medium  = "#26a69a",   # 15-25pp: teal
-  large   = "#14615b"    # >25pp:   dark teal
-)
-.light_gender_shades <- c("#c0c8cc", "#e6f5f3", "#7dc7c0")
-
-gender_shade <- function(region = NULL, gap) {
-  if      (gap <  0) .gender_shades[["reverse"]]
-  else if (gap <  5) .gender_shades[["tiny"]]
-  else if (gap < 15) .gender_shades[["small"]]
-  else if (gap < 25) .gender_shades[["medium"]]
-  else               .gender_shades[["large"]]
-}
 
 # Plotly layout theme
 plotly_theme <- function() {
@@ -1889,8 +1872,14 @@ server <- function(input, output, session) {
         region = gsub("\\s*\\(.*", "", regionwb24_hi),
         gender_gap = internet_usage_male_pct - internet_usage_female_pct,
         value = internet_usage_gap_female_millions,
-        node_color = mapply(gender_shade, region, gender_gap),
-        text_color = ifelse(node_color %in% .light_gender_shades, colors$navy, "white")
+        node_color = case_when(
+          gender_gap <  0            ~ "#7a96a4",
+          gender_gap <  5            ~ "#e6f2f5",
+          gender_gap < 15            ~ "#8ec8d8",
+          gender_gap < 25            ~ "#1984a2",
+          TRUE                       ~ "#003b4a"
+        ),
+        text_color = ifelse(node_color %in% c("#e6f2f5", "#8ec8d8"), colors$navy, "white")
       ) %>%
       select(country_name, region, value, gender_gap, node_color, text_color)
   })
@@ -1921,12 +1910,18 @@ server <- function(input, output, session) {
       rv      <- region_sums[[r]]
       pct     <- rv / world_total * 100
       avg_gap <- weighted.mean(rdata$gender_gap, rdata$value, na.rm = TRUE)
-      rc <- gender_shade(r, avg_gap)
+      rc <- case_when(
+        avg_gap <  0  ~ "#7a96a4",
+        avg_gap <  5  ~ "#e6f2f5",
+        avg_gap < 15  ~ "#8ec8d8",
+        avg_gap < 25  ~ "#1984a2",
+        TRUE          ~ "#003b4a"
+      )
       labels      <- c(labels, r)
       parents     <- c(parents, world_label)
       values      <- c(values, rv)
       node_colors  <- c(node_colors, rc)
-      text_colors  <- c(text_colors, ifelse(rc %in% .light_gender_shades, colors$navy, "white"))
+      text_colors  <- c(text_colors, ifelse(rc %in% c("#e6f2f5", "#8ec8d8"), colors$navy, "white"))
       display_text <- c(display_text, paste0(r, "<br>", round(rv, 1), "M"))
       hover        <- c(hover, paste0(r, ": ", round(rv, 1), "M offline (", round(pct, 1), "% of world)"))
     }
