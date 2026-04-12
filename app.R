@@ -597,12 +597,12 @@ ui <- fluidPage(
                                                    href = "https://www.itu.int/itu-d/sites/statistics/",
                                                    target = "_blank",
                                                    style = paste0("color: ", colors$blue, "; text-decoration: underline;")),
-                                            ". Explore global, regional and gender patterns in internet access and usage, and dive deeper into country-level trends and policy insights.",
+                                            ", presenting global, regional and gender patterns in internet access and usage, and dive deeper into country-level trends and policy insights.",
                                             style = paste0("font-size: clamp(16px, 1.2vw, 18px); line-height: 1.6; color: ", colors$navy, "; margin-bottom: 0;")
                                           ),
                                           tags$p(
                                             tags$sup("\u2020"),
-                                            "This dashboard covers 81 LMICs. The Global Findex Digital Connectivity Tracker collects data for 90 LMICs. Of these, 7 were exclusively interviewed by phone, and are excluded in the analysis. For 2 additional countries \u2013 West Bank and Gaza, and Mauritania \u2013 coverage data was not updated, leading to their exclusion from the analysis.",
+                                            "This dashboard covers 81 LMICs. The Global Findex Digital Connectivity Tracker collects data for 90 LMICs. Of these, 7 were exclusively interviewed by phone, and are excluded in the analysis. In addition, Mauritania and West Bank and Gaza were excluded due to coverage data not being updated.",
                                             style = paste0("font-size: 12px; color: ", colors$grey, "; line-height: 1.5; margin-top: 10px; margin-bottom: 0;")
                                           )
                                       )
