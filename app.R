@@ -800,6 +800,8 @@ ui <- fluidPage(
                                        column(6, plotlyOutput("home_niger_scenarios",   height = "320px")),
                                        column(6, plotlyOutput("home_pakistan_scenarios", height = "320px"))
                                      ),
+                                     p("Source: Authors' calculations using data from the Global Findex Digital Connectivity Tracker 2025 and ITU Datahub using data for 2023-24.",
+                                       style = paste0("font-size: 12px; color: ", colors$grey, "; font-style: italic; text-align: left; margin-top: 6px; margin-bottom: 8px;")),
                                      div(style = "text-align: center; margin-top: 8px; margin-bottom: 2px;",
                                         tags$a(
                                           "Run a Country Diagnostic",
