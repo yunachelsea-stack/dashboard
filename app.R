@@ -984,6 +984,12 @@ ui <- fluidPage(
                                                                plotlyOutput("gender_dive_scenarios", height = "320px")
                                                         ),
                                                         column(2)
+                                                      ),
+                                                      fluidRow(
+                                                        column(12,
+                                                               p("Source: Authors' calculations using data from the Global Findex Digital Connectivity Tracker 2025 and ITU Datahub using data for 2023-24.",
+                                                                 style = paste0("font-size: 12px; color: ", colors$grey, "; font-style: italic; margin-top: 4px; margin-bottom: 10px;"))
+                                                        )
                                                       )
                                              ),
 
