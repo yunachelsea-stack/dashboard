@@ -218,31 +218,34 @@ custom_css <- paste0("
     background-color: ", colors$navy, " !important;
     border: none !important;
     box-shadow: 0 10px 24px rgba(0, 43, 56, 0.18);
-    min-height: 56px;
+    height: 50px !important;
+    min-height: 50px !important;
     padding: 0 !important;
+    overflow: hidden !important;
   }
-  .navbar-default .navbar-header {
-    padding-top: 4px;
-    padding-bottom: 4px;
-  }
-  .navbar.navbar-default .navbar-collapse .navbar-nav {
-    margin: 0 !important;
-  }
-  .navbar.navbar-default .navbar-collapse .navbar-nav > li {
-    height: 56px !important;
+  .navbar-default .navbar-header,
+  .navbar-default .navbar-collapse {
+    height: 50px !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
   }
   .navbar-default .navbar-brand,
-  .navbar.navbar-default .navbar-collapse .navbar-nav > li > a {
+  .navbar-default .navbar-nav > li > a {
     color: white !important;
     font-weight: 500;
     letter-spacing: 0.01em;
+    height: 50px !important;
+    line-height: 50px !important;
     padding-top: 0 !important;
     padding-bottom: 0 !important;
-    line-height: 56px !important;
-    height: 56px !important;
     display: block !important;
   }
-
+  .navbar-default .navbar-nav {
+    margin: 0 !important;
+  }
+  .navbar-default .navbar-nav > li {
+    height: 50px !important;
+  }
   .navbar-default .navbar-nav > .active > a,
   .navbar-default .navbar-nav > .active > a:hover,
   .navbar-default .navbar-nav > .active > a:focus {
