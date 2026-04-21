@@ -554,8 +554,8 @@ custom_css <- paste0("
   
   .home-card-button {
     border-radius: 999px !important;
-    font-size: 17px !important;
-    padding: 11px 15px !important;
+    font-size: 13px !important;
+    padding: 8px 24px !important;
     font-weight: 600;
     box-shadow: 0 12px 24px rgba(7, 54, 73, 0.12);
   }
@@ -873,7 +873,6 @@ ui <- fluidPage(
                                           "Run a Country Diagnostic",
                                           href = "#",
                                           class = "btn btn-warning home-card-button",
-                                          style = "padding: 10px 24px;",
                                           onclick = "$('.navbar-nav a').filter(function(){return $(this).text().trim()==='Country Analysis';}).tab('show'); setTimeout(function(){ $('a[data-value=\"Diagnostic\"]').tab('show'); }, 150); return false;"
                                         )
                                      )
