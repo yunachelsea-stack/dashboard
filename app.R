@@ -183,6 +183,10 @@ valueBoxOutput <- function(outputId, width = 12) {
 
 # Custom CSS with new color scheme
 custom_css <- paste0("
+  body, h1, h2, h3, h4, h5, h6, p, span, a, label, input, select, textarea, button,
+  .navbar, .navbar-default, table, th, td, .btn, .selectize-input, .shiny-input-container {
+    font-family: 'Open Sans', sans-serif !important;
+  }
   body {
     background: linear-gradient(180deg, #f7fafc 0%, #eef4f7 100%);
     color: ", colors$navy, ";
@@ -584,7 +588,11 @@ plotly_theme <- function() {
 # UI
 ui <- fluidPage(
   theme = shinytheme("flatly"),
-  tags$head(tags$style(HTML(custom_css))),
+  tags$head(
+    tags$link(rel = "stylesheet",
+              href = "https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap"),
+    tags$style(HTML(custom_css))
+  ),
   
   titlePanel("Digital Divide Insights"),
   
