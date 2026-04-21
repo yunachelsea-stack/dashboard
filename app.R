@@ -598,8 +598,6 @@ ui <- fluidPage(
               href = "https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap"),
     tags$style(HTML(custom_css))
   ),
-  
-  titlePanel("Digital Divide Insights"),
 
   navbarPage(
     title = div(
