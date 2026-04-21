@@ -555,10 +555,18 @@ plotly_theme <- function() {
 # UI
 ui <- fluidPage(
   theme = shinytheme("flatly"),
-  tags$head(tags$style(HTML(custom_css))),
-  
-  titlePanel("Digital Divide Insights"),
-  
+  tags$head(
+    tags$link(rel = "stylesheet",
+              href = "https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap"),
+    tags$style(HTML(custom_css))
+  ),
+
+  titlePanel(
+    div(style = "display: flex; align-items: center; gap: 14px;",
+        tags$img(src = "Logo.jpg", height = "44px", style = "vertical-align: middle;"),
+        span("Digital Divide Insights", style = paste0("color: ", colors$navy, "; font-size: 24px; font-weight: 700; vertical-align: middle;"))
+    )
+  ),
   navbarPage("",
              tabPanel("Home",
                      fluidRow(
