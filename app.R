@@ -285,16 +285,16 @@ custom_css <- paste0("
   }
   
   .btn-info {
-    background-color: #38B1EF;
-    border-color: #38B1EF;
+    background-color: ", colors$navy, ";
+    border-color: ", colors$navy, ";
     color: white;
     border-radius: 999px;
     font-weight: 600;
   }
 
   .btn-warning, .btn-warning:hover, .btn-warning:focus, .btn-warning:active {
-    background-color: #38B1EF !important;
-    border-color: #38B1EF !important;
+    background-color: ", colors$navy, " !important;
+    border-color: ", colors$navy, " !important;
     color: white !important;
     border-radius: 999px !important;
     font-weight: 600;
@@ -803,10 +803,10 @@ ui <- fluidPage(
                                          icon("globe"), " Explore Global Comparisons",
                                          href = "#",
                                          style = paste0(
-                                           "display: inline-block; background: #38B1EF; color: white; ",
+                                           "display: inline-block; background: ", colors$navy, "; color: white; ",
                                            "border-radius: 25px; padding: 8px 24px; font-size: 13px; font-weight: 600; ",
                                            "text-decoration: none; letter-spacing: 0.3px; ",
-                                           "box-shadow: 0 3px 10px rgba(56,177,239,0.3); ",
+                                           "box-shadow: 0 3px 10px rgba(0,59,74,0.3); ",
                                            "transition: background 0.2s ease;"
                                          ),
                                          onclick = "$('.navbar-nav a').filter(function(){return $(this).text().trim()==='Global Analysis';}).tab('show'); return false;"
