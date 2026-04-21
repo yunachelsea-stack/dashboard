@@ -195,10 +195,8 @@ custom_css <- paste0("
   /* White header bar above the navy navbar */
   .app-header-bar {
     background-color: #ffffff !important;
-    padding: 10px 20px 10px 24px;
+    padding: 10px 20px 10px 20px;
     border-bottom: 1px solid #dde4e8;
-    margin: -15px -15px 0 -15px;
-    overflow: visible;
   }
   .app-header-divider {
     display: inline-block;
