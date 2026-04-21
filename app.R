@@ -224,14 +224,18 @@ custom_css <- paste0("
     padding-top: 4px;
     padding-bottom: 4px;
   }
-  
+  /* Remove Bootstrap's default nav margin so active highlight fills full navbar height */
+  .navbar-default .navbar-nav {
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+  }
   .navbar-default .navbar-brand,
   .navbar-default .navbar-nav > li > a {
     color: white !important;
     font-weight: 500;
     letter-spacing: 0.01em;
-    padding-top: 20px;
-    padding-bottom: 20px;
+    padding-top: 18px;
+    padding-bottom: 18px;
   }
   
   .navbar-default .navbar-nav > .active > a {
