@@ -195,8 +195,15 @@ custom_css <- paste0("
   /* White header bar above the navy navbar */
   .app-header-bar {
     background-color: #ffffff !important;
-    padding: 10px 20px 10px 20px;
+    padding: 14px 20px 14px 20px;
     border-bottom: 1px solid #dde4e8;
+    overflow: visible !important;
+  }
+  .app-header-bar img {
+    overflow: visible !important;
+  }
+  .container-fluid {
+    overflow: visible !important;
   }
   .app-header-divider {
     display: inline-block;
@@ -617,7 +624,7 @@ ui <- fluidPage(
   tags$div(
     class = "app-header-bar",
     div(style = "display: flex; align-items: center;",
-        tags$img(src = "Logo.jpg", height = "36px", style = "vertical-align: middle; display: block; margin-left: 14px;"),
+        tags$img(src = "Logo.jpg", height = "32px", style = "display: block; margin-left: 14px; margin-top: 4px;"),
         tags$span(class = "app-header-divider"),
         span("Digital Divide Insights", style = paste0("color: ", colors$navy, "; font-size: 18px; font-weight: 600; vertical-align: middle; letter-spacing: 0.01em;"))
     )
