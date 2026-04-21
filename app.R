@@ -617,7 +617,7 @@ ui <- fluidPage(
   tags$div(
     class = "app-header-bar",
     div(style = "display: flex; align-items: center;",
-        tags$img(src = "Logo.jpg", height = "36px", style = "vertical-align: middle; display: block;"),
+        tags$img(src = "Logo.jpg", height = "36px", style = "vertical-align: middle; display: block; margin-left: 14px;"),
         tags$span(class = "app-header-divider"),
         span("Digital Divide Insights", style = paste0("color: ", colors$navy, "; font-size: 18px; font-weight: 600; vertical-align: middle; letter-spacing: 0.01em;"))
     )
