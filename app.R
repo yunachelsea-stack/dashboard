@@ -599,13 +599,14 @@ ui <- fluidPage(
     tags$style(HTML(custom_css))
   ),
 
-  navbarPage(
-    title = div(
-      style = "display: flex; align-items: center; padding: 4px 0;",
-      tags$img(src = "Logo.jpg", height = "40px", style = "vertical-align: middle;"),
-      tags$span(style = paste0("display: inline-block; width: 1px; height: 32px; background: rgba(255,255,255,0.4); margin: 0 12px; vertical-align: middle;")),
-      tags$span("Digital Divide Insights", style = "color: white; font-size: 16px; font-weight: 600; vertical-align: middle; line-height: 40px;")
-    ),
+  titlePanel(
+    div(style = "display: flex; align-items: center; gap: 14px;",
+        tags$img(src = "Logo.jpg", height = "44px", style = "vertical-align: middle;"),
+        span("Digital Divide Insights", style = paste0("color: ", colors$navy, "; font-size: 24px; font-weight: 700; vertical-align: middle;"))
+    )
+  ),
+
+  navbarPage("",
              tabPanel("Home",
                      fluidRow(
                         column(12,
