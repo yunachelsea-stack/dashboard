@@ -196,6 +196,11 @@ custom_css <- paste0("
     background-color: ", colors$navy, " !important;
     border: none !important;
     box-shadow: 0 10px 24px rgba(0, 43, 56, 0.18);
+    min-height: 56px;
+  }
+  .navbar-default .navbar-header {
+    padding-top: 4px;
+    padding-bottom: 4px;
   }
   
   .navbar-default .navbar-brand,
@@ -595,8 +600,14 @@ ui <- fluidPage(
   ),
   
   titlePanel("Digital Divide Insights"),
-  
-  navbarPage("",
+
+  navbarPage(
+    title = div(
+      style = "display: flex; align-items: center; padding: 4px 0;",
+      tags$img(src = "Logo.jpg", height = "40px", style = "vertical-align: middle;"),
+      tags$span(style = paste0("display: inline-block; width: 1px; height: 32px; background: rgba(255,255,255,0.4); margin: 0 12px; vertical-align: middle;")),
+      tags$span("Digital Divide Insights", style = "color: white; font-size: 16px; font-weight: 600; vertical-align: middle; line-height: 40px;")
+    ),
              tabPanel("Home",
                      fluidRow(
                         column(12,
