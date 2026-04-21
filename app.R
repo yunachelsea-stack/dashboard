@@ -188,15 +188,21 @@ custom_css <- paste0("
     font-family: 'Open Sans', sans-serif !important;
   }
   body {
-    background: linear-gradient(180deg, #f7fafc 0%, #eef4f7 100%);
-    color: ", colors$navy, ";
+    background: #F2F2F2;
+    color: #333333;
+  }
+  a:not(.btn):not(.navbar-brand):not(.nav-link) {
+    color: #39BEEA !important;
+  }
+  a:not(.btn):not(.navbar-brand):not(.nav-link):hover {
+    color: #1e90cc !important;
   }
 
   /* White header bar above the navy navbar */
   .app-header-bar {
     background-color: #ffffff !important;
     padding: 14px 20px 14px 20px;
-    border-bottom: 1px solid #dde4e8;
+    border-bottom: 1px solid #DEDEDE;
     overflow: visible !important;
   }
   .app-header-bar img {
@@ -209,7 +215,7 @@ custom_css <- paste0("
     display: inline-block;
     width: 1px;
     height: 28px;
-    background-color: #b0bec5;
+    background-color: #DEDEDE;
     margin: 0 14px;
     vertical-align: middle;
   }
@@ -254,40 +260,40 @@ custom_css <- paste0("
   }
   
   h1, h2, h3, h4, h5 {
-    color: ", colors$navy, ";
+    color: #333333;
   }
   
   .well {
     background-color: white;
-    border: 1px solid #dde7ee;
+    border: 1px solid #DEDEDE;
     border-radius: 18px;
     box-shadow: 0 14px 38px rgba(10, 55, 76, 0.08);
   }
   
   .btn-primary {
-    background-color: ", colors$blue, ";
-    border-color: ", colors$blue, ";
+    background-color: #38B1EF;
+    border-color: #38B1EF;
     border-radius: 999px;
     font-weight: 600;
-    box-shadow: 0 10px 22px rgba(25, 132, 162, 0.22);
+    box-shadow: 0 10px 22px rgba(56, 177, 239, 0.22);
   }
-  
+
   .btn-primary:hover, .btn-primary:focus, .btn-primary:active {
-    background-color: ", colors$navy, " !important;
-    border-color: ", colors$navy, " !important;
+    background-color: #1e90cc !important;
+    border-color: #1e90cc !important;
   }
-  
+
   .btn-success {
-    background-color: ", colors$teal, ";
-    border-color: ", colors$teal, ";
+    background-color: #38B1EF;
+    border-color: #38B1EF;
     border-radius: 999px;
     font-weight: 600;
   }
-  
+
   .btn-info {
-    background-color: ", colors$yellow, ";
-    border-color: ", colors$yellow, ";
-    color: ", colors$navy, ";
+    background-color: #38B1EF;
+    border-color: #38B1EF;
+    color: white;
     border-radius: 999px;
     font-weight: 600;
   }
@@ -305,7 +311,7 @@ custom_css <- paste0("
   }
   
   .metric-title {
-    color: ", colors$navy, ";
+    color: #333333;
     font-weight: bold;
     font-size: 14px;
     margin-bottom: 5px;
@@ -335,22 +341,22 @@ custom_css <- paste0("
   }
   
   .nav-tabs > li.active > a {
-    background-color: ", colors$blue, " !important;
+    background-color: #38B1EF !important;
     color: white !important;
-    border-color: ", colors$blue, " !important;
+    border-color: #38B1EF !important;
   }
-  
+
   .nav-tabs > li > a {
-    color: ", colors$grey, ";
-    background-color: ", colors$light_grey, ";
+    color: #818181;
+    background-color: #F2F2F2;
     margin-right: 4px;
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
   }
-  
+
   .nav-tabs > li > a:hover {
-    background-color: ", colors$light_blue, ";
-    color: ", colors$navy, ";
+    background-color: #DEDEDE;
+    color: #333333;
   }
   
   input[type='radio']:checked + span {
@@ -359,7 +365,7 @@ custom_css <- paste0("
   }
   
   .selectize-input {
-    border-color: #c8d8e0 !important;
+    border-color: #DEDEDE !important;
     border-radius: 12px !important;
     min-height: 46px;
     padding-top: 10px;
@@ -368,27 +374,24 @@ custom_css <- paste0("
   }
   
   .selectize-input.focus {
-    border-color: ", colors$blue, " !important;
-    box-shadow: 0 0 0 0.2rem rgba(25, 132, 162, 0.16) !important;
+    border-color: #38B1EF !important;
+    box-shadow: 0 0 0 0.2rem rgba(56, 177, 239, 0.16) !important;
   }
   
   table.dataTable thead th {
-    background-color: ", colors$navy, " !important;
+    background-color: #333333 !important;
     color: white !important;
   }
-  
+
   table.dataTable tbody tr:hover {
-    background-color: ", colors$light_blue, " !important;
+    background-color: #F2F2F2 !important;
   }
   
   .container-fluid > h2 {
-    background: linear-gradient(135deg, ", colors$navy, ", ", colors$blue, ");
-    color: white;
-    padding: 24px;
-    margin: -15px -15px 26px -15px;
-    border-radius: 0;
-    text-align: center;
-    box-shadow: 0 16px 34px rgba(0,0,0,0.12);
+    color: #333333;
+    padding: 16px 0 10px 0;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #DEDEDE;
   }
   
   .metric-box[title] {
@@ -396,7 +399,7 @@ custom_css <- paste0("
   }
   
   .home-gap-title {
-    color: ", colors$navy, ";
+    color: #333333;
     margin-top: 6px;
     margin-bottom: 0;
     font-size: clamp(19px, 1.45vw, 22px);
@@ -406,7 +409,7 @@ custom_css <- paste0("
   
   .home-gap-text {
     margin-top: 15px;
-    color: ", colors$navy, ";
+    color: #333333;
     font-size: clamp(15px, 1.1vw, 17px);
     line-height: 1.5;
     text-align: center;
@@ -420,16 +423,16 @@ custom_css <- paste0("
   
   .home-section-shell {
     background: white;
-    border: 1px solid #dbe7ef;
+    border: 1px solid #DEDEDE;
     border-radius: 20px;
     padding: 24px 24px 22px 24px;
     margin-bottom: 22px;
     box-shadow: 0 16px 40px rgba(7, 54, 73, 0.08);
   }
-  
+
   .diagnostic-shell {
     background: white;
-    border: 1px solid #dbe7ef;
+    border: 1px solid #DEDEDE;
     border-radius: 20px;
     padding: 24px;
     margin-bottom: 22px;
@@ -500,8 +503,8 @@ custom_css <- paste0("
   }
   
   .home-policy-frame {
-    background: linear-gradient(180deg, #ffffff 0%, #f8fbfd 100%);
-    border: 1px solid #dbe5ef;
+    background: #ffffff;
+    border: 1px solid #DEDEDE;
     border-radius: 18px;
     padding: 16px 16px 10px 16px;
   }
@@ -520,18 +523,18 @@ custom_css <- paste0("
   }
   
   .home-explore-card.global-card {
-    background: linear-gradient(180deg, #fcfeff 0%, #f1f7fb 100%);
-    border: 1px solid #d6e4ef;
+    background: #ffffff;
+    border: 1px solid #DEDEDE;
   }
-  
+
   .home-explore-card.country-card {
-    background: linear-gradient(180deg, #fffdfa 0%, #fff5e8 100%);
-    border: 1px solid #f0dfc0;
+    background: #ffffff;
+    border: 1px solid #DEDEDE;
   }
-  
+
   .home-explore-card.policy-card {
-    background: linear-gradient(180deg, #fcfaff 0%, #f3ecff 100%);
-    border: 1px solid #e4d8f5;
+    background: #ffffff;
+    border: 1px solid #DEDEDE;
   }
   
   .home-explore-list {
@@ -553,8 +556,8 @@ custom_css <- paste0("
   }
   
   .diagnostic-top-shell {
-    background: linear-gradient(135deg, rgba(255,255,255,0.98) 0%, rgba(240,247,250,0.98) 100%);
-    border-top: 5px solid ", colors$blue, ";
+    background: #ffffff;
+    border-top: 5px solid #38B1EF;
   }
   
   .diagnostic-heading-copy {
@@ -569,7 +572,7 @@ custom_css <- paste0("
   }
   
   .diagnostic-footnote {
-    color: ", colors$navy, ";
+    color: #818181;
     font-size: 13px;
     line-height: 1.6;
     margin-top: 18px;
