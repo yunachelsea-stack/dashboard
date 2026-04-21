@@ -191,6 +191,14 @@ custom_css <- paste0("
     background: linear-gradient(180deg, #f7fafc 0%, #eef4f7 100%);
     color: ", colors$navy, ";
   }
+
+  /* White header bar above the navy navbar */
+  .app-header-bar {
+    background-color: #ffffff !important;
+    padding: 12px 20px 10px 20px;
+    border-bottom: 1px solid #dde4e8;
+    margin: -15px -15px 0 -15px;
+  }
   
   .navbar-default {
     background-color: ", colors$navy, " !important;
@@ -599,7 +607,8 @@ ui <- fluidPage(
     tags$style(HTML(custom_css))
   ),
 
-  titlePanel(
+  tags$div(
+    class = "app-header-bar",
     div(style = "display: flex; align-items: center; gap: 14px;",
         tags$img(src = "Logo.jpg", height = "44px", style = "vertical-align: middle;"),
         span("Digital Divide Insights", style = paste0("color: ", colors$navy, "; font-size: 24px; font-weight: 700; vertical-align: middle;"))
