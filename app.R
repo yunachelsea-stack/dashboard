@@ -219,26 +219,33 @@ custom_css <- paste0("
     border: none !important;
     box-shadow: 0 10px 24px rgba(0, 43, 56, 0.18);
     min-height: 56px;
+    padding: 0 !important;
   }
   .navbar-default .navbar-header {
     padding-top: 4px;
     padding-bottom: 4px;
   }
-  /* Remove Bootstrap's default nav margin so active highlight fills full navbar height */
-  .navbar-default .navbar-nav {
-    margin-top: 0 !important;
-    margin-bottom: 0 !important;
+  .navbar.navbar-default .navbar-collapse .navbar-nav {
+    margin: 0 !important;
+  }
+  .navbar.navbar-default .navbar-collapse .navbar-nav > li {
+    height: 56px !important;
   }
   .navbar-default .navbar-brand,
-  .navbar-default .navbar-nav > li > a {
+  .navbar.navbar-default .navbar-collapse .navbar-nav > li > a {
     color: white !important;
     font-weight: 500;
     letter-spacing: 0.01em;
-    padding-top: 18px;
-    padding-bottom: 18px;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    line-height: 56px !important;
+    height: 56px !important;
+    display: block !important;
   }
-  
-  .navbar-default .navbar-nav > .active > a {
+
+  .navbar-default .navbar-nav > .active > a,
+  .navbar-default .navbar-nav > .active > a:hover,
+  .navbar-default .navbar-nav > .active > a:focus {
     background-color: ", colors$blue, " !important;
     color: white !important;
   }
