@@ -646,7 +646,14 @@ ui <- fluidPage(
   tags$div(
     class = "app-header-bar",
     div(style = "display: flex; align-items: center;",
-        tags$img(src = "Logo.jpg", height = "32px", style = "display: block; margin-left: 14px; margin-top: 4px;"),
+        tags$a(
+          href = "https://www.worldbank.org",
+          target = "_blank",
+          rel = "noopener noreferrer",
+          title = "World Bank Group",
+          tags$img(src = "Logo.jpg", height = "32px", alt = "World Bank Group logo",
+                   style = "display: block; margin-left: 14px; margin-top: 4px;")
+        ),
         tags$span(class = "app-header-divider"),
         span("Digital Divide Insights", style = paste0("color: ", colors$navy, "; font-size: 18px; font-weight: 600; vertical-align: middle; letter-spacing: 0.01em;"))
     )
