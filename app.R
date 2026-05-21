@@ -640,7 +640,7 @@ ui <- fluidPage(
   tags$head(
     tags$title("Digital Divide Insights | World Bank Group"),
     tags$meta(name = "description",
-              content = "Explore global, regional and gender patterns in internet access and usage. An interactive dashboard by the World Bank Group drawing on the Global Findex 2025 Digital Connectivity Tracker and ITU data."),
+              content = "Explore global, regional and gender patterns in internet access and usage. An interactive dashboard by the World Bank Group drawing on latest data from the Global Findex 2025 Digital Connectivity Tracker and International Telecommunication Union."),
     tags$meta(name = "author", content = "World Bank Group"),
     tags$link(rel = "stylesheet",
               href = "https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap"),
