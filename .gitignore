@@ -1,0 +1,6 @@
+.RData
+.Rhistory
+*.Rproj
+rsconnect/
+adoption_data.csv
+adoption_data.xlsx
