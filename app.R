@@ -638,6 +638,10 @@ plotly_theme <- function() {
 ui <- fluidPage(
   theme = shinytheme("flatly"),
   tags$head(
+    tags$title("Digital Divide Insights | World Bank Group"),
+    tags$meta(name = "description",
+              content = "Explore global, regional and gender patterns in internet access and usage. An interactive dashboard by the World Bank Group drawing on the Global Findex 2025 Digital Connectivity Tracker and ITU data."),
+    tags$meta(name = "author", content = "World Bank Group"),
     tags$link(rel = "stylesheet",
               href = "https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap"),
     tags$style(HTML(custom_css))
@@ -655,7 +659,7 @@ ui <- fluidPage(
                    style = "display: block; margin-left: 14px; margin-top: 4px;")
         ),
         tags$span(class = "app-header-divider"),
-        span("Digital Divide Insights", style = paste0("color: ", colors$navy, "; font-size: 18px; font-weight: 600; vertical-align: middle; letter-spacing: 0.01em;"))
+        tags$h1("Digital Divide Insights", style = paste0("color: ", colors$navy, "; font-size: 18px; font-weight: 600; vertical-align: middle; letter-spacing: 0.01em; margin: 0; display: inline;"))
     )
   ),
 
