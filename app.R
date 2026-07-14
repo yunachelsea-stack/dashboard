@@ -679,7 +679,7 @@ ui <- fluidPage(
                                            h2("The Global Digital Divide",
                                              style = paste0("color: ", colors$navy, "; margin-top: 0; margin-bottom: 14px; font-size: clamp(36px, 3.2vw, 46px); line-height: 1.08;")),
                                            tags$p(
-                                             tags$strong("Today, 1.4 billion people across low- and middle-income countries remain offline."),
+                                             tags$strong("Today, 1.46 billion people across low- and middle-income countries remain offline."),
                                              tags$sup("\u2020"),
                                              " Digital connectivity has become a powerful driver of economic growth, poverty reduction, and job creation, making digital exclusion an increasingly urgent development challenge.",
                                              style = paste0("font-size: clamp(17px, 1.35vw, 19px); line-height: 1.6; color: ", colors$navy, "; margin-bottom: 12px;")
@@ -794,7 +794,7 @@ ui <- fluidPage(
                                                             h3("Gender Gap", class = "home-gap-title", style = "margin-top: 0;")
                                                         ),
                                                         p(
-                                                          span("800 million", style = paste0("font-weight: 700; font-size: 1.4em; color: ", colors$teal, ";")),
+                                                          span("826 million", style = paste0("font-weight: 700; font-size: 1.4em; color: ", colors$teal, ";")),
                                                           " of those offline are women.",
                                                           class = "home-gap-text"
                                                         )
@@ -804,7 +804,7 @@ ui <- fluidPage(
                                                       "padding: 10px 8px; border-top: 1px solid #cfe8e4; background: white; ",
                                                       "border-radius: 0 0 10px 10px; color: ", colors$teal, ";"
                                                     ),
-                                                        span("58% women", class = "home-gap-stat")
+                                                        span("57% women", class = "home-gap-stat")
                                                     )
                                                 )
                                          )
