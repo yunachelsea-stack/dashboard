@@ -1443,7 +1443,7 @@ server <- function(input, output, session) {
       background = c(colors$light_blue, colors$light_yellow, colors$light_teal)
     ) %>%
       mutate(
-        diff_vs_region = value - region_avg,
+        diff_vs_region = round(value, 1) - round(region_avg, 1),
         significant = case_when(
           gap_key == "coverage" ~ value >= threshold,
           gap_key == "usage" ~ value >= threshold,
