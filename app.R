@@ -731,7 +731,7 @@ ui <- fluidPage(
                                                    target = "_blank",
                                                    style = paste0("color: ", colors$blue, "; text-decoration: underline;")),
                                             ", presenting global, regional and gender patterns in internet access and usage, and economy-level trends and policy insights. ",
-                                            tags$i(tags$a("Read full analysis.",
+                                            tags$i(tags$a("Read full report.",
                                                    href = "https://documents1.worldbank.org/curated/en/099033126143097016/pdf/P506842-871c2940-d708-4ef5-bf78-a7617d0547a2.pdf",
                                                    target = "_blank",
                                                    style = paste0("color: ", colors$blue, "; text-decoration: underline;"))),
