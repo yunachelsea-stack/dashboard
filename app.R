@@ -1037,8 +1037,18 @@ ui <- fluidPage(
                                                       ),
                                                       fluidRow(
                                                         column(12,
-                                                               p("Source: Authors' calculations using data from the Global Findex Digital Connectivity Tracker 2025 and ITU Datahub using data for 2023-24.",
-                                                                 style = paste0("font-size: 12px; color: ", colors$grey, "; font-style: italic; margin-top: 4px; margin-bottom: 10px;"))
+                                                               p("Source: Authors' calculations using data from the ",
+                                                                 tags$a("Global Findex Digital Connectivity Tracker 2025",
+                                                                        href = "https://www.worldbank.org/en/publication/globalfindex",
+                                                                        target = "_blank", rel = "noopener noreferrer",
+                                                                        style = paste0("color: ", colors$navy, "; text-decoration: underline;")),
+                                                                 " and ",
+                                                                 tags$a("ITU Datahub using data for 2023-24",
+                                                                        href = "https://www.itu.int/itu-d/sites/statistics/",
+                                                                        target = "_blank", rel = "noopener noreferrer",
+                                                                        style = paste0("color: ", colors$navy, "; text-decoration: underline;")),
+                                                                 ".",
+                                                                 style = paste0("font-size: 12px; color: ", colors$navy, "; font-style: italic; margin-top: 4px; margin-bottom: 10px;"))
                                                         )
                                                       )
                                              ),
@@ -1099,8 +1109,18 @@ ui <- fluidPage(
                                                       ),
                                                       fluidRow(
                                                         column(12,
-                                                               p("Source: Authors' calculations using data from the Global Findex Digital Connectivity Tracker 2025 and ITU Datahub using data for 2023-24.",
-                                                                 style = paste0("font-size: 12px; color: ", colors$grey, "; font-style: italic; margin-top: 4px; margin-bottom: 10px;"))
+                                                               p("Source: Authors' calculations using data from the ",
+                                                                 tags$a("Global Findex Digital Connectivity Tracker 2025",
+                                                                        href = "https://www.worldbank.org/en/publication/globalfindex",
+                                                                        target = "_blank", rel = "noopener noreferrer",
+                                                                        style = paste0("color: ", colors$navy, "; text-decoration: underline;")),
+                                                                 " and ",
+                                                                 tags$a("ITU Datahub using data for 2023-24",
+                                                                        href = "https://www.itu.int/itu-d/sites/statistics/",
+                                                                        target = "_blank", rel = "noopener noreferrer",
+                                                                        style = paste0("color: ", colors$navy, "; text-decoration: underline;")),
+                                                                 ".",
+                                                                 style = paste0("font-size: 12px; color: ", colors$navy, "; font-style: italic; margin-top: 4px; margin-bottom: 10px;"))
                                                         )
                                                       )
                                              ),
