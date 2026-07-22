@@ -659,8 +659,8 @@ ui <- fluidPage(
       "about": {
         "@type": "Dataset",
         "name": "Digital Divide Insights Data",
-        "description": "Data on internet access and usage across low- and middle-income countries, including gender breakdowns and regional comparisons.",
-        "keywords": ["digital divide", "internet access", "gender gap", "digital connectivity", "low- and middle-income countries", "Global Findex", "ITU"],
+        "description": "Data on internet access and usage across low- and middle-income economies, including gender breakdowns and regional comparisons.",
+        "keywords": ["digital divide", "internet access", "gender gap", "digital connectivity", "low- and middle-income economies", "Global Findex", "ITU"],
         "creator": {
           "@type": "Organization",
           "name": "World Bank Group",
@@ -714,7 +714,7 @@ ui <- fluidPage(
                                            h2("The Global Digital Divide",
                                              style = paste0("color: ", colors$navy, "; margin-top: 0; margin-bottom: 14px; font-size: clamp(36px, 3.2vw, 46px); line-height: 1.08;")),
                                            tags$p(
-                                             tags$strong("Today, 1.46 billion people across low- and middle-income countries remain offline."),
+                                             tags$strong("Today, 1.46 billion people across low- and middle-income economies remain offline."),
                                              tags$sup("\u2020"),
                                              " Digital connectivity has become a powerful driver of economic growth, poverty reduction, and job creation, making digital exclusion an increasingly urgent development challenge.",
                                              style = paste0("font-size: clamp(17px, 1.35vw, 19px); line-height: 1.6; color: ", colors$navy, "; margin-bottom: 12px;")
@@ -730,7 +730,7 @@ ui <- fluidPage(
                                                    href = "https://www.itu.int/itu-d/sites/statistics/",
                                                    target = "_blank",
                                                    style = paste0("color: ", colors$blue, "; text-decoration: underline;")),
-                                            ", presenting global, regional and gender patterns in internet access and usage, and country-level trends and policy insights. ",
+                                            ", presenting global, regional and gender patterns in internet access and usage, and economy-level trends and policy insights. ",
                                             tags$i(tags$a("Read full analysis.",
                                                    href = "https://documents1.worldbank.org/curated/en/099033126143097016/pdf/P506842-871c2940-d708-4ef5-bf78-a7617d0547a2.pdf",
                                                    target = "_blank",
@@ -867,7 +867,7 @@ ui <- fluidPage(
                                          span("usage gap", style = "font-weight: 700;"),
                                          " refers to the share of population who live within broadband coverage, but do not use the internet or online services. Evidence suggests that affordability, limited digital skills, and the lack of relevant content online can all contribute to the usage gap. The ",
                                          span("gender gap", style = "font-weight: 700;"),
-                                         " highlights disparities between men and women in terms of their internet use. Even when infrastructure is available and affordable, women in some countries are less likely to own smartphones, make data purchases, or use digital services for economic and social activities. This gap varies across countries, and is driven by many factors, including unequal access to financial resources, lower digital literacy, concerns about safety and privacy, and gendered social norms that may limit women from benefiting from digital technologies.",
+                                         " highlights disparities between men and women in terms of their internet use. Even when infrastructure is available and affordable, women in some economies are less likely to own smartphones, make data purchases, or use digital services for economic and social activities. This gap varies across economies, and is driven by many factors, including unequal access to financial resources, lower digital literacy, concerns about safety and privacy, and gendered social norms that may limit women from benefiting from digital technologies.",
                                          style = paste0("color: ", colors$navy, "; font-size: 17px; line-height: 1.6; margin-bottom: 0;")
                                        )
                                    )
@@ -884,14 +884,14 @@ ui <- fluidPage(
                                    span("we model the increase in internet users from closing each gap individually", style = "font-weight: 700;"),
                                    " to help identify policy priorities.",
                                    tags$sup("*"),
-                                   " Globally, on average, closing the usage gap would bring the largest gains, but country contexts vary significantly. Below, we present two country examples with distinct opportunities to expand internet use. ",
+                                   " Globally, on average, closing the usage gap would bring the largest gains, but economy contexts vary significantly. Below, we present two economy examples with distinct opportunities to expand internet use.",
                                    tags$a(
-                                     "Explore country diagnostics",
+                                     "Explore economy diagnostics",
                                      href = "#",
                                      style = paste0("color: ", colors$blue, "; text-decoration: underline;"),
-                                     onclick = "$('.navbar-nav a').filter(function(){return $(this).text().trim()==='Country Analysis';}).tab('show'); setTimeout(function(){ $('a[data-value=\"Diagnostic\"]').tab('show'); }, 150); return false;"
+                                     onclick = "$('.navbar-nav a').filter(function(){return $(this).text().trim()==='Economy Analysis';}).tab('show'); setTimeout(function(){ $('a[data-value=\"Diagnostic\"]').tab('show'); }, 150); return false;"
                                    ),
-                                   " to see which gap is most critical in each country, how it compares with regional peers, and the potential policy implications.",
+                                   " to see which gap is most critical in each economy, how it compares with regional peers, and the potential policy implications.",
                                    style = paste0("color: ", colors$navy, "; font-size: 18px; margin-bottom: 15px;")
                                  ),
                                  div(class = "home-policy-frame",
@@ -917,10 +917,10 @@ ui <- fluidPage(
                                        style = paste0("font-size: 12px; color: ", colors$grey, "; font-style: italic; text-align: left; margin-top: 6px; margin-bottom: 8px;")),
                                      div(style = "text-align: center; margin-top: 8px; margin-bottom: 2px;",
                                         tags$a(
-                                          "Run a Country Diagnostic",
+                                          "Run an Economy Diagnostic",
                                           href = "#",
                                           class = "btn btn-warning home-card-button",
-                                          onclick = "$('.navbar-nav a').filter(function(){return $(this).text().trim()==='Country Analysis';}).tab('show'); setTimeout(function(){ $('a[data-value=\"Diagnostic\"]').tab('show'); }, 150); return false;"
+                                          onclick = "$('.navbar-nav a').filter(function(){return $(this).text().trim()==='Economy Analysis';}).tab('show'); setTimeout(function(){ $('a[data-value=\"Diagnostic\"]').tab('show'); }, 150); return false;"
                                         )
                                      )
                                  )
@@ -931,20 +931,20 @@ ui <- fluidPage(
                         column(12,
                                p(
                                  tags$sup("*"),
-                                 " These scenario estimates are directional and rely on simplified assumptions about coverage expansion, adoption responses, and gender-gap closure. They are intended for policy prioritization rather than as precise forecasts. Detailed descriptions of the assumptions can be found in the country analysis section.",
+                                 " These scenario estimates are directional and rely on simplified assumptions about coverage expansion, adoption responses, and gender-gap closure. They are intended for policy prioritization rather than as precise forecasts. Detailed descriptions of the assumptions can be found in the economy analysis section.",
                                  style = paste0("color: ", colors$navy, "; font-size: 13px; line-height: 1.5; margin-top: 4px; margin-bottom: 10px;")
                                )
                         )
                       )
              ),
-             tabPanel("Country Analysis",
+             tabPanel("Economy Analysis",
                       fluidRow(
                         column(12,
                                wellPanel(
                                  style = "background: white; border-radius: 10px;",
                                  fluidRow(
                                    column(2,
-                                          selectInput("country", "Select Country:",
+                                          selectInput("country", "Select Economy:",
                                                       choices = NULL, selected = NULL,
                                                       width = "100%")
                                    ),
@@ -952,11 +952,11 @@ ui <- fluidPage(
                                           selectizeInput("comparison_countries", "Compare with:",
                                                          choices = NULL, selected = NULL,
                                                          multiple = TRUE, width = "100%",
-                                                         options = list(placeholder = "Select countries to compare"))
+                                                         options = list(placeholder = "Select economies to compare"))
                                    ),
                                    column(4,
                                           radioButtons("view_mode", "View Mode:",
-                                                       choices = c("Country Analysis" = "single",
+                                                       choices = c("Economy Analysis" = "single",
                                                                    "Comparative View" = "compare"),
                                                        selected = "single", inline = TRUE),
                                           tags$style("#view_mode .radio-inline { white-space: nowrap; display: inline-flex; align-items: center; margin-right: 12px; } #view_mode .shiny-options-group { flex-wrap: nowrap !important; display: flex; }")
@@ -1002,7 +1002,7 @@ ui <- fluidPage(
                                                                    uiOutput("diagnostic_benchmark_plots"),
                                                                    p(
                                                                      tags$sup("*"),
-                                                                     " We flag gaps as significant when they are above simple thresholds: coverage gap >= 10%, usage gap >= 20%, and gender gap >= 5 percentage points where women are disadvantaged. For countries where none of these gaps are above the thresholds, the largest gap in magnitude is considered the main gap.",
+                                                                     " We flag gaps as significant when they are above simple thresholds: coverage gap >= 10%, usage gap >= 20%, and gender gap >= 5 percentage points where women are disadvantaged. For economies where none of these gaps are above the thresholds, the largest gap in magnitude is considered the main gap.",
                                                                      class = "diagnostic-footnote"
                                                                    )
                                                                )
@@ -1140,7 +1140,7 @@ ui <- fluidPage(
                         column(12,
                                h2("Global Digital Divide Analysis",
                                   style = paste0("text-align: center; margin-bottom: 6px; color: ", colors$navy, ";")),
-                               p("Click on a region for an expanded view of country-level distribution.",
+                               p("Click on a region for an expanded view of economy-level distribution.",
                                  style = paste0("text-align: center; margin-bottom: 24px; font-size: 13px; color: ", colors$grey, "; font-style: italic;"))
                         )
                       ),
@@ -1148,7 +1148,7 @@ ui <- fluidPage(
                         column(6,
                                wellPanel(
                                  style = "background: white; border-radius: 10px;",
-                                 h3("Coverage Gap by Region and Country", style = "text-align: center;"),
+                                 h3("Coverage Gap by Region and Economy", style = "text-align: center;"),
                                  plotlyOutput("global_sunburst_coverage", height = "500px"),
                                  tags$p("Population without network access (Millions)", 
                                         style = paste0("font-size: 11px; color: ", colors$grey, "; font-style: italic; text-align: center;"))
@@ -1157,7 +1157,7 @@ ui <- fluidPage(
                         column(6,
                                wellPanel(
                                  style = "background: white; border-radius: 10px;",
-                                 h3("Usage Gap by Region and Country", style = "text-align: center;"),
+                                 h3("Usage Gap by Region and Economy", style = "text-align: center;"),
                                  plotlyOutput("global_sunburst_usage", height = "500px"),
                                  tags$p("Population not using internet despite coverage (Millions)", 
                                         style = paste0("font-size: 11px; color: ", colors$grey, "; font-style: italic; text-align: center;"))
@@ -1168,7 +1168,7 @@ ui <- fluidPage(
                         column(12,
                                wellPanel(
                                  style = "background: white; border-radius: 10px;",
-                                 h3("Women Offline and Gender Gap by Region and Country", style = "text-align: center;"),
+                                 h3("Women Offline and Gender Gap by Region and Economy", style = "text-align: center;"),
                                  plotlyOutput("global_treemap_gender", height = "500px"),
                                  tags$p("Block size = women offline (Millions). Color = direction and size of gender gap in internet usage.",
                                         style = paste0("font-size: 11px; color: ", colors$grey, "; font-style: italic; text-align: center; margin-top: 6px;")),
@@ -1195,14 +1195,14 @@ ui <- fluidPage(
                                           h4("Coverage Gap Rankings"),
                                           plotlyOutput("regional_bar_chart_coverage", height = "600px"),
                                           hr(style = paste0("border-color: ", colors$light_grey, ";")),
-                                          h5("Top 10 Countries - Coverage Gap"),
+                                          h5("Top 10 Economies - Coverage Gap"),
                                           DT::dataTableOutput("top_countries_table_coverage")
                                    ),
                                    column(6,
                                           h4("Usage Gap Rankings"),
                                           plotlyOutput("regional_bar_chart_usage", height = "600px"),
                                           hr(style = paste0("border-color: ", colors$light_grey, ";")),
-                                          h5("Top 10 Countries - Usage Gap"),
+                                          h5("Top 10 Economies - Usage Gap"),
                                           DT::dataTableOutput("top_countries_table_usage")
                                    )
                                  )
@@ -1850,7 +1850,7 @@ server <- function(input, output, session) {
           transmute(label = country_name, value = internet_usage_male_pct - internet_usage_female_pct)
       ) %>%
         filter(!is.na(label), nzchar(trimws(label)), !is.na(value)) %>%
-        mutate(series = ifelse(label == data$country_name[1], "Selected Country", "Peer Country"))
+        mutate(series = ifelse(label == data$country_name[1], "Selected Economy", "Peer Economy"))
 
       benchmark_data <- bind_rows(
         peer_data,
@@ -1894,8 +1894,8 @@ server <- function(input, output, session) {
           hjust = 1, size = 4.8, color = colors$navy
         ) +
         scale_fill_manual(
-          values = c("Peer Country" = colors$grey, "Regional Average" = colors$teal, "Selected Country" = colors$blue),
-          breaks = c("Peer Country", "Regional Average", "Selected Country")
+          values = c("Peer Economy" = colors$grey, "Regional Average" = colors$teal, "Selected Economy" = colors$blue),
+          breaks = c("Peer Economy", "Regional Average", "Selected Economy")
         ) +
         scale_x_continuous(
           expand = c(0, 0),
@@ -2250,7 +2250,7 @@ server <- function(input, output, session) {
                                          function(r) region_colors[[r]] %||% colors$grey)),
             text = paste0(round(regional_summary$total_millions, 1), "M<br>",
                           round(regional_summary$avg_percentage, 1), "% avg<br>",
-                          regional_summary$countries, " countries"),
+                          regional_summary$countries, " economies"),
             textposition = 'outside', cliponaxis = FALSE,
             hovertemplate = '%{x}<br>Total: %{y:.1f}M<br>%{text}<extra></extra>') %>%
       layout(
@@ -2285,7 +2285,7 @@ server <- function(input, output, session) {
                                          function(r) region_colors[[r]] %||% colors$grey)),
             text = paste0(round(regional_summary$total_millions, 1), "M<br>",
                           round(regional_summary$avg_percentage, 1), "% avg<br>",
-                          regional_summary$countries, " countries"),
+                          regional_summary$countries, " economies"),
             textposition = 'outside', cliponaxis = FALSE,
             hovertemplate = '%{x}<br>Total: %{y:.1f}M<br>%{text}<extra></extra>') %>%
       layout(
