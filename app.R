@@ -932,7 +932,7 @@ ui <- fluidPage(
                                p(
                                  tags$sup("*"),
                                  " These scenario estimates are directional and rely on simplified assumptions about coverage expansion, adoption responses, and gender-gap closure. They are intended for policy prioritization rather than as precise forecasts. Detailed descriptions of the assumptions can be found in the economy-level analysis section.",
-                                 style = paste0("color: ", colors$navy, "; font-size: 13px; line-height: 1.5; margin-top: 4px; margin-bottom: 10px;")
+                                 style = paste0("color: ", colors$navy, "; font-size: 12px; font-style: italic; line-height: 1.5; margin-top: 4px; margin-bottom: 10px;")
                                )
                         )
                       )
