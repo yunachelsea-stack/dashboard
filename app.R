@@ -740,7 +740,7 @@ ui <- fluidPage(
                                           tags$p(
                                             tags$sup("\u2020"),
                                             "This dashboard covers 81 low and middle income economies based on World Bank's FY26 classification by income level. The Global Findex Digital Connectivity Tracker collects data for 90 LMICs. Of these, 7 were exclusively interviewed by phone, and are excluded in the analysis. In addition, Mauritania and West Bank and Gaza were excluded due to coverage data not being updated.",
-                                            style = paste0("font-size: 12px; color: ", colors$navy, "; line-height: 1.5; margin-top: 10px; margin-bottom: 0;")
+                                            style = paste0("font-size: 12px; color: ", colors$navy, "; font-style: italic; line-height: 1.5; margin-top: 10px; margin-bottom: 0;")
                                           )
                                       )
                                   )
@@ -914,7 +914,7 @@ ui <- fluidPage(
                                        column(6, plotlyOutput("home_pakistan_scenarios", height = "320px"))
                                      ),
                                      p("Source: Authors' calculations using data from the Global Findex Digital Connectivity Tracker 2025 and ITU Datahub using data for 2023-24.",
-                                       style = paste0("font-size: 12px; color: ", colors$grey, "; font-style: italic; text-align: left; margin-top: 6px; margin-bottom: 8px;")),
+                                       style = paste0("font-size: 12px; color: ", colors$navy, "; font-style: italic; text-align: left; margin-top: 6px; margin-bottom: 8px;")),
                                      div(style = "text-align: center; margin-top: 8px; margin-bottom: 2px;",
                                         tags$a(
                                           "Run an Economy-Level Diagnostic",
@@ -1171,7 +1171,7 @@ ui <- fluidPage(
                                  h3("Coverage Gap by Region and Economy", style = "text-align: center;"),
                                  plotlyOutput("global_sunburst_coverage", height = "500px"),
                                  tags$p("Population without network access (Millions)", 
-                                        style = paste0("font-size: 11px; color: ", colors$grey, "; font-style: italic; text-align: center;"))
+                                        style = paste0("font-size: 12px; color: ", colors$navy, "; font-style: italic; text-align: center;"))
                                )
                         ),
                         column(6,
@@ -1180,7 +1180,7 @@ ui <- fluidPage(
                                  h3("Usage Gap by Region and Economy", style = "text-align: center;"),
                                  plotlyOutput("global_sunburst_usage", height = "500px"),
                                  tags$p("Population not using internet despite coverage (Millions)", 
-                                        style = paste0("font-size: 11px; color: ", colors$grey, "; font-style: italic; text-align: center;"))
+                                        style = paste0("font-size: 12px; color: ", colors$navy, "; font-style: italic; text-align: center;"))
                                )
                         )
                       ),
@@ -1191,7 +1191,7 @@ ui <- fluidPage(
                                  h3("Women Offline and Gender Gap by Region and Economy", style = "text-align: center;"),
                                  plotlyOutput("global_treemap_gender", height = "500px"),
                                  tags$p("Block size = women offline (Millions). Color = direction and size of gender gap in internet usage.",
-                                        style = paste0("font-size: 11px; color: ", colors$grey, "; font-style: italic; text-align: center; margin-top: 6px;")),
+                                        style = paste0("font-size: 12px; color: ", colors$navy, "; font-style: italic; text-align: center; margin-top: 6px;")),
                                  fluidRow(
                                    style = "text-align: center; margin-top: 8px;",
                                    column(12,
@@ -1249,8 +1249,18 @@ ui <- fluidPage(
                       ),
                       fluidRow(
                         column(12,
-                               p("Source: Authors' calculations using data from the Global Findex Digital Connectivity Tracker 2025 and ITU Datahub using data for 2023-24.",
-                                 style = paste0("font-size: 12px; color: ", colors$grey, "; font-style: italic; margin-top: 4px; margin-bottom: 10px;"))
+                               p("Source: Authors' calculations using data from the ",
+                                 tags$a("Global Findex Digital Connectivity Tracker 2025",
+                                        href = "https://www.worldbank.org/en/publication/globalfindex",
+                                        target = "_blank", rel = "noopener noreferrer",
+                                        style = paste0("color: ", colors$navy, "; text-decoration: underline;")),
+                                 " and ",
+                                 tags$a("ITU Datahub using data for 2023-24",
+                                        href = "https://www.itu.int/itu-d/sites/statistics/",
+                                        target = "_blank", rel = "noopener noreferrer",
+                                        style = paste0("color: ", colors$navy, "; text-decoration: underline;")),
+                                 ".",
+                                 style = paste0("font-size: 12px; color: ", colors$navy, "; font-style: italic; margin-top: 4px; margin-bottom: 10px;"))
                         )
                       )
              )
