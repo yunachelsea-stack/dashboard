@@ -1789,9 +1789,17 @@ server <- function(input, output, session) {
                      } else if(gap_row$gap_key == "gender" && gap_row$status_label == "N/A") {
                        ""
                      } else if(gap_row$diff_vs_region >= 0) {
-                       paste0(round(gap_row$diff_vs_region, 1), " percentage points above the regional average")
+                       if(gap_row$gap_key == "gender") {
+                         paste0("Gender gap is ", round(gap_row$diff_vs_region, 1), " percentage points wider than the regional average")
+                       } else {
+                         paste0(round(gap_row$diff_vs_region, 1), " percentage points above the regional average")
+                       }
                      } else {
-                       paste0(abs(round(gap_row$diff_vs_region, 1)), " percentage points below the regional average")
+                       if(gap_row$gap_key == "gender") {
+                         paste0("Gender gap is ", abs(round(gap_row$diff_vs_region, 1)), " percentage points narrower than the regional average")
+                       } else {
+                         paste0(abs(round(gap_row$diff_vs_region, 1)), " percentage points below the regional average")
+                       }
                      }
                      
                      if(nzchar(comparison_text)) {
