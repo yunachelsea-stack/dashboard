@@ -884,12 +884,12 @@ ui <- fluidPage(
                                    span("we model the increase in internet users from closing each gap individually", style = "font-weight: 700;"),
                                    " to help identify policy priorities.",
                                    tags$sup("*"),
-                                   " Globally, on average, closing the usage gap would bring the largest gains, but economy contexts vary significantly. Below, we present two economy examples with distinct opportunities to expand internet use.",
+                                   " Globally, on average, closing the usage gap would bring the largest gains, but contexts vary significantly. Below, we present two examples with distinct opportunities to expand internet use.",
                                    tags$a(
-                                     "Explore economy diagnostics",
+                                     "Explore economy-level diagnostics",
                                      href = "#",
                                      style = paste0("color: ", colors$blue, "; text-decoration: underline;"),
-                                     onclick = "$('.navbar-nav a').filter(function(){return $(this).text().trim()==='Economy Analysis';}).tab('show'); setTimeout(function(){ $('a[data-value=\"Diagnostic\"]').tab('show'); }, 150); return false;"
+                                     onclick = "$('.navbar-nav a').filter(function(){return $(this).text().trim()==='Economy-Level Analysis';}).tab('show'); setTimeout(function(){ $('a[data-value=\"Diagnostic\"]').tab('show'); }, 150); return false;"
                                    ),
                                    " to see which gap is most critical in each economy, how it compares with regional peers, and the potential policy implications.",
                                    style = paste0("color: ", colors$navy, "; font-size: 18px; margin-bottom: 15px;")
@@ -917,10 +917,10 @@ ui <- fluidPage(
                                        style = paste0("font-size: 12px; color: ", colors$grey, "; font-style: italic; text-align: left; margin-top: 6px; margin-bottom: 8px;")),
                                      div(style = "text-align: center; margin-top: 8px; margin-bottom: 2px;",
                                         tags$a(
-                                          "Run an Economy Diagnostic",
+                                          "Run an Economy-Level Diagnostic",
                                           href = "#",
                                           class = "btn btn-warning home-card-button",
-                                          onclick = "$('.navbar-nav a').filter(function(){return $(this).text().trim()==='Economy Analysis';}).tab('show'); setTimeout(function(){ $('a[data-value=\"Diagnostic\"]').tab('show'); }, 150); return false;"
+                                          onclick = "$('.navbar-nav a').filter(function(){return $(this).text().trim()==='Economy-Level Analysis';}).tab('show'); setTimeout(function(){ $('a[data-value=\"Diagnostic\"]').tab('show'); }, 150); return false;"
                                         )
                                      )
                                  )
@@ -931,13 +931,13 @@ ui <- fluidPage(
                         column(12,
                                p(
                                  tags$sup("*"),
-                                 " These scenario estimates are directional and rely on simplified assumptions about coverage expansion, adoption responses, and gender-gap closure. They are intended for policy prioritization rather than as precise forecasts. Detailed descriptions of the assumptions can be found in the economy analysis section.",
+                                 " These scenario estimates are directional and rely on simplified assumptions about coverage expansion, adoption responses, and gender-gap closure. They are intended for policy prioritization rather than as precise forecasts. Detailed descriptions of the assumptions can be found in the economy-level analysis section.",
                                  style = paste0("color: ", colors$navy, "; font-size: 13px; line-height: 1.5; margin-top: 4px; margin-bottom: 10px;")
                                )
                         )
                       )
              ),
-             tabPanel("Economy Analysis",
+             tabPanel("Economy-Level Analysis",
                       fluidRow(
                         column(12,
                                wellPanel(
@@ -956,7 +956,7 @@ ui <- fluidPage(
                                    ),
                                    column(4,
                                           radioButtons("view_mode", "View Mode:",
-                                                       choices = c("Economy Analysis" = "single",
+                                                       choices = c("Economy-Level Analysis" = "single",
                                                                    "Comparative View" = "compare"),
                                                        selected = "single", inline = TRUE),
                                           tags$style("#view_mode .radio-inline { white-space: nowrap; display: inline-flex; align-items: center; margin-right: 12px; } #view_mode .shiny-options-group { flex-wrap: nowrap !important; display: flex; }")
