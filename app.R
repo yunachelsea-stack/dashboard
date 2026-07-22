@@ -1158,10 +1158,8 @@ ui <- fluidPage(
              tabPanel("Global Analysis",
                       fluidRow(
                         column(12,
-                               h2("Global Digital Divide Analysis",
+                               h2("Global Digital Divide Analysis", tags$sup("†"),
                                   style = paste0("text-align: center; margin-bottom: 6px; color: ", colors$navy, ";")),
-                               p("This dashboard covers 81 low and middle income economies based on World Bank's FY26 classification by income level.",
-                                 style = paste0("text-align: center; font-size: 12px; color: ", colors$navy, "; font-style: italic; margin-bottom: 4px;")),
                                p("Click on a region for an expanded view of economy-level distribution.",
                                  style = paste0("text-align: center; margin-bottom: 24px; font-size: 13px; color: ", colors$grey, "; font-style: italic;"))
                         )
@@ -1251,6 +1249,9 @@ ui <- fluidPage(
                       ),
                       fluidRow(
                         column(12,
+                               p(tags$sup("†"),
+                                 "This dashboard covers 81 low and middle income economies based on World Bank's FY26 classification by income level.",
+                                 style = paste0("font-size: 12px; color: ", colors$navy, "; font-style: italic; margin-top: 4px; margin-bottom: 4px;")),
                                p("Source: Authors' calculations using data from the ",
                                  tags$a("Global Findex Digital Connectivity Tracker 2025",
                                         href = "https://www.worldbank.org/en/publication/globalfindex",
