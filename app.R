@@ -659,8 +659,8 @@ ui <- fluidPage(
       "about": {
         "@type": "Dataset",
         "name": "Digital Divide Insights Data",
-        "description": "Data on internet access and usage across low- and middle-income economies, including gender breakdowns and regional comparisons.",
-        "keywords": ["digital divide", "internet access", "gender gap", "digital connectivity", "low- and middle-income economies", "Global Findex", "ITU"],
+        "description": "Data on internet access and usage across low and middle income economies, including gender breakdowns and regional comparisons.",
+        "keywords": ["digital divide", "internet access", "gender gap", "digital connectivity", "low and middle income economies", "Global Findex", "ITU"],
         "creator": {
           "@type": "Organization",
           "name": "World Bank Group",
@@ -714,7 +714,7 @@ ui <- fluidPage(
                                            h2("The Global Digital Divide",
                                              style = paste0("color: ", colors$navy, "; margin-top: 0; margin-bottom: 14px; font-size: clamp(36px, 3.2vw, 46px); line-height: 1.08;")),
                                            tags$p(
-                                             tags$strong("Today, 1.46 billion people across low- and middle-income economies remain offline."),
+                                             tags$strong("Today, 1.46 billion people across low and middle income economies remain offline."),
                                              tags$sup("\u2020"),
                                              " Digital connectivity has become a powerful driver of economic growth, poverty reduction, and job creation, making digital exclusion an increasingly urgent development challenge.",
                                              style = paste0("font-size: clamp(17px, 1.35vw, 19px); line-height: 1.6; color: ", colors$navy, "; margin-bottom: 12px;")
@@ -739,7 +739,7 @@ ui <- fluidPage(
                                           ),
                                           tags$p(
                                             tags$sup("\u2020"),
-                                            "This dashboard covers 81 low-and-middle-income economies based on World Bank's FY26 classification by income level. The Global Findex Digital Connectivity Tracker collects data for 90 LMICs. Of these, 7 were exclusively interviewed by phone, and are excluded in the analysis. In addition, Mauritania and West Bank and Gaza were excluded due to coverage data not being updated.",
+                                            "This dashboard covers 81 low and middle income economies based on World Bank's FY26 classification by income level. The Global Findex Digital Connectivity Tracker collects data for 90 LMICs. Of these, 7 were exclusively interviewed by phone, and are excluded in the analysis. In addition, Mauritania and West Bank and Gaza were excluded due to coverage data not being updated.",
                                             style = paste0("font-size: 12px; color: ", colors$navy, "; line-height: 1.5; margin-top: 10px; margin-bottom: 0;")
                                           )
                                       )
