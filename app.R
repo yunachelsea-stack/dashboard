@@ -1160,6 +1160,8 @@ ui <- fluidPage(
                         column(12,
                                h2("Global Digital Divide Analysis",
                                   style = paste0("text-align: center; margin-bottom: 6px; color: ", colors$navy, ";")),
+                               p("This dashboard covers 81 low and middle income economies based on World Bank's FY26 classification by income level.",
+                                 style = paste0("text-align: center; font-size: 12px; color: ", colors$navy, "; font-style: italic; margin-bottom: 4px;")),
                                p("Click on a region for an expanded view of economy-level distribution.",
                                  style = paste0("text-align: center; margin-bottom: 24px; font-size: 13px; color: ", colors$grey, "; font-style: italic;"))
                         )
