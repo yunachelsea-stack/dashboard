@@ -1402,12 +1402,13 @@ server <- function(input, output, session) {
         mean(region_usage_gap, na.rm = TRUE),
         mean(gender_region_gap, na.rm = TRUE)
       ),
+      women_disadvantaged_flag = c(FALSE, FALSE, women_disadvantaged),
       direction_text = c(
         "",
         "",
         ifelse(
           women_disadvantaged,
-          "Men use the internet more than women",
+          "",
           ifelse(
             reverse_gender_gap,
             "Women use the internet more than men",
@@ -1763,7 +1764,9 @@ server <- function(input, output, session) {
                       gap_row$headline_text
                   ),
                    p(
-                     if(gap_row$gap_key == "gender") {
+                     if(gap_row$gap_key == "gender" && isTRUE(gap_row$women_disadvantaged_flag)) {
+                       paste0("Women are ", round(gap_row$value, 1), " percentage points less likely than men to use the internet")
+                     } else if(gap_row$gap_key == "gender") {
                        paste0(round(gap_row$affected_m, 0), "% ", gap_row$affected_text)
                      } else {
                        paste0(format_pop_millions(gap_row$affected_m), " ", gap_row$affected_text)
