@@ -740,7 +740,7 @@ ui <- fluidPage(
                                           tags$p(
                                             tags$sup("\u2020"),
                                             "This dashboard covers 81 LMICs. The Global Findex Digital Connectivity Tracker collects data for 90 LMICs. Of these, 7 were exclusively interviewed by phone, and are excluded in the analysis. In addition, Mauritania and West Bank and Gaza were excluded due to coverage data not being updated.",
-                                            style = paste0("font-size: 12px; color: ", colors$grey, "; line-height: 1.5; margin-top: 10px; margin-bottom: 0;")
+                                            style = paste0("font-size: 12px; color: ", colors$navy, "; line-height: 1.5; margin-top: 10px; margin-bottom: 0;")
                                           )
                                       )
                                   )
