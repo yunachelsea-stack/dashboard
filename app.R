@@ -643,6 +643,41 @@ ui <- fluidPage(
     tags$meta(name = "description",
               content = "Explore global, regional and gender patterns in internet access and usage. An interactive dashboard by the World Bank Group drawing on latest data from the Global Findex 2025 Digital Connectivity Tracker and International Telecommunication Union."),
     tags$meta(name = "author", content = "World Bank Group"),
+    tags$script(type = "application/ld+json", HTML('{
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Digital Divide Insights",
+      "description": "Explore global, regional and gender patterns in internet access and usage. An interactive dashboard by the World Bank Group drawing on latest data from the Global Findex 2025 Digital Connectivity Tracker and International Telecommunication Union.",
+      "url": "https://datanalytics.worldbank.org/digital-divide",
+      "applicationCategory": "DataVisualization",
+      "inLanguage": "en",
+      "publisher": {
+        "@type": "Organization",
+        "name": "World Bank Group",
+        "url": "https://www.worldbank.org"
+      },
+      "about": {
+        "@type": "Dataset",
+        "name": "Digital Divide Insights Data",
+        "description": "Data on internet access and usage across low- and middle-income countries, including gender breakdowns and regional comparisons.",
+        "keywords": ["digital divide", "internet access", "gender gap", "digital connectivity", "low- and middle-income countries", "Global Findex", "ITU"],
+        "creator": {
+          "@type": "Organization",
+          "name": "World Bank Group",
+          "url": "https://www.worldbank.org"
+        },
+        "isBasedOn": [
+          {
+            "@type": "Dataset",
+            "name": "Global Findex 2025 Digital Connectivity Tracker"
+          },
+          {
+            "@type": "Dataset",
+            "name": "International Telecommunication Union Data"
+          }
+        ]
+      }
+    }')),
     tags$link(rel = "stylesheet",
               href = "https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap"),
     tags$style(HTML(custom_css))
