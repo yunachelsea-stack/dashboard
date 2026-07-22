@@ -1249,7 +1249,13 @@ server <- function(input, output, session) {
     updateSelectizeInput(session, "comparison_countries",
                          choices = countries)
   })
-  
+
+  observeEvent(input$comparison_countries, {
+    if(length(input$comparison_countries) > 0) {
+      updateRadioButtons(session, "view_mode", selected = "compare")
+    }
+  }, ignoreNULL = FALSE, ignoreInit = TRUE)
+
   # Home: per-country scenario chart helper
   make_home_scenario_chart <- function(country_name_str) {
     data <- adoption_data %>% filter(country_name == country_name_str)
