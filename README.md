@@ -2,7 +2,7 @@
 
 An interactive Shiny dashboard exploring internet access and usage gaps across low- and middle-income countries (LMICs), with a focus on coverage, usage, and gender dimensions of the digital divide.
 
-**Live app:** https://yunaliang-dashboard.share.connect.posit.cloud/
+
 
 ---
 
