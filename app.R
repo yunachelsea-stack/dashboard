@@ -77,6 +77,7 @@ format_pop_detail_millions <- function(x) {
   }
 }
 
+
 format_pop_transition <- function(from_x, to_x) {
   if (is.na(from_x) || is.na(to_x)) return("N/A")
 
@@ -735,7 +736,7 @@ ui <- fluidPage(
                                           ),
                                           tags$p(
                                             tags$sup("\u2020"),
-                                            "This dashboard covers 80 low and middle income economies based on World Bank's FY26 classification by income level. The Global Findex Digital Connectivity Tracker collects data for 90 LMICs. Of these, 7 were exclusively interviewed by phone, and are excluded in the analysis. Costa Rica is excluded as it is classified as high income under FY26. Mauritania, West Bank and Gaza, and Kosovo are excluded due to coverage data not being available.",
+                                            "This dashboard covers 80 low and middle income economies based on World Bank's FY27 classification by income level. The Global Findex Digital Connectivity Tracker collects data for 90 LMICs. Of these, 7 were exclusively interviewed by phone, and are excluded in the analysis. Costa Rica is excluded as it is classified as high income under FY27. Mauritania, West Bank and Gaza, and Kosovo are excluded due to coverage data not being available.",
                                             style = paste0("font-size: 12px; color: ", colors$navy, "; font-style: italic; line-height: 1.5; margin-top: 10px; margin-bottom: 0;")
                                           )
                                       )
@@ -969,9 +970,12 @@ ui <- fluidPage(
                                    ),
                                    column(3,
                                           br(),
-                                          downloadButton("download_data", "Download Data",
+                                          downloadButton("download_economy", "Download Economy Data",
                                                          class = "btn-info btn-block",
-                                                         style = "width: 100%;")
+                                                         style = "width: 100%;"),
+                                          downloadButton("download_full", "Download Full Dataset",
+                                                         class = "btn-default btn-block",
+                                                         style = "width: 100%; margin-top: 6px;")
                                    )
                                  )
                                )
@@ -1256,7 +1260,7 @@ ui <- fluidPage(
                       fluidRow(
                         column(12,
                                p(tags$sup("†"),
-                                 "This dashboard covers 80 low and middle income economies based on World Bank's FY26 classification by income level.",
+                                 "This dashboard covers 80 low and middle income economies based on World Bank's FY27 classification by income level.",
                                  style = paste0("font-size: 12px; color: ", colors$navy, "; font-style: italic; margin-top: 4px; margin-bottom: 4px;")),
                                p("Source: Authors' calculations using data from the ",
                                  tags$a("Global Findex Digital Connectivity Tracker 2025",
@@ -2940,14 +2944,32 @@ server <- function(input, output, session) {
       )
   })
   
-  # Download handler
-  output$download_data <- downloadHandler(
+  # Download selected economy or economies
+  output$download_economy <- downloadHandler(
     filename = function() {
-      paste0(gsub(" ", "_", input$country), "_digital_adoption_", Sys.Date(), ".csv")
+      if (input$view_mode == "compare" && length(input$comparison_countries) > 0) {
+        paste0("digital_divide_selected_economies_", Sys.Date(), ".csv")
+      } else {
+        paste0(gsub(" ", "_", input$country), "_digital_divide_", Sys.Date(), ".csv")
+      }
     },
     content = function(file) {
-      write_csv(country_data(), file)
+      if (input$view_mode == "compare" && length(input$comparison_countries) > 0) {
+        data <- comparison_data()
+      } else {
+        data <- country_data()
+      }
+      write_csv(data, file)
     }
+  )
+
+  # Download full dataset — serve the exact Excel file
+  output$download_full <- downloadHandler(
+    filename = function() "digital_divide_dashboard_dataset.xlsx",
+    content = function(file) {
+      file.copy("digital_divide_dashboard_dataset.xlsx", file)
+    },
+    contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
   )
 }
 
