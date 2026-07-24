@@ -1031,32 +1031,23 @@ ui <- fluidPage(
                                wellPanel(
                                  style = "background: white; border-radius: 10px;",
                                  fluidRow(
-                                   column(2,
+                                   column(3,
                                           selectInput("country", "Select Economy:",
                                                       choices = NULL, selected = NULL,
                                                       width = "100%")
                                    ),
-                                   column(3,
+                                   column(4,
                                           selectizeInput("comparison_countries", "Compare with:",
                                                          choices = NULL, selected = NULL,
                                                          multiple = TRUE, width = "100%",
                                                          options = list(placeholder = "Select economies to compare"))
                                    ),
-                                   column(4,
+                                   column(5,
                                           radioButtons("view_mode", "View Mode:",
                                                        choices = c("Economy-Level Analysis" = "single",
                                                                    "Comparative View" = "compare"),
                                                        selected = "single", inline = TRUE),
                                           tags$style("#view_mode .radio-inline { white-space: nowrap; display: inline-flex; align-items: center; margin-right: 12px; } #view_mode .shiny-options-group { flex-wrap: nowrap !important; display: flex; }")
-                                   ),
-                                   column(3,
-                                          br(),
-                                          downloadButton("download_economy", "Download Data of Selected Economies",
-                                                         class = "btn-info",
-                                                         style = "width: 100%; height: 38px; font-size: 13px; border-radius: 4px;"),
-                                          downloadButton("download_full", "Download Full Dataset",
-                                                         class = "btn-default",
-                                                         style = "width: 100%; height: 38px; font-size: 13px; border-radius: 4px; margin-top: 6px;")
                                    )
                                  )
                                )
@@ -1357,6 +1348,37 @@ ui <- fluidPage(
                                  style = paste0("font-size: 12px; color: ", colors$navy, "; font-style: italic; margin-top: 4px; margin-bottom: 10px;"))
                         )
                       )
+             ),
+
+             tabPanel("Data",
+               fluidPage(
+                 style = "max-width: 960px; margin: auto; padding-top: 30px;",
+                 h2("Data", style = paste0("color: ", colors$navy, "; font-weight: 700; margin-bottom: 6px;")),
+                 p("Download the dataset underlying this dashboard. The full dataset covers 80 low and middle income economies based on World Bank's FY27 classification by income level.",
+                   style = paste0("color: ", colors$navy, "; margin-bottom: 24px;")),
+                 fluidRow(
+                   column(6,
+                          div(style = paste0("background: white; border-radius: 10px; padding: 24px; border: 1px solid ", colors$light_blue, ";"),
+                              h4("Download Dataset", style = paste0("color: ", colors$navy, "; margin-top: 0;")),
+                              p("Download the full dataset (80 economies) or data for the economy/economies currently selected in the Economy-Level Analysis tab.",
+                                style = paste0("font-size: 13px; color: ", colors$grey, "; margin-bottom: 16px;")),
+                              downloadButton("download_full", "Download Full Dataset",
+                                             class = "btn-default",
+                                             style = paste0("width: 100%; height: 38px; font-size: 13px; border-radius: 4px; margin-bottom: 8px;")),
+                              downloadButton("download_economy", "Download Data of Selected Economies",
+                                             class = "btn-info",
+                                             style = "width: 100%; height: 38px; font-size: 13px; border-radius: 4px;")
+                          )
+                   ),
+                   column(6,
+                          div(style = paste0("background: white; border-radius: 10px; padding: 24px; border: 1px solid ", colors$light_blue, ";"),
+                              h4("Dataset Information", style = paste0("color: ", colors$navy, "; margin-top: 0;")),
+                              p("Metadata and citation information will be available here once the dataset is approved on the World Bank Development Data Hub.",
+                                style = paste0("font-size: 13px; color: ", colors$grey, "; font-style: italic;"))
+                          )
+                   )
+                 )
+               )
              )
   )
 )
