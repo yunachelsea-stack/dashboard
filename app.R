@@ -10,7 +10,7 @@ library(scales)
 # Load the adoption data
 adoption_data <- readRDS("adoption_data.rds")
 # Coerce any numeric columns that were stored as character in the RDS
-.text_cols <- c("country_name", "regionwb24_hi", "incomegroupwb24",
+.text_cols <- c("country_name", "regionwb24_hi", "incomegroupwb27",
                 "codewb", "countrynewwb", "dominant_tech_type",
                 "incomegroupwb", "regionwb")
 adoption_data <- adoption_data %>%
@@ -1675,7 +1675,7 @@ server <- function(input, output, session) {
             h2(data$country_name[1], style = paste0("color: ", colors$navy, "; margin: 0; font-size: clamp(26px, 2.2vw, 34px);")),
             tags$span(gsub("\\s*\\(.*", "", data$regionwb24_hi[1]),
                       style = "border: 1px solid #bbb; border-radius: 20px; padding: 4px 13px; font-size: 14px; color: #555; background: white;"),
-            tags$span(gsub(" income", "", data$incomegroupwb24[1]),
+            tags$span(gsub(" income", "", data$incomegroupwb27[1]),
                       style = "border: 1px solid #bbb; border-radius: 20px; padding: 4px 13px; font-size: 14px; color: #555; background: white;")
         ),
         # Row 2: 3 metric cards
@@ -2864,13 +2864,13 @@ server <- function(input, output, session) {
     data <- comparison_data()
     
     summary_table <- data %>%
-      select(country_name, regionwb24_hi, incomegroupwb24,
+      select(country_name, regionwb24_hi, incomegroupwb27,
              internet_usage_all_pct, coverage_dominant_pct, gap_dominant_pct) %>%
       mutate(across(where(is.numeric), ~round(., 1))) %>%
       rename(
         Country = country_name,
         Region = regionwb24_hi,
-        `Income Group` = incomegroupwb24,
+        `Income Group` = incomegroupwb27,
         `Internet (%)` = internet_usage_all_pct,
         `Coverage (%)` = coverage_dominant_pct,
         `Coverage Gap (%)` = gap_dominant_pct
