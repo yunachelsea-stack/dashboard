@@ -1360,7 +1360,6 @@ ui <- fluidPage(
                      h2("Digital Divide Insights Dataset", style = paste0("color: ", colors$navy, "; font-weight: 700; margin-top: 0; margin-bottom: 10px;")),
                      p(style = paste0("font-size: 13px; color: ", colors$grey, "; margin-bottom: 18px; border-bottom: 1px solid #e0e8ec; padding-bottom: 14px;"),
                        strong("24"), " Variables", HTML("&nbsp;&nbsp;|&nbsp;&nbsp;"),
-                       strong("2023–24"), HTML("&nbsp;&nbsp;|&nbsp;&nbsp;"),
                        strong("80"), " Low and Middle Income Economies"
                      ),
                      p(style = paste0("font-size: 13px; color: ", colors$navy, "; margin-bottom: 6px;"),
@@ -1375,11 +1374,9 @@ ui <- fluidPage(
                        style = paste0("font-size: 14px; color: ", colors$navy, "; line-height: 1.7; margin-top: 16px; margin-bottom: 24px;")),
                      tags$hr(style = paste0("border-color: #e0e8ec; margin-bottom: 18px;")),
                      fluidRow(
-                       column(4, p(strong("Economy Coverage"), style = paste0("font-size: 12px; color: ", colors$grey, "; margin-bottom: 2px;")),
+                       column(6, p(strong("Economy Coverage"), style = paste0("font-size: 12px; color: ", colors$grey, "; margin-bottom: 2px;")),
                                  p("80 LMICs (World Bank FY27 classification)", style = paste0("font-size: 13px; color: ", colors$navy, ";"))),
-                       column(4, p(strong("Reference Year"), style = paste0("font-size: 12px; color: ", colors$grey, "; margin-bottom: 2px;")),
-                                 p("2023–24", style = paste0("font-size: 13px; color: ", colors$navy, ";"))),
-                       column(4, p(strong("Update Frequency"), style = paste0("font-size: 12px; color: ", colors$grey, "; margin-bottom: 2px;")),
+                       column(6, p(strong("Update Frequency"), style = paste0("font-size: 12px; color: ", colors$grey, "; margin-bottom: 2px;")),
                                  p("Triennial (aligned with Global Findex)", style = paste0("font-size: 13px; color: ", colors$navy, ";")))
                      ),
                      fluidRow(style = "margin-top: 10px;",
