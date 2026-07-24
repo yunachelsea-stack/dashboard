@@ -6,7 +6,7 @@ library(plotly)
 library(DT)
 library(shinythemes)
 library(scales)
-library(openxlsx)
+library(writexl)
 
 # Load the adoption data
 adoption_data <- readRDS("adoption_data.rds")
@@ -151,12 +151,7 @@ data_dictionary <- data.frame(
 )
 
 write_download_xlsx <- function(data, file) {
-  wb <- createWorkbook()
-  addWorksheet(wb, "Data")
-  writeData(wb, "Data", data)
-  addWorksheet(wb, "Data Dictionary")
-  writeData(wb, "Data Dictionary", data_dictionary)
-  saveWorkbook(wb, file, overwrite = TRUE)
+  write_xlsx(list("Data" = data, "Data Dictionary" = data_dictionary), path = file)
 }
 
 format_pop_transition <- function(from_x, to_x) {
