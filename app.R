@@ -10,7 +10,7 @@ library(scales)
 # Load the adoption data
 adoption_data <- readRDS("adoption_data.rds")
 # Coerce any numeric columns that were stored as character in the RDS
-.text_cols <- c("country_name", "regionwb24_hi", "incomegroupwb27",
+.text_cols <- c("country_name", "regionwb", "incomegroupwb27",
                 "codewb", "countrynewwb", "dominant_tech_type",
                 "incomegroupwb", "regionwb")
 adoption_data <- adoption_data %>%
@@ -29,10 +29,10 @@ adoption_data <- adoption_data %>%
   "Liberia", "Mali", "Niger", "Nigeria", "Senegal", "Sierra Leone", "Togo"
 )
 adoption_data <- adoption_data %>%
-  mutate(regionwb24_hi = case_when(
+  mutate(regionwb = case_when(
     country_name %in% .esa_countries ~ "Eastern & Southern Africa",
     country_name %in% .wca_countries ~ "Western & Central Africa",
-    TRUE ~ regionwb24_hi
+    TRUE ~ regionwb
   ))
 
 # Define color palette
@@ -1414,8 +1414,8 @@ server <- function(input, output, session) {
     data <- diagnostic_country_data()
     req(nrow(data) > 0)
     
-    region_name <- data$regionwb24_hi[1]
-    region_data <- adoption_data %>% filter(regionwb24_hi == region_name)
+    region_name <- data$regionwb[1]
+    region_data <- adoption_data %>% filter(regionwb == region_name)
     country_usage_gap <- sanitize_diagnostic_usage_gap_pct(data$country_name[1], data$internet_usage_gap_all_pct[1])
     region_usage_gap <- sanitize_diagnostic_usage_gap_pct(region_data$country_name, region_data$internet_usage_gap_all_pct)
     
@@ -1635,7 +1635,7 @@ server <- function(input, output, session) {
     data <- diagnostic_country_data()
     gaps <- diagnostic_gap_table()
     region_data <- adoption_data %>%
-      filter(regionwb24_hi == data$regionwb24_hi[1]) %>%
+      filter(regionwb == data$regionwb[1]) %>%
       arrange(desc(internet_usage_all_pct)) %>%
       mutate(rank = row_number())
     lmic_data <- adoption_data %>%
@@ -1644,7 +1644,7 @@ server <- function(input, output, session) {
       mutate(rank = row_number())
     
     main_gap <- gaps %>% arrange(desc(value)) %>% slice(1)
-    region_label <- gsub("\\s*\\(.*", "", data$regionwb24_hi[1])
+    region_label <- gsub("\\s*\\(.*", "", data$regionwb[1])
     region_rank <- region_data %>%
       filter(country_name == data$country_name[1]) %>%
       pull(rank)
@@ -1673,7 +1673,7 @@ server <- function(input, output, session) {
         # Row 1: country name + region & income pills
         div(style = "display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-bottom: 18px;",
             h2(data$country_name[1], style = paste0("color: ", colors$navy, "; margin: 0; font-size: clamp(26px, 2.2vw, 34px);")),
-            tags$span(gsub("\\s*\\(.*", "", data$regionwb24_hi[1]),
+            tags$span(gsub("\\s*\\(.*", "", data$regionwb[1]),
                       style = "border: 1px solid #bbb; border-radius: 20px; padding: 4px 13px; font-size: 14px; color: #555; background: white;"),
             tags$span(gsub(" income", "", data$incomegroupwb27[1]),
                       style = "border: 1px solid #bbb; border-radius: 20px; padding: 4px 13px; font-size: 14px; color: #555; background: white;")
@@ -1872,7 +1872,7 @@ server <- function(input, output, session) {
     data <- diagnostic_country_data()
     benchmark_gaps <- diagnostic_benchmark_gaps()
     region_n <- adoption_data %>%
-      filter(regionwb24_hi == data$regionwb24_hi[1]) %>%
+      filter(regionwb == data$regionwb[1]) %>%
       nrow()
     plot_height <- max(360, min(920, 190 + (region_n + 1) * 30))
     total_height <- plot_height * nrow(benchmark_gaps)
@@ -1889,7 +1889,7 @@ server <- function(input, output, session) {
   output$diagnostic_benchmark_all <- renderPlot({
     data <- diagnostic_country_data()
     benchmark_gaps <- diagnostic_benchmark_gaps()
-    region_data <- adoption_data %>% filter(regionwb24_hi == data$regionwb24_hi[1])
+    region_data <- adoption_data %>% filter(regionwb == data$regionwb[1])
 
     plots <- lapply(seq_len(nrow(benchmark_gaps)), function(i) {
       gap_row <- benchmark_gaps[i, ]
@@ -1958,7 +1958,7 @@ server <- function(input, output, session) {
         ) +
         scale_y_discrete(expand = expansion(mult = c(0.06, 0.08))) +
         labs(
-          title = paste0(gap_row$gap, " Across ", gsub("\\s*\\(.*", "", data$regionwb24_hi[1])),
+          title = paste0(gap_row$gap, " Across ", gsub("\\s*\\(.*", "", data$regionwb[1])),
           y = NULL, fill = NULL
         ) +
         coord_cartesian(xlim = c(plot_x_min, x_max + x_pad * 3), clip = "off") +
@@ -2097,7 +2097,7 @@ server <- function(input, output, session) {
       filter(!is.na(internet_usage_gap_female_millions) & internet_usage_gap_female_millions > 0,
              !is.na(internet_usage_male_pct), !is.na(internet_usage_female_pct)) %>%
       mutate(
-        region = gsub("\\s*\\(.*", "", regionwb24_hi),
+        region = gsub("\\s*\\(.*", "", regionwb),
         gender_gap = internet_usage_male_pct - internet_usage_female_pct,
         value = internet_usage_gap_female_millions,
         node_color = case_when(
@@ -2184,7 +2184,7 @@ server <- function(input, output, session) {
     adoption_data %>%
       filter(!is.na(adults_no_dominant_millions) & adults_no_dominant_millions > 0) %>%
       mutate(
-        region = gsub("\\s*\\(.*", "", regionwb24_hi),  # Remove text after parenthesis
+        region = gsub("\\s*\\(.*", "", regionwb),  # Remove text after parenthesis
         value = adults_no_dominant_millions,
         percentage = gap_dominant_pct
       ) %>%
@@ -2196,7 +2196,7 @@ server <- function(input, output, session) {
     adoption_data %>%
       filter(!is.na(internet_usage_gap_all_millions) & internet_usage_gap_all_millions > 0) %>%
       mutate(
-        region = gsub("\\s*\\(.*", "", regionwb24_hi),  # Remove text after parenthesis
+        region = gsub("\\s*\\(.*", "", regionwb),  # Remove text after parenthesis
         value = internet_usage_gap_all_millions,
         percentage = internet_usage_gap_all_pct
       ) %>%
@@ -2864,12 +2864,12 @@ server <- function(input, output, session) {
     data <- comparison_data()
     
     summary_table <- data %>%
-      select(country_name, regionwb24_hi, incomegroupwb27,
+      select(country_name, regionwb, incomegroupwb27,
              internet_usage_all_pct, coverage_dominant_pct, gap_dominant_pct) %>%
       mutate(across(where(is.numeric), ~round(., 1))) %>%
       rename(
         Country = country_name,
-        Region = regionwb24_hi,
+        Region = regionwb,
         `Income Group` = incomegroupwb27,
         `Internet (%)` = internet_usage_all_pct,
         `Coverage (%)` = coverage_dominant_pct,
@@ -2911,7 +2911,7 @@ server <- function(input, output, session) {
   # Regional benchmarking with new colors
   output$regional_benchmark <- renderPlotly({
     region_data <- adoption_data %>%
-      filter(regionwb24_hi == country_data()$regionwb24_hi[1]) %>%
+      filter(regionwb == country_data()$regionwb[1]) %>%
       arrange(internet_usage_all_pct)
 
     selected <- c(input$country, input$comparison_countries)
