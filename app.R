@@ -970,12 +970,12 @@ ui <- fluidPage(
                                    ),
                                    column(3,
                                           br(),
-                                          downloadButton("download_economy", "Download Economy Data",
-                                                         class = "btn-info btn-block",
-                                                         style = "width: 100%;"),
+                                          downloadButton("download_economy", "Download Data of Selected Economies",
+                                                         class = "btn-info",
+                                                         style = "width: 100%; height: 38px; font-size: 13px;"),
                                           downloadButton("download_full", "Download Full Dataset",
-                                                         class = "btn-default btn-block",
-                                                         style = "width: 100%; margin-top: 6px;")
+                                                         class = "btn-default",
+                                                         style = "width: 100%; height: 38px; font-size: 13px; margin-top: 6px;")
                                    )
                                  )
                                )
