@@ -10,9 +10,7 @@ library(scales)
 # Load the adoption data
 adoption_data <- readRDS("adoption_data.rds")
 # Coerce any numeric columns that were stored as character in the RDS
-.text_cols <- c("country_name", "regionwb", "incomegroupwb27",
-                "codewb", "countrynewwb", "dominant_tech_type",
-                "incomegroupwb", "regionwb")
+.text_cols <- c("codewb", "country_name", "regionwb", "incomegroupwb27", "dominant_tech_type")
 adoption_data <- adoption_data %>%
   mutate(across(where(is.character) & !any_of(.text_cols),
                 ~ suppressWarnings(as.numeric(.x))))
