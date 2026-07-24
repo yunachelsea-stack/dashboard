@@ -1377,7 +1377,7 @@ ui <- fluidPage(
                        column(6, p(strong("Economy Coverage"), style = paste0("font-size: 12px; color: ", colors$grey, "; margin-bottom: 2px;")),
                                  p("80 LMICs (World Bank FY27 classification)", style = paste0("font-size: 13px; color: ", colors$navy, ";"))),
                        column(6, p(strong("Update Frequency"), style = paste0("font-size: 12px; color: ", colors$grey, "; margin-bottom: 2px;")),
-                                 p("Triennial (aligned with Global Findex)", style = paste0("font-size: 13px; color: ", colors$navy, ";")))
+                                 p("TBD", style = paste0("font-size: 13px; color: ", colors$navy, ";")))
                      ),
                      fluidRow(style = "margin-top: 10px;",
                        column(12, p(strong("Citation"), style = paste0("font-size: 12px; color: ", colors$grey, "; margin-bottom: 2px;")),
@@ -1391,12 +1391,16 @@ ui <- fluidPage(
                        h4("Downloads", style = paste0("color: ", colors$navy, "; margin-top: 0; margin-bottom: 16px; font-weight: 700;")),
                        downloadButton("download_full", "Full Dataset (80 economies)",
                                       class = "btn-info",
-                                      style = "width: 100%; height: 38px; font-size: 13px; border-radius: 4px; margin-bottom: 8px;"),
-                       downloadButton("download_economy", "Selected Economies",
-                                      class = "btn-default",
-                                      style = "width: 100%; height: 38px; font-size: 13px; border-radius: 4px;"),
-                       p("'Selected Economies' downloads data for the economy or economies chosen in the Economy-Level Analysis tab.",
-                         style = paste0("font-size: 11px; color: ", colors$grey, "; margin-top: 10px; margin-bottom: 0;"))
+                                      style = "width: 100%; height: 38px; font-size: 13px; border-radius: 4px; margin-bottom: 16px;"),
+                       tags$hr(style = "border-color: #d0d8dc; margin: 0 0 14px 0;"),
+                       p("Or select specific economies:", style = paste0("font-size: 12px; font-weight: 600; color: ", colors$navy, "; margin-bottom: 6px;")),
+                       selectizeInput("data_tab_countries",
+                                      label = NULL,
+                                      choices = NULL,
+                                      multiple = TRUE,
+                                      options = list(placeholder = "Search and select economies…",
+                                                     plugins = list("remove_button"))),
+                       uiOutput("download_economy_ui")
                      )
                    )
                  )
@@ -1415,6 +1419,8 @@ server <- function(input, output, session) {
                       choices = countries,
                       selected = countries[1])
     updateSelectizeInput(session, "comparison_countries",
+                         choices = countries)
+    updateSelectizeInput(session, "data_tab_countries",
                          choices = countries)
   })
 
@@ -3070,21 +3076,43 @@ server <- function(input, output, session) {
   })
   
   # Download selected economy or economies
+  output$download_economy_ui <- renderUI({
+    n <- length(input$data_tab_countries)
+    if (n == 0) {
+      div(
+        tags$button("Download Selected",
+                    class = "btn btn-default",
+                    style = "width: 100%; height: 38px; font-size: 13px; border-radius: 4px; opacity: 0.45; cursor: not-allowed; pointer-events: none;",
+                    disabled = NA),
+        p("Select at least one economy above to enable download.",
+          style = paste0("font-size: 11px; color: ", colors$grey, "; margin-top: 8px; margin-bottom: 0;"))
+      )
+    } else {
+      label <- if (n == 1) input$data_tab_countries else paste0(n, " economies selected")
+      tagList(
+        downloadButton("download_economy",
+                       paste0("Download (", label, ")"),
+                       class = "btn-default",
+                       style = "width: 100%; height: 38px; font-size: 13px; border-radius: 4px;"),
+        p(paste(input$data_tab_countries, collapse = ", "),
+          style = paste0("font-size: 11px; color: ", colors$grey, "; margin-top: 8px; margin-bottom: 0;"))
+      )
+    }
+  })
+
   output$download_economy <- downloadHandler(
     filename = function() {
-      if (input$view_mode == "compare" && length(input$comparison_countries) > 0) {
-        paste0("digital_divide_selected_economies_", Sys.Date(), ".xlsx")
+      n <- length(input$data_tab_countries)
+      if (n == 1) {
+        paste0(gsub(" ", "_", input$data_tab_countries), "_digital_divide_", Sys.Date(), ".xlsx")
       } else {
-        paste0(gsub(" ", "_", input$country), "_digital_divide_", Sys.Date(), ".xlsx")
+        paste0("digital_divide_selected_economies_", Sys.Date(), ".xlsx")
       }
     },
     content = function(file) {
-      if (input$view_mode == "compare" && length(input$comparison_countries) > 0) {
-        data <- adoption_data %>%
-          filter(country_name %in% c(input$country, input$comparison_countries))
-      } else {
-        data <- country_data()
-      }
+      req(length(input$data_tab_countries) > 0)
+      data <- adoption_data %>%
+        filter(country_name %in% input$data_tab_countries)
       write_download_xlsx(data, file)
     },
     contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
