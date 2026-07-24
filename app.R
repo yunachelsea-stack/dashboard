@@ -77,34 +77,6 @@ format_pop_detail_millions <- function(x) {
   }
 }
 
-rename_for_download <- function(df) {
-  df %>% rename(
-    `Economy Code`                    = codewb,
-    `Economy`                         = country_name,
-    `Region`                          = regionwb,
-    `Income Group (FY27)`             = incomegroupwb27,
-    `Total Population`                = total_population,
-    `Adult Population`                = adult_population,
-    `Adult Population — Male`         = adult_pop_male,
-    `Adult Population — Female`       = adult_pop_female,
-    `Dominant Network Technology`     = dominant_tech_type,
-    `Network Coverage (%)`            = coverage_dominant_pct,
-    `Coverage Gap (%)`                = gap_dominant_pct,
-    `Adults Without Coverage (M)`     = adults_no_dominant_millions,
-    `Women Without Coverage (M)`      = women_no_dominant_millions,
-    `Men Without Coverage (M)`        = men_no_dominant_millions,
-    `Internet Usage — All (%)`        = internet_usage_all_pct,
-    `Internet Usage — Male (%)`       = internet_usage_male_pct,
-    `Internet Usage — Female (%)`     = internet_usage_female_pct,
-    `Internet Usage Gap (%)`          = internet_usage_gap_all_pct,
-    `Internet Users — All (M)`        = internet_usage_all_millions,
-    `Internet Users — Male (M)`       = internet_usage_male_millions,
-    `Internet Users — Female (M)`     = internet_usage_female_millions,
-    `Non-Internet Users — All (M)`    = internet_usage_gap_all_millions,
-    `Non-Internet Users — Male (M)`   = internet_usage_gap_male_millions,
-    `Non-Internet Users — Female (M)` = internet_usage_gap_female_millions
-  )
-}
 
 format_pop_transition <- function(from_x, to_x) {
   if (is.na(from_x) || is.na(to_x)) return("N/A")
@@ -2987,18 +2959,17 @@ server <- function(input, output, session) {
       } else {
         data <- country_data()
       }
-      write_csv(rename_for_download(data), file)
+      write_csv(data, file)
     }
   )
 
-  # Download full dataset
+  # Download full dataset — serve the exact Excel file
   output$download_full <- downloadHandler(
-    filename = function() {
-      paste0("digital_divide_all_economies_", Sys.Date(), ".csv")
-    },
+    filename = function() "digital_divide_dashboard_dataset.xlsx",
     content = function(file) {
-      write_csv(rename_for_download(adoption_data), file)
-    }
+      file.copy("digital_divide_dashboard_dataset.xlsx", file)
+    },
+    contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
   )
 }
 
