@@ -972,10 +972,10 @@ ui <- fluidPage(
                                           br(),
                                           downloadButton("download_economy", "Download Data of Selected Economies",
                                                          class = "btn-info",
-                                                         style = "width: 100%; height: 38px; font-size: 13px;"),
+                                                         style = "width: 100%; height: 38px; font-size: 13px; border-radius: 4px;"),
                                           downloadButton("download_full", "Download Full Dataset",
                                                          class = "btn-default",
-                                                         style = "width: 100%; height: 38px; font-size: 13px; margin-top: 6px;")
+                                                         style = "width: 100%; height: 38px; font-size: 13px; border-radius: 4px; margin-top: 6px;")
                                    )
                                  )
                                )
