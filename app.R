@@ -6,6 +6,7 @@ library(plotly)
 library(DT)
 library(shinythemes)
 library(scales)
+library(openxlsx)
 
 # Load the adoption data
 adoption_data <- readRDS("adoption_data.rds")
@@ -77,6 +78,86 @@ format_pop_detail_millions <- function(x) {
   }
 }
 
+
+data_dictionary <- data.frame(
+  Variable = c(
+    "codewb","country_name","regionwb","incomegroupwb27",
+    "total_population","adult_population","adult_pop_male","adult_pop_female",
+    "dominant_tech_type","coverage_dominant_pct","gap_dominant_pct",
+    "adults_no_dominant_millions","women_no_dominant_millions","men_no_dominant_millions",
+    "internet_usage_all_pct","internet_usage_male_pct","internet_usage_female_pct","internet_usage_gap_all_pct",
+    "internet_usage_all_millions","internet_usage_male_millions","internet_usage_female_millions",
+    "internet_usage_gap_all_millions","internet_usage_gap_male_millions","internet_usage_gap_female_millions"
+  ),
+  Label = c(
+    "Economy Code","Economy","Region","Income Group (FY27)",
+    "Total Population","Adult Population","Adult Population — Male","Adult Population — Female",
+    "Dominant Network Technology","Network Coverage (%)","Coverage Gap (%)",
+    "Adults Without Coverage (M)","Women Without Coverage (M)","Men Without Coverage (M)",
+    "Internet Usage — All (%)","Internet Usage — Male (%)","Internet Usage — Female (%)","Internet Usage Gap (%)",
+    "Internet Users — All (M)","Internet Users — Male (M)","Internet Users — Female (M)",
+    "Non-Internet Users — All (M)","Non-Internet Users — Male (M)","Non-Internet Users — Female (M)"
+  ),
+  Description = c(
+    "ISO 3-letter country code (World Bank standard)",
+    "Economy name (World Bank standard)",
+    "World Bank regional grouping",
+    "World Bank income group classification (FY27)",
+    "Total population",
+    "Population aged 15 and above",
+    "Male population aged 15 and above",
+    "Female population aged 15 and above",
+    "Type of network technology with highest population coverage (3G or 4G)",
+    "Share of population covered by the dominant network technology",
+    "Share of population not covered by any mobile network (3G or 4G)",
+    "Number of adults living outside mobile network coverage",
+    "Number of adult women living outside mobile network coverage",
+    "Number of adult men living outside mobile network coverage",
+    "Share of all adults who used the internet in the past 3 months",
+    "Share of male adults who used the internet in the past 3 months",
+    "Share of female adults who used the internet in the past 3 months",
+    "Percentage point gap between network coverage and internet usage (all adults)",
+    "Number of adults who used the internet in the past 3 months",
+    "Number of male adults who used the internet in the past 3 months",
+    "Number of female adults who used the internet in the past 3 months",
+    "Number of adults with network coverage who do not use the internet",
+    "Number of male adults with network coverage who do not use the internet",
+    "Number of female adults with network coverage who do not use the internet"
+  ),
+  Unit = c(
+    "Code","Text","Text","Text",
+    "Number","Number","Number","Number",
+    "Text","Percentage","Percentage",
+    "Millions","Millions","Millions",
+    "Percentage","Percentage","Percentage","Percentage points",
+    "Millions","Millions","Millions",
+    "Millions","Millions","Millions"
+  ),
+  Source = c(
+    "World Bank","World Bank WDI","World Bank Findex 2025","World Bank",
+    "World Bank WDI","World Bank WDI","World Bank WDI","World Bank WDI",
+    "ITU Datahub","ITU Datahub","ITU Datahub",
+    "ITU Datahub + World Bank WDI","ITU Datahub + World Bank WDI","ITU Datahub + World Bank WDI",
+    "World Bank Global Findex 2025","World Bank Global Findex 2025","World Bank Global Findex 2025",
+    "ITU Datahub + World Bank Global Findex 2025",
+    "World Bank Global Findex 2025 + World Bank WDI",
+    "World Bank Global Findex 2025 + World Bank WDI",
+    "World Bank Global Findex 2025 + World Bank WDI",
+    "ITU Datahub + World Bank Global Findex 2025 + World Bank WDI",
+    "ITU Datahub + World Bank Global Findex 2025 + World Bank WDI",
+    "ITU Datahub + World Bank Global Findex 2025 + World Bank WDI"
+  ),
+  stringsAsFactors = FALSE
+)
+
+write_download_xlsx <- function(data, file) {
+  wb <- createWorkbook()
+  addWorksheet(wb, "Data")
+  writeData(wb, "Data", data)
+  addWorksheet(wb, "Data Dictionary")
+  writeData(wb, "Data Dictionary", data_dictionary)
+  saveWorkbook(wb, file, overwrite = TRUE)
+}
 
 format_pop_transition <- function(from_x, to_x) {
   if (is.na(from_x) || is.na(to_x)) return("N/A")
@@ -2948,9 +3029,9 @@ server <- function(input, output, session) {
   output$download_economy <- downloadHandler(
     filename = function() {
       if (input$view_mode == "compare" && length(input$comparison_countries) > 0) {
-        paste0("digital_divide_selected_economies_", Sys.Date(), ".csv")
+        paste0("digital_divide_selected_economies_", Sys.Date(), ".xlsx")
       } else {
-        paste0(gsub(" ", "_", input$country), "_digital_divide_", Sys.Date(), ".csv")
+        paste0(gsub(" ", "_", input$country), "_digital_divide_", Sys.Date(), ".xlsx")
       }
     },
     content = function(file) {
@@ -2960,8 +3041,9 @@ server <- function(input, output, session) {
       } else {
         data <- country_data()
       }
-      write_csv(data, file)
-    }
+      write_download_xlsx(data, file)
+    },
+    contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
   )
 
   # Download full dataset — serve the exact Excel file
