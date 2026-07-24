@@ -2955,7 +2955,8 @@ server <- function(input, output, session) {
     },
     content = function(file) {
       if (input$view_mode == "compare" && length(input$comparison_countries) > 0) {
-        data <- comparison_data()
+        data <- adoption_data %>%
+          filter(country_name %in% c(input$country, input$comparison_countries))
       } else {
         data <- country_data()
       }
