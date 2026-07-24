@@ -1352,30 +1352,55 @@ ui <- fluidPage(
 
              tabPanel("Data",
                fluidPage(
-                 style = "max-width: 960px; margin: auto; padding-top: 30px;",
-                 h2("Data", style = paste0("color: ", colors$navy, "; font-weight: 700; margin-bottom: 6px;")),
-                 p("Download the dataset underlying this dashboard. The full dataset covers 80 low and middle income economies based on World Bank's FY27 classification by income level.",
-                   style = paste0("color: ", colors$navy, "; margin-bottom: 24px;")),
+                 style = "max-width: 1000px; margin: auto; padding: 36px 16px 60px 16px;",
                  fluidRow(
-                   column(6,
-                          div(style = paste0("background: white; border-radius: 10px; padding: 24px; border: 1px solid ", colors$light_blue, ";"),
-                              h4("Download Dataset", style = paste0("color: ", colors$navy, "; margin-top: 0;")),
-                              p("Download the full dataset (80 economies) or data for the economy/economies currently selected in the Economy-Level Analysis tab.",
-                                style = paste0("font-size: 13px; color: ", colors$grey, "; margin-bottom: 16px;")),
-                              downloadButton("download_full", "Download Full Dataset",
-                                             class = "btn-default",
-                                             style = paste0("width: 100%; height: 38px; font-size: 13px; border-radius: 4px; margin-bottom: 8px;")),
-                              downloadButton("download_economy", "Download Data of Selected Economies",
-                                             class = "btn-info",
-                                             style = "width: 100%; height: 38px; font-size: 13px; border-radius: 4px;")
-                          )
+                   # --- Left: dataset info ---
+                   column(8,
+                     p("DATASET", style = paste0("font-size: 11px; font-weight: 700; letter-spacing: 1.5px; color: ", colors$grey, "; margin-bottom: 6px;")),
+                     h2("Digital Divide Insights Dataset", style = paste0("color: ", colors$navy, "; font-weight: 700; margin-top: 0; margin-bottom: 10px;")),
+                     p(style = paste0("font-size: 13px; color: ", colors$grey, "; margin-bottom: 18px; border-bottom: 1px solid #e0e8ec; padding-bottom: 14px;"),
+                       strong("24"), " Variables", HTML("&nbsp;&nbsp;|&nbsp;&nbsp;"),
+                       strong("2023–24"), HTML("&nbsp;&nbsp;|&nbsp;&nbsp;"),
+                       strong("80"), " Low and Middle Income Economies"
+                     ),
+                     p(style = paste0("font-size: 13px; color: ", colors$navy, "; margin-bottom: 6px;"),
+                       strong("Source: "),
+                       tags$a("World Bank Global Findex 2025", href = "https://www.worldbank.org/en/publication/globalfindex", target = "_blank", rel = "noopener noreferrer", style = paste0("color: ", colors$blue, ";")),
+                       HTML("&nbsp;|&nbsp;"),
+                       tags$a("ITU Datahub", href = "https://www.itu.int/itu-d/sites/statistics/", target = "_blank", rel = "noopener noreferrer", style = paste0("color: ", colors$blue, ";")),
+                       HTML("&nbsp;|&nbsp;"),
+                       tags$a("World Bank WDI", href = "https://databank.worldbank.org/source/world-development-indicators", target = "_blank", rel = "noopener noreferrer", style = paste0("color: ", colors$blue, ";"))
+                     ),
+                     p("This dataset underpins the Digital Divide Insights Dashboard. It covers mobile network coverage, internet usage, and gender gaps across 80 low and middle income economies, drawing on the Global Findex Digital Connectivity Tracker 2025, ITU mobile coverage data, and World Bank population statistics.",
+                       style = paste0("font-size: 14px; color: ", colors$navy, "; line-height: 1.7; margin-top: 16px; margin-bottom: 24px;")),
+                     tags$hr(style = paste0("border-color: #e0e8ec; margin-bottom: 18px;")),
+                     fluidRow(
+                       column(4, p(strong("Economy Coverage"), style = paste0("font-size: 12px; color: ", colors$grey, "; margin-bottom: 2px;")),
+                                 p("80 LMICs (World Bank FY27 classification)", style = paste0("font-size: 13px; color: ", colors$navy, ";"))),
+                       column(4, p(strong("Reference Year"), style = paste0("font-size: 12px; color: ", colors$grey, "; margin-bottom: 2px;")),
+                                 p("2023–24", style = paste0("font-size: 13px; color: ", colors$navy, ";"))),
+                       column(4, p(strong("Update Frequency"), style = paste0("font-size: 12px; color: ", colors$grey, "; margin-bottom: 2px;")),
+                                 p("Triennial (aligned with Global Findex)", style = paste0("font-size: 13px; color: ", colors$navy, ";")))
+                     ),
+                     fluidRow(style = "margin-top: 10px;",
+                       column(12, p(strong("Citation"), style = paste0("font-size: 12px; color: ", colors$grey, "; margin-bottom: 2px;")),
+                                  p(em("Metadata and citation information will be updated once the dataset is published on the World Bank Development Data Hub."),
+                                    style = paste0("font-size: 13px; color: ", colors$grey, ";")))
+                     )
                    ),
-                   column(6,
-                          div(style = paste0("background: white; border-radius: 10px; padding: 24px; border: 1px solid ", colors$light_blue, ";"),
-                              h4("Dataset Information", style = paste0("color: ", colors$navy, "; margin-top: 0;")),
-                              p("Metadata and citation information will be available here once the dataset is approved on the World Bank Development Data Hub.",
-                                style = paste0("font-size: 13px; color: ", colors$grey, "; font-style: italic;"))
-                          )
+                   # --- Right: downloads ---
+                   column(4,
+                     div(style = paste0("background: ", colors$light_grey, "; border-radius: 8px; padding: 22px; margin-top: 48px;"),
+                       h4("Downloads", style = paste0("color: ", colors$navy, "; margin-top: 0; margin-bottom: 16px; font-weight: 700;")),
+                       downloadButton("download_full", "Full Dataset (80 economies)",
+                                      class = "btn-info",
+                                      style = "width: 100%; height: 38px; font-size: 13px; border-radius: 4px; margin-bottom: 8px;"),
+                       downloadButton("download_economy", "Selected Economies",
+                                      class = "btn-default",
+                                      style = "width: 100%; height: 38px; font-size: 13px; border-radius: 4px;"),
+                       p("'Selected Economies' downloads data for the economy or economies chosen in the Economy-Level Analysis tab.",
+                         style = paste0("font-size: 11px; color: ", colors$grey, "; margin-top: 10px; margin-bottom: 0;"))
+                     )
                    )
                  )
                )
