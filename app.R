@@ -3075,7 +3075,7 @@ server <- function(input, output, session) {
       tagList(
         downloadButton("download_economy",
                        paste0("Download (", label, ")"),
-                       class = "btn-default",
+                       class = "btn-info",
                        style = "width: 100%; height: 38px; font-size: 13px; border-radius: 4px;"),
         p(paste(input$data_tab_countries, collapse = ", "),
           style = paste0("font-size: 11px; color: ", colors$grey, "; margin-top: 8px; margin-bottom: 0;"))
