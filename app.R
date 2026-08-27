@@ -6,6 +6,7 @@ library(plotly)
 library(DT)
 library(shinythemes)
 library(scales)
+library(writexl)
 
 # Load the adoption data
 adoption_data <- readRDS("adoption_data.rds")
@@ -149,8 +150,8 @@ data_dictionary <- data.frame(
   stringsAsFactors = FALSE
 )
 
-write_download_csv <- function(data, file) {
-  write_csv(data, file)
+write_download_xlsx <- function(data, file) {
+  write_xlsx(list("Data" = data, "Data Dictionary" = data_dictionary), path = file)
 }
 
 format_pop_transition <- function(from_x, to_x) {
@@ -3075,7 +3076,7 @@ server <- function(input, output, session) {
       tagList(
         downloadButton("download_economy",
                        paste0("Download (", label, ")"),
-                       class = "btn-default",
+                       class = "btn-info",
                        style = "width: 100%; height: 38px; font-size: 13px; border-radius: 4px;"),
         p(paste(input$data_tab_countries, collapse = ", "),
           style = paste0("font-size: 11px; color: ", colors$grey, "; margin-top: 8px; margin-bottom: 0;"))
@@ -3087,18 +3088,18 @@ server <- function(input, output, session) {
     filename = function() {
       n <- length(input$data_tab_countries)
       if (n == 1) {
-        paste0(gsub(" ", "_", input$data_tab_countries), "_digital_divide_", Sys.Date(), ".csv")
+        paste0(gsub(" ", "_", input$data_tab_countries), "_digital_divide_", Sys.Date(), ".xlsx")
       } else {
-        paste0("digital_divide_selected_economies_", Sys.Date(), ".csv")
+        paste0("digital_divide_selected_economies_", Sys.Date(), ".xlsx")
       }
     },
     content = function(file) {
       req(length(input$data_tab_countries) > 0)
       data <- adoption_data %>%
         filter(country_name %in% input$data_tab_countries)
-      write_download_csv(data, file)
+      write_download_xlsx(data, file)
     },
-    contentType = "text/csv"
+    contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
   )
 
   # Download full dataset — serve the exact Excel file
