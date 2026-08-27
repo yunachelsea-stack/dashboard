@@ -6,7 +6,7 @@ library(plotly)
 library(DT)
 library(shinythemes)
 library(scales)
-library(openxlsx)
+library(writexl)
 
 # Load the adoption data
 adoption_data <- readRDS("adoption_data.rds")
@@ -151,12 +151,7 @@ data_dictionary <- data.frame(
 )
 
 write_download_xlsx <- function(data, file) {
-  wb <- createWorkbook()
-  addWorksheet(wb, "Data")
-  writeData(wb, "Data", data)
-  addWorksheet(wb, "Data Dictionary")
-  writeData(wb, "Data Dictionary", data_dictionary)
-  saveWorkbook(wb, file, overwrite = TRUE)
+  write_xlsx(list("Data" = data, "Data Dictionary" = data_dictionary), path = file)
 }
 
 format_pop_transition <- function(from_x, to_x) {
@@ -1360,7 +1355,7 @@ ui <- fluidPage(
                      h2("Digital Divide Insights Dataset", style = paste0("color: ", colors$navy, "; font-weight: 700; margin-top: 0; margin-bottom: 10px;")),
                      p(style = paste0("font-size: 13px; color: ", colors$grey, "; margin-bottom: 18px; border-bottom: 1px solid #e0e8ec; padding-bottom: 14px;"),
                        strong("24"), " Variables", HTML("&nbsp;&nbsp;|&nbsp;&nbsp;"),
-                       strong("80"), " Low and Middle Income Economies"
+                       strong("80"), " Low and Middle Income Economies (World Bank FY27 classification)"
                      ),
                      p(style = paste0("font-size: 13px; color: ", colors$navy, "; margin-bottom: 6px;"),
                        strong("Source: "),
@@ -1372,18 +1367,7 @@ ui <- fluidPage(
                      ),
                      p("This dataset underpins the Digital Divide Insights Dashboard. It covers mobile network coverage, internet usage, and gender gaps across 80 low and middle income economies, drawing on the Global Findex Digital Connectivity Tracker 2025, ITU mobile coverage data, and World Bank population statistics.",
                        style = paste0("font-size: 14px; color: ", colors$navy, "; line-height: 1.7; margin-top: 16px; margin-bottom: 24px;")),
-                     tags$hr(style = paste0("border-color: #e0e8ec; margin-bottom: 18px;")),
-                     fluidRow(
-                       column(6, p(strong("Economy Coverage"), style = paste0("font-size: 12px; color: ", colors$grey, "; margin-bottom: 2px;")),
-                                 p("80 LMICs (World Bank FY27 classification)", style = paste0("font-size: 13px; color: ", colors$navy, ";"))),
-                       column(6, p(strong("Update Frequency"), style = paste0("font-size: 12px; color: ", colors$grey, "; margin-bottom: 2px;")),
-                                 p("TBD", style = paste0("font-size: 13px; color: ", colors$navy, ";")))
-                     ),
-                     fluidRow(style = "margin-top: 10px;",
-                       column(12, p(strong("Citation"), style = paste0("font-size: 12px; color: ", colors$grey, "; margin-bottom: 2px;")),
-                                  p(em("Metadata and citation information will be updated once the dataset is published on the World Bank Development Data Hub."),
-                                    style = paste0("font-size: 13px; color: ", colors$grey, ";")))
-                     )
+
                    ),
                    # --- Right: downloads ---
                    column(4,
