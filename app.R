@@ -1374,11 +1374,7 @@ ui <- fluidPage(
                        column(6, p(strong("Update Frequency"), style = paste0("font-size: 12px; color: ", colors$grey, "; margin-bottom: 2px;")),
                                  p("TBD", style = paste0("font-size: 13px; color: ", colors$navy, ";")))
                      ),
-                     fluidRow(style = "margin-top: 10px;",
-                       column(12, p(strong("Citation"), style = paste0("font-size: 12px; color: ", colors$grey, "; margin-bottom: 2px;")),
-                                  p(em("Metadata and citation information will be updated once the dataset is published on the World Bank Development Data Hub."),
-                                    style = paste0("font-size: 13px; color: ", colors$grey, ";")))
-                     )
+
                    ),
                    # --- Right: downloads ---
                    column(4,
